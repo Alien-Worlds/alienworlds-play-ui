@@ -1,0 +1,70 @@
+:root {
+  /* CUSTOMIZE THE COLOR PALETTE */
+  --onboard-white: white;
+  --onboard-black: black;
+  --onboard-primary-1: #2f80ed;
+  --onboard-primary-100: #eff1fc;
+  --onboard-primary-200: #d0d4f7;
+  --onboard-primary-300: #b1b8f2;
+  --onboard-primary-400: #929bed;
+  --onboard-primary-500: #6370e5;
+  --onboard-primary-600: #454ea0;
+  --onboard-primary-700: #323873;
+  --onboard-gray-100: #ebebed;
+  --onboard-gray-200: #c2c4c9;
+  --onboard-gray-300: #999ca5;
+  --onboard-gray-400: #707481;
+  --onboard-gray-500: #33394b;
+  --onboard-gray-600: #242835;
+  --onboard-gray-700: #1a1d26;
+  --onboard-success-100: #d1fae3;
+  --onboard-success-200: #baf7d5;
+  --onboard-success-300: #a4f4c6;
+  --onboard-success-400: #8df2b8;
+  --onboard-success-500: #5aec99;
+  --onboard-success-600: #18ce66;
+  --onboard-success-700: #129b4d;
+  --onboard-danger-100: #ffe5e6;
+  --onboard-danger-200: #ffcccc;
+  --onboard-danger-300: #ffb3b3;
+  --onboard-danger-400: #ff8080;
+  --onboard-danger-500: #ff4f4f;
+  --onboard-danger-600: #cc0000;
+  --onboard-danger-700: #660000;
+  --onboard-warning-100: #ffefcc;
+  --onboard-warning-200: #ffe7b3;
+  --onboard-warning-300: #ffd780;
+  --onboard-warning-400: #ffc74c;
+  --onboard-warning-500: #ffaf00;
+  --onboard-warning-600: #cc8c00;
+  --onboard-warning-700: #664600;
+
+  /* CUSTOMIZE SECTIONS OF THE CONNECT MODAL */
+  --onboard-connect-sidebar-background: rgba(6, 6, 6, 0.813);
+  --onboard-connect-header-background: rgba(31, 31, 31, 0.992);
+  --onboard-main-scroll-container-background: rgba(31, 31, 31, 0.992);
+  --onboard-connect-sidebar-color: #ff4f4f;
+  --onboard-connect-header-color: #ff4f4f;
+  --onboard-connect-sidebar-progress-background: rgba(254, 254, 254, 0.992);
+  --onboard-connect-sidebar-progress-color: rgba(0, 176, 35, 0.992);
+  --onboard-connect-header-background: rgba(31, 31, 31, 0.992);
+  --onboard-connect-header-color: white;
+  --onboard-modal-background: white;
+  --account-center-minimized-chain-select-background: white;
+  --account-center-network-selector-color: black;
+  --account-center-maximized-upper-background: rgba(20, 20, 20, 0.9);
+  --account-center-z-index: 25000;
+  --account-center-position-top: 65px;
+
+  /* FONTS */
+  --onboard-font-family-normal: 'Titillium Web';
+  --onboard-font-family-semibold: 'Titillium Web Semibold';
+  --onboard-font-family-light: 'Titillium Web';
+
+  /* MAIN MODAL POSITIONING */
+  --onboard-modal-z-index: 25001;
+
+  /* FONTS */
+  --account-select-modal-font-family-normal: Sofia Pro;
+  --account-select-modal-font-family-light: Sofia Pro Light;
+}

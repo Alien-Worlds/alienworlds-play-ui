@@ -1,0 +1,32 @@
+[
+  {
+    "Cardid": 2,
+    "IPFSHash": "QmdXtDaxuoxquMpqKmTsn3QnWWKh6aU4HVDAEXAMquEykG",
+    "description": "The first human travellers to alien worlds needed a lot of augmentation to survive."
+  },
+  {
+    "Cardid": 42,
+    "IPFSHash": "QmP69PcfXeVPLw8Mo6LVZDiu3JwUdugY1p5RFHegU5xLxw",
+    "description": "This alloy-encased core survived the Liberator's impact with planet Neri's surface."
+  },
+  {
+    "Cardid": 43,
+    "IPFSHash": "QmRRfrg8cGJPuvjVNZ4GK1yrngaxUvG5LDdDKzYSHczNWY",
+    "description": "Ancient holo-map that spans far beyond the Federation frontier."
+  },
+  {
+    "Cardid": 44,
+    "IPFSHash": "Qmew9W9KL1qEq7GTUPJV2BFst4PDyhGSRLyR9SzeZhBTN7",
+    "description": "Encrypted codex in a language as-yet undeciphered by Federation data analysts."
+  },
+  {
+    "Cardid": 45,
+    "IPFSHash": "QmXQL66JmTECDicDXTH4cvpqhyT8LDS523HAdavJh7Ayvh",
+    "description": "Burn this NFT to raise a specific Land's Rating to the average Rating between all lands."
+  },
+  {
+    "Cardid": 46,
+    "IPFSHash": "QmNPB51a2GHz2SJnCEu8EsPU4FMk9mL7M2V7pwjrjJpi9C",
+    "description": "Burn this NFT to raise a specific Land's Rating halfway between your own Rating and the top Rating."
+  }
+]

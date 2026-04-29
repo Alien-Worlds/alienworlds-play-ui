@@ -1,0 +1,1 @@
+export { NotEnoughTokensToBecomeCandidateModal } from './NotEnoughTokensToBecomeCandidateModal'

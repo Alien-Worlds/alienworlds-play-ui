@@ -1,0 +1,1 @@
+export { UnstakingVotePower } from './UnstakingVotePower'

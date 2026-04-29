@@ -1,0 +1,1 @@
+export { ResigningCandidancyModal } from './ResigningCandidancyModal'

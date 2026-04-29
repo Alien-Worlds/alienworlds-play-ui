@@ -1,0 +1,1 @@
+export { SubmitLoreModal } from './SubmitLoreModal'

@@ -1,0 +1,1 @@
+export { ProfileErrorBoundary } from './ProfileErrorBoundary'

@@ -1,0 +1,1 @@
+export { ProposalErrorModal } from './ProposalErrorModal'

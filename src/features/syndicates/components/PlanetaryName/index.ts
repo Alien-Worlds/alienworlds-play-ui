@@ -1,0 +1,1 @@
+export { PlanetaryName } from './PlanetaryName'

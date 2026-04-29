@@ -1,0 +1,1 @@
+export { GlossaryDetails } from './GlossaryDetails'

@@ -1,0 +1,1 @@
+export { UserPointProgressBar } from './UserPointProgressBar'

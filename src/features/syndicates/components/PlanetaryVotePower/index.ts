@@ -1,0 +1,1 @@
+export { PlanetaryVotePower } from './PlanetaryVotePower'

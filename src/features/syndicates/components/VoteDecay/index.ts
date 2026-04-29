@@ -1,0 +1,1 @@
+export { VoteDecayPlanetDetails } from './VoteDecay'

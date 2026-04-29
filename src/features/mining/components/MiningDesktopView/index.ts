@@ -1,0 +1,1 @@
+export { MiningDesktopView } from './MiningDesktopView'

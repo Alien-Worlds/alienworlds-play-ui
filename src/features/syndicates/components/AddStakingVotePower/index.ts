@@ -1,0 +1,1 @@
+export { AddStakingVotePower } from './AddStakingVotePower'

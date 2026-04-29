@@ -1,0 +1,1 @@
+export { NFTLandOwnerCommission } from './LandOwnerComission'

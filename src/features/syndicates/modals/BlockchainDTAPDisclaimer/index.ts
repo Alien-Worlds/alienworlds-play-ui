@@ -1,0 +1,1 @@
+export { BlockchainDTAPDisclaimer } from './BlockchainDTAPDisclaimer'

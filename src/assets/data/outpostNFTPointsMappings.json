@@ -1,0 +1,1064 @@
+[
+  {
+    "templateId": "19552",
+    "points10x": 15709.59,
+    "points": 1570.96,
+    "templateName": "Standard Shovel",
+    "cardId": "1",
+    " schemaName ": " tool.worlds ",
+    " Rarity ": " Abundant "
+  },
+  {
+    "templateId": "28425",
+    "points10x": "10,069,688,629.00",
+    "points": "1,006,968,862.89",
+    "templateName": "Aioshi Holoform",
+    "cardId": "16",
+    " schemaName ": " faces.worlds ",
+    " Rarity ": " Mythical "
+  },
+  {
+    "templateId": "28422",
+    "points10x": "58,527,308.16",
+    "points": "5,852,730.82",
+    "templateName": "Astronaut (KOGs)",
+    "cardId": "25",
+    " schemaName ": " crew.worlds ",
+    " Rarity ": " Epic "
+  },
+  {
+    "templateId": "56042",
+    "points10x": "32,270,699.08",
+    "points": "3,227,069.91",
+    "templateName": "Moonkey Scepter",
+    "cardId": "43",
+    " schemaName ": " arms.worlds ",
+    " Rarity ": " Legendary "
+  },
+  {
+    "templateId": "19659",
+    "points10x": "19,667,360.60",
+    "points": "1,966,736.06",
+    "templateName": "Commander Church",
+    "cardId": "14",
+    " schemaName ": " faces.worlds ",
+    " Rarity ": " Legendary "
+  },
+  {
+    "templateId": "19579",
+    "points10x": "19,549,082.70",
+    "points": "1,954,908.27",
+    "templateName": "AI Excavator",
+    "cardId": "28",
+    " schemaName ": " tool.worlds ",
+    " Rarity ": " Mythical "
+  },
+  {
+    "templateId": "19580",
+    "points10x": "19,549,082.70",
+    "points": "1,954,908.27",
+    "templateName": "Waxtural Processor",
+    "cardId": "29",
+    " schemaName ": " tool.worlds ",
+    " Rarity ": " Mythical "
+  },
+  {
+    "templateId": "19582",
+    "points10x": "11,471,225.06",
+    "points": "1,147,122.51",
+    "templateName": "Waxon Fire Sword",
+    "cardId": "1",
+    " schemaName ": " arms.worlds ",
+    " Rarity ": " Mythical "
+  },
+  {
+    "templateId": "19614",
+    "points10x": "11,471,225.06",
+    "points": "1,147,122.51",
+    "templateName": "Sungorger",
+    "cardId": "33",
+    " schemaName ": " arms.worlds ",
+    " Rarity ": " Mythical "
+  },
+  {
+    "templateId": "19623",
+    "points10x": "11,471,225.06",
+    "points": "1,147,122.51",
+    "templateName": "Leveller Bow",
+    "cardId": "42",
+    " schemaName ": " arms.worlds ",
+    " Rarity ": " Mythical "
+  },
+  {
+    "templateId": "235641",
+    "points10x": "9,349,410.25",
+    "points": "934,941.02",
+    "templateName": "Interstellar Emissary (Air)",
+    "cardId": "30",
+    " schemaName ": " crew.worlds ",
+    " Rarity ": " Epic "
+  },
+  {
+    "templateId": "254351",
+    "points10x": "9,349,410.25",
+    "points": "934,941.02",
+    "templateName": "Interstellar Emissary (Air)",
+    "cardId": "30",
+    " schemaName ": " crew.worlds ",
+    " Rarity ": " Epic "
+  },
+  {
+    "templateId": "19575",
+    "points10x": "6,109,088.34",
+    "points": "610,908.83",
+    "templateName": "Exlian Staff",
+    "cardId": "24",
+    " schemaName ": " tool.worlds ",
+    " Rarity ": " Legendary "
+  },
+  {
+    "templateId": "19576",
+    "points10x": "6,109,088.34",
+    "points": "610,908.83",
+    "templateName": "Quantum Drill",
+    "cardId": "25",
+    " schemaName ": " tool.worlds ",
+    " Rarity ": " Legendary "
+  },
+  {
+    "templateId": "19577",
+    "points10x": "6,109,088.34",
+    "points": "610,908.83",
+    "templateName": "Particle Beam Collider",
+    "cardId": "26",
+    " schemaName ": " tool.worlds ",
+    " Rarity ": " Legendary "
+  },
+  {
+    "templateId": "19578",
+    "points10x": "6,109,088.34",
+    "points": "610,908.83",
+    "templateName": "Lucky Drill",
+    "cardId": "27",
+    " schemaName ": " tool.worlds ",
+    " Rarity ": " Legendary "
+  },
+  {
+    "templateId": "56039",
+    "points10x": "3,259,878.30",
+    "points": "325,987.83",
+    "templateName": "Bananominer",
+    "cardId": "31",
+    " schemaName ": " tool.worlds ",
+    " Rarity ": " Common "
+  },
+  {
+    "templateId": "19569",
+    "points10x": "3,054,544.17",
+    "points": "305,454.42",
+    "templateName": "Causian Attractor",
+    "cardId": "18",
+    " schemaName ": " tool.worlds ",
+    " Rarity ": " Epic "
+  },
+  {
+    "templateId": "19570",
+    "points10x": "3,054,544.17",
+    "points": "305,454.42",
+    "templateName": "Quark Separator",
+    "cardId": "19",
+    " schemaName ": " tool.worlds ",
+    " Rarity ": " Epic "
+  },
+  {
+    "templateId": "19571",
+    "points10x": "3,054,544.17",
+    "points": "305,454.42",
+    "templateName": "Advanced TD",
+    "cardId": "20",
+    " schemaName ": " tool.worlds ",
+    " Rarity ": " Epic "
+  },
+  {
+    "templateId": "19572",
+    "points10x": "3,054,544.17",
+    "points": "305,454.42",
+    "templateName": "RD9000 Excavator",
+    "cardId": "21",
+    " schemaName ": " tool.worlds ",
+    " Rarity ": " Epic "
+  },
+  {
+    "templateId": "19573",
+    "points10x": "3,054,544.17",
+    "points": "305,454.42",
+    "templateName": "Localised Attractor",
+    "cardId": "22",
+    " schemaName ": " tool.worlds ",
+    " Rarity ": " Epic "
+  },
+  {
+    "templateId": "19574",
+    "points10x": "3,054,544.17",
+    "points": "305,454.42",
+    "templateName": "Nanominer",
+    "cardId": "23",
+    " schemaName ": " tool.worlds ",
+    " Rarity ": " Epic "
+  },
+  {
+    "templateId": "19581",
+    "points10x": "3,054,544.17",
+    "points": "305,454.42",
+    "templateName": "Dacalizer",
+    "cardId": "30",
+    " schemaName ": " tool.worlds ",
+    " Rarity ": " Epic "
+  },
+  {
+    "templateId": "19598",
+    "points10x": "2,867,806.27",
+    "points": "286,780.63",
+    "templateName": "Healing Blade",
+    "cardId": "17",
+    " schemaName ": " arms.worlds ",
+    " Rarity ": " Legendary "
+  },
+  {
+    "templateId": "19600",
+    "points10x": "2,867,806.27",
+    "points": "286,780.63",
+    "templateName": "Eternal Blade",
+    "cardId": "19",
+    " schemaName ": " arms.worlds ",
+    " Rarity ": " Legendary "
+  },
+  {
+    "templateId": "19608",
+    "points10x": "2,867,806.27",
+    "points": "286,780.63",
+    "templateName": "Galatic Fireblade",
+    "cardId": "27",
+    " schemaName ": " arms.worlds ",
+    " Rarity ": " Legendary "
+  },
+  {
+    "templateId": "19611",
+    "points10x": "2,867,806.27",
+    "points": "286,780.63",
+    "templateName": "Divine Blade",
+    "cardId": "30",
+    " schemaName ": " arms.worlds ",
+    " Rarity ": " Legendary "
+  },
+  {
+    "templateId": "19618",
+    "points10x": "2,867,806.27",
+    "points": "286,780.63",
+    "templateName": "AI Sword",
+    "cardId": "37",
+    " schemaName ": " arms.worlds ",
+    " Rarity ": " Legendary "
+  },
+  {
+    "templateId": "19630",
+    "points10x": "2,857,778.72",
+    "points": "285,777.87",
+    "templateName": "Storm Giant",
+    "cardId": "7",
+    " schemaName ": " crew.worlds ",
+    " Rarity ": " Legendary "
+  },
+  {
+    "templateId": "19642",
+    "points10x": "2,857,778.72",
+    "points": "285,777.87",
+    "templateName": "Storm Giant",
+    "cardId": "19",
+    " schemaName ": " crew.worlds ",
+    " Rarity ": " Legendary "
+  },
+  {
+    "templateId": "19658",
+    "points10x": "1,966,736.06",
+    "points": "196,673.61",
+    "templateName": "Robotron Soldier",
+    "cardId": "1",
+    " schemaName ": " faces.worlds ",
+    " Rarity ": " Epic "
+  },
+  {
+    "templateId": "19660",
+    "points10x": "1,966,736.06",
+    "points": "196,673.61",
+    "templateName": "Ted Shadewick",
+    "cardId": "15",
+    " schemaName ": " faces.worlds ",
+    " Rarity ": " Epic "
+  },
+  {
+    "templateId": "235640",
+    "points10x": "1,756,521.85",
+    "points": "175,652.19",
+    "templateName": "Intergalactic Zombie",
+    "cardId": "29",
+    " schemaName ": " crew.worlds ",
+    " Rarity ": " Rare "
+  },
+  {
+    "templateId": "254350",
+    "points10x": "1,756,521.85",
+    "points": "175,652.19",
+    "templateName": "Intergalactic Zombie",
+    "cardId": "29",
+    " schemaName ": " crew.worlds ",
+    " Rarity ": " Rare "
+  },
+  {
+    "templateId": "19562",
+    "points10x": "1,527,272.09",
+    "points": "152,727.21",
+    "templateName": "Draxos Axe",
+    "cardId": "11",
+    " schemaName ": " tool.worlds ",
+    " Rarity ": " Rare "
+  },
+  {
+    "templateId": "19563",
+    "points10x": "1,527,272.09",
+    "points": "152,727.21",
+    "templateName": "Large Capacitor",
+    "cardId": "12",
+    " schemaName ": " tool.worlds ",
+    " Rarity ": " Rare "
+  },
+  {
+    "templateId": "19564",
+    "points10x": "1,527,272.09",
+    "points": "152,727.21",
+    "templateName": "Processing Ring",
+    "cardId": "13",
+    " schemaName ": " tool.worlds ",
+    " Rarity ": " Rare "
+  },
+  {
+    "templateId": "19565",
+    "points10x": "1,527,272.09",
+    "points": "152,727.21",
+    "templateName": "Glavor Disc",
+    "cardId": "14",
+    " schemaName ": " tool.worlds ",
+    " Rarity ": " Rare "
+  },
+  {
+    "templateId": "19566",
+    "points10x": "1,527,272.09",
+    "points": "152,727.21",
+    "templateName": "Artunian Shovel",
+    "cardId": "15",
+    " schemaName ": " tool.worlds ",
+    " Rarity ": " Rare "
+  },
+  {
+    "templateId": "19567",
+    "points10x": "1,527,272.09",
+    "points": "152,727.21",
+    "templateName": "Large Explosive",
+    "cardId": "16",
+    " schemaName ": " tool.worlds ",
+    " Rarity ": " Rare "
+  },
+  {
+    "templateId": "19568",
+    "points10x": "1,527,272.09",
+    "points": "152,727.21",
+    "templateName": "Barrel Digger",
+    "cardId": "17",
+    " schemaName ": " tool.worlds ",
+    " Rarity ": " Rare "
+  },
+  {
+    "templateId": "19593",
+    "points10x": "1,433,903.13",
+    "points": "143,390.31",
+    "templateName": "Waxon Staff",
+    "cardId": "12",
+    " schemaName ": " arms.worlds ",
+    " Rarity ": " Epic "
+  },
+  {
+    "templateId": "19595",
+    "points10x": "1,433,903.13",
+    "points": "143,390.31",
+    "templateName": "Star Fire Sword",
+    "cardId": "14",
+    " schemaName ": " arms.worlds ",
+    " Rarity ": " Epic "
+  },
+  {
+    "templateId": "19596",
+    "points10x": "1,433,903.13",
+    "points": "143,390.31",
+    "templateName": "Sandmaster Spear",
+    "cardId": "15",
+    " schemaName ": " arms.worlds ",
+    " Rarity ": " Epic "
+  },
+  {
+    "templateId": "19599",
+    "points10x": "1,433,903.13",
+    "points": "143,390.31",
+    "templateName": "Elite Dagger",
+    "cardId": "18",
+    " schemaName ": " arms.worlds ",
+    " Rarity ": " Epic "
+  },
+  {
+    "templateId": "19601",
+    "points10x": "1,433,903.13",
+    "points": "143,390.31",
+    "templateName": "Randomizer Bow",
+    "cardId": "20",
+    " schemaName ": " arms.worlds ",
+    " Rarity ": " Epic "
+  },
+  {
+    "templateId": "19612",
+    "points10x": "1,433,903.13",
+    "points": "143,390.31",
+    "templateName": "Dagger of Creation",
+    "cardId": "31",
+    " schemaName ": " arms.worlds ",
+    " Rarity ": " Epic "
+  },
+  {
+    "templateId": "19615",
+    "points10x": "1,433,903.13",
+    "points": "143,390.31",
+    "templateName": "Toothed Dagger",
+    "cardId": "34",
+    " schemaName ": " arms.worlds ",
+    " Rarity ": " Epic "
+  },
+  {
+    "templateId": "19622",
+    "points10x": "1,433,903.13",
+    "points": "143,390.31",
+    "templateName": "Waxon Shield",
+    "cardId": "41",
+    " schemaName ": " arms.worlds ",
+    " Rarity ": " Epic "
+  },
+  {
+    "templateId": "19624",
+    "points10x": "1,428,889.36",
+    "points": "142,888.94",
+    "templateName": "Mysterious Hacker",
+    "cardId": "1",
+    " schemaName ": " crew.worlds ",
+    " Rarity ": " Epic "
+  },
+  {
+    "templateId": "19633",
+    "points10x": "1,428,889.36",
+    "points": "142,888.94",
+    "templateName": "Enhanced Reptiloid",
+    "cardId": "10",
+    " schemaName ": " crew.worlds ",
+    " Rarity ": " Epic "
+  },
+  {
+    "templateId": "19636",
+    "points10x": "1,428,889.36",
+    "points": "142,888.94",
+    "templateName": "Mysterious Hacker",
+    "cardId": "13",
+    " schemaName ": " crew.worlds ",
+    " Rarity ": " Epic "
+  },
+  {
+    "templateId": "19645",
+    "points10x": "1,428,889.36",
+    "points": "142,888.94",
+    "templateName": "Enhanced Reptiloid",
+    "cardId": "22",
+    " schemaName ": " crew.worlds ",
+    " Rarity ": " Epic "
+  },
+  {
+    "templateId": "19652",
+    "points10x": "983,368.03",
+    "points": "98,336.80",
+    "templateName": "Female Reptiloid",
+    "cardId": "8",
+    " schemaName ": " faces.worlds ",
+    " Rarity ": " Rare "
+  },
+  {
+    "templateId": "19653",
+    "points10x": "983,368.03",
+    "points": "98,336.80",
+    "templateName": "Male Reptiloid",
+    "cardId": "9",
+    " schemaName ": " faces.worlds ",
+    " Rarity ": " Rare "
+  },
+  {
+    "templateId": "19654",
+    "points10x": "983,368.03",
+    "points": "98,336.80",
+    "templateName": "Female Little Green Person",
+    "cardId": "10",
+    " schemaName ": " faces.worlds ",
+    " Rarity ": " Rare "
+  },
+  {
+    "templateId": "19655",
+    "points10x": "983,368.03",
+    "points": "98,336.80",
+    "templateName": "Male Little Green Person",
+    "cardId": "11",
+    " schemaName ": " faces.worlds ",
+    " Rarity ": " Rare "
+  },
+  {
+    "templateId": "19587",
+    "points10x": "716,951.57",
+    "points": "71,695.16",
+    "templateName": "Jaggered Spear",
+    "cardId": "6",
+    " schemaName ": " arms.worlds ",
+    " Rarity ": " Rare "
+  },
+  {
+    "templateId": "19589",
+    "points10x": "716,951.57",
+    "points": "71,695.16",
+    "templateName": "Emerald Dagger",
+    "cardId": "8",
+    " schemaName ": " arms.worlds ",
+    " Rarity ": " Rare "
+  },
+  {
+    "templateId": "19590",
+    "points10x": "716,951.57",
+    "points": "71,695.16",
+    "templateName": "Equalizer Bow",
+    "cardId": "9",
+    " schemaName ": " arms.worlds ",
+    " Rarity ": " Rare "
+  },
+  {
+    "templateId": "19592",
+    "points10x": "716,951.57",
+    "points": "71,695.16",
+    "templateName": "Storm Edge Sword",
+    "cardId": "11",
+    " schemaName ": " arms.worlds ",
+    " Rarity ": " Rare "
+  },
+  {
+    "templateId": "19597",
+    "points10x": "716,951.57",
+    "points": "71,695.16",
+    "templateName": "Waxon Sword",
+    "cardId": "16",
+    " schemaName ": " arms.worlds ",
+    " Rarity ": " Rare "
+  },
+  {
+    "templateId": "19602",
+    "points10x": "716,951.57",
+    "points": "71,695.16",
+    "templateName": "Moonshot Blade",
+    "cardId": "21",
+    " schemaName ": " arms.worlds ",
+    " Rarity ": " Rare "
+  },
+  {
+    "templateId": "19603",
+    "points10x": "716,951.57",
+    "points": "71,695.16",
+    "templateName": "Dawn Sword",
+    "cardId": "22",
+    " schemaName ": " arms.worlds ",
+    " Rarity ": " Rare "
+  },
+  {
+    "templateId": "19605",
+    "points10x": "716,951.57",
+    "points": "71,695.16",
+    "templateName": "Necromancers Hammer",
+    "cardId": "24",
+    " schemaName ": " arms.worlds ",
+    " Rarity ": " Rare "
+  },
+  {
+    "templateId": "19606",
+    "points10x": "716,951.57",
+    "points": "71,695.16",
+    "templateName": "Green Axe",
+    "cardId": "25",
+    " schemaName ": " arms.worlds ",
+    " Rarity ": " Rare "
+  },
+  {
+    "templateId": "19607",
+    "points10x": "716,951.57",
+    "points": "71,695.16",
+    "templateName": "Nordic Warhammer",
+    "cardId": "26",
+    " schemaName ": " arms.worlds ",
+    " Rarity ": " Rare "
+  },
+  {
+    "templateId": "19617",
+    "points10x": "716,951.57",
+    "points": "71,695.16",
+    "templateName": "Reptiloid Blade",
+    "cardId": "36",
+    " schemaName ": " arms.worlds ",
+    " Rarity ": " Rare "
+  },
+  {
+    "templateId": "19629",
+    "points10x": "714,444.68",
+    "points": "71,444.47",
+    "templateName": "Wise Ancient One",
+    "cardId": "6",
+    " schemaName ": " crew.worlds ",
+    " Rarity ": " Rare "
+  },
+  {
+    "templateId": "19631",
+    "points10x": "714,444.68",
+    "points": "71,444.47",
+    "templateName": "Explosives Specialist",
+    "cardId": "8",
+    " schemaName ": " crew.worlds ",
+    " Rarity ": " Rare "
+  },
+  {
+    "templateId": "19634",
+    "points10x": "714,444.68",
+    "points": "71,444.47",
+    "templateName": "Robot Supersoldier",
+    "cardId": "11",
+    " schemaName ": " crew.worlds ",
+    " Rarity ": " Rare "
+  },
+  {
+    "templateId": "19641",
+    "points10x": "714,444.68",
+    "points": "71,444.47",
+    "templateName": "Wise Ancient One",
+    "cardId": "18",
+    " schemaName ": " crew.worlds ",
+    " Rarity ": " Rare "
+  },
+  {
+    "templateId": "19643",
+    "points10x": "714,444.68",
+    "points": "71,444.47",
+    "templateName": "Explosives Specialist",
+    "cardId": "20",
+    " schemaName ": " crew.worlds ",
+    " Rarity ": " Rare "
+  },
+  {
+    "templateId": "19646",
+    "points10x": "714,444.68",
+    "points": "71,444.47",
+    "templateName": "Robot Supersoldier",
+    "cardId": "23",
+    " schemaName ": " crew.worlds ",
+    " Rarity ": " Rare "
+  },
+  {
+    "templateId": "17453",
+    "points10x": "237,781.05",
+    "points": "23,778.10",
+    "templateName": "Female Cyborg T8",
+    "cardId": "2",
+    " schemaName ": " faces.worlds ",
+    " Rarity ": " Rare "
+  },
+  {
+    "templateId": "19554",
+    "points10x": "190,909.01",
+    "points": "19,090.90",
+    "templateName": "Power Extractor",
+    "cardId": "3",
+    " schemaName ": " tool.worlds ",
+    " Rarity ": " Common "
+  },
+  {
+    "templateId": "19555",
+    "points10x": "190,909.01",
+    "points": "19,090.90",
+    "templateName": "Gasrigged Extractor",
+    "cardId": "4",
+    " schemaName ": " tool.worlds ",
+    " Rarity ": " Common "
+  },
+  {
+    "templateId": "19556",
+    "points10x": "190,909.01",
+    "points": "19,090.90",
+    "templateName": "Infused Extractor",
+    "cardId": "5",
+    " schemaName ": " tool.worlds ",
+    " Rarity ": " Common "
+  },
+  {
+    "templateId": "19557",
+    "points10x": "190,909.01",
+    "points": "19,090.90",
+    "templateName": "Basic Explosive",
+    "cardId": "6",
+    " schemaName ": " tool.worlds ",
+    " Rarity ": " Common "
+  },
+  {
+    "templateId": "19559",
+    "points10x": "190,909.01",
+    "points": "19,090.90",
+    "templateName": "Basic Trilium Detector",
+    "cardId": "8",
+    " schemaName ": " tool.worlds ",
+    " Rarity ": " Common "
+  },
+  {
+    "templateId": "19560",
+    "points10x": "190,909.01",
+    "points": "19,090.90",
+    "templateName": "ExoGloves",
+    "cardId": "9",
+    " schemaName ": " tool.worlds ",
+    " Rarity ": " Common "
+  },
+  {
+    "templateId": "19561",
+    "points10x": "190,909.01",
+    "points": "19,090.90",
+    "templateName": "Power Saw ",
+    "cardId": "10",
+    " schemaName ": " tool.worlds ",
+    " Rarity ": " Common "
+  },
+  {
+    "templateId": "19650",
+    "points10x": "122,921.00",
+    "points": "12,292.10",
+    "templateName": "Female Grey",
+    "cardId": "6",
+    " schemaName ": " faces.worlds ",
+    " Rarity ": " Common "
+  },
+  {
+    "templateId": "19651",
+    "points10x": "119,635.13",
+    "points": "11,963.51",
+    "templateName": "Male Grey",
+    "cardId": "7",
+    " schemaName ": " faces.worlds ",
+    " Rarity ": " Common "
+  },
+  {
+    "templateId": "19656",
+    "points10x": "119,635.13",
+    "points": "11,963.51",
+    "templateName": "Female Nordic",
+    "cardId": "12",
+    " schemaName ": " faces.worlds ",
+    " Rarity ": " Common "
+  },
+  {
+    "templateId": "19657",
+    "points10x": "119,635.13",
+    "points": "11,963.51",
+    "templateName": "Male Nordic",
+    "cardId": "13",
+    " schemaName ": " faces.worlds ",
+    " Rarity ": " Common "
+  },
+  {
+    "templateId": "19584",
+    "points10x": "89,618.95",
+    "points": "8,961.89",
+    "templateName": "Rock Blade",
+    "cardId": "3",
+    " schemaName ": " arms.worlds ",
+    " Rarity ": " Common "
+  },
+  {
+    "templateId": "19585",
+    "points10x": "89,618.95",
+    "points": "8,961.89",
+    "templateName": "Stave of Deception",
+    "cardId": "4",
+    " schemaName ": " arms.worlds ",
+    " Rarity ": " Common "
+  },
+  {
+    "templateId": "19586",
+    "points10x": "89,618.95",
+    "points": "8,961.89",
+    "templateName": "Titanium Dagger",
+    "cardId": "5",
+    " schemaName ": " arms.worlds ",
+    " Rarity ": " Common "
+  },
+  {
+    "templateId": "19588",
+    "points10x": "89,618.95",
+    "points": "8,961.89",
+    "templateName": "Kite Axe",
+    "cardId": "7",
+    " schemaName ": " arms.worlds ",
+    " Rarity ": " Common "
+  },
+  {
+    "templateId": "19591",
+    "points10x": "89,618.95",
+    "points": "8,961.89",
+    "templateName": "Widow Maker",
+    "cardId": "10",
+    " schemaName ": " arms.worlds ",
+    " Rarity ": " Common "
+  },
+  {
+    "templateId": "19594",
+    "points10x": "89,618.95",
+    "points": "8,961.89",
+    "templateName": "Spike Hammer",
+    "cardId": "13",
+    " schemaName ": " arms.worlds ",
+    " Rarity ": " Common "
+  },
+  {
+    "templateId": "19604",
+    "points10x": "89,618.95",
+    "points": "8,961.89",
+    "templateName": "Confuser",
+    "cardId": "23",
+    " schemaName ": " arms.worlds ",
+    " Rarity ": " Common "
+  },
+  {
+    "templateId": "19613",
+    "points10x": "89,618.95",
+    "points": "8,961.89",
+    "templateName": "Lithium Dagger",
+    "cardId": "32",
+    " schemaName ": " arms.worlds ",
+    " Rarity ": " Common "
+  },
+  {
+    "templateId": "19616",
+    "points10x": "89,618.95",
+    "points": "8,961.89",
+    "templateName": "Infernal Axe",
+    "cardId": "35",
+    " schemaName ": " arms.worlds ",
+    " Rarity ": " Common "
+  },
+  {
+    "templateId": "19620",
+    "points10x": "89,618.95",
+    "points": "8,961.89",
+    "templateName": "Sky Shield",
+    "cardId": "39",
+    " schemaName ": " arms.worlds ",
+    " Rarity ": " Common "
+  },
+  {
+    "templateId": "19621",
+    "points10x": "89,618.95",
+    "points": "8,961.89",
+    "templateName": "Plasma Shield",
+    "cardId": "40",
+    " schemaName ": " arms.worlds ",
+    " Rarity ": " Common "
+  },
+  {
+    "templateId": "19626",
+    "points10x": "89,305.58",
+    "points": "8,930.56",
+    "templateName": "LG Soldier",
+    "cardId": "3",
+    " schemaName ": " crew.worlds ",
+    " Rarity ": " Common "
+  },
+  {
+    "templateId": "19627",
+    "points10x": "89,305.58",
+    "points": "8,930.56",
+    "templateName": "Grey Scientist",
+    "cardId": "4",
+    " schemaName ": " crew.worlds ",
+    " Rarity ": " Common "
+  },
+  {
+    "templateId": "19628",
+    "points10x": "89,305.58",
+    "points": "8,930.56",
+    "templateName": "Nordic Warrior",
+    "cardId": "5",
+    " schemaName ": " crew.worlds ",
+    " Rarity ": " Common "
+  },
+  {
+    "templateId": "19635",
+    "points10x": "89,305.58",
+    "points": "8,930.56",
+    "templateName": "Terminator",
+    "cardId": "12",
+    " schemaName ": " crew.worlds ",
+    " Rarity ": " Common "
+  },
+  {
+    "templateId": "19638",
+    "points10x": "89,305.58",
+    "points": "8,930.56",
+    "templateName": "LG Soldier",
+    "cardId": "15",
+    " schemaName ": " crew.worlds ",
+    " Rarity ": " Common "
+  },
+  {
+    "templateId": "19639",
+    "points10x": "89,305.58",
+    "points": "8,930.56",
+    "templateName": "Grey Scientist",
+    "cardId": "16",
+    " schemaName ": " crew.worlds ",
+    " Rarity ": " Common "
+  },
+  {
+    "templateId": "19640",
+    "points10x": "89,305.58",
+    "points": "8,930.56",
+    "templateName": "Nordic Warrior",
+    "cardId": "17",
+    " schemaName ": " crew.worlds ",
+    " Rarity ": " Common "
+  },
+  {
+    "templateId": "19647",
+    "points10x": "89,305.58",
+    "points": "8,930.56",
+    "templateName": "Terminator",
+    "cardId": "24",
+    " schemaName ": " crew.worlds ",
+    " Rarity ": " Common "
+  },
+  {
+    "templateId": "19558",
+    "points10x": "44,158.81",
+    "points": "4,415.88",
+    "templateName": "Standard Capacitor",
+    "cardId": "7",
+    " schemaName ": " tool.worlds ",
+    " Rarity ": " Abundant "
+  },
+  {
+    "templateId": "19553",
+    "points10x": "80,000.00",
+    "points": "8,000.00",
+    "templateName": "Standard Drill",
+    "cardId": "2",
+    " schemaName ": " tool.worlds ",
+    " Rarity ": " Abundant "
+  },
+  {
+    "templateId": "19610",
+    "points10x": "16,416.00",
+    "points": "1,641.60",
+    "templateName": "Standard Issue Axe",
+    "cardId": "29",
+    " schemaName ": " arms.worlds ",
+    " Rarity ": " Abundant "
+  },
+  {
+    "templateId": "19625",
+    "points10x": "16,416.00",
+    "points": "1,641.60",
+    "templateName": "Stealth Mercenary",
+    "cardId": "2",
+    " schemaName ": "crew.worlds",
+    " Rarity ": "Abundant"
+  },
+  {
+    "templateId": "19644",
+    "points10x": "16,393.42",
+    "points": "1,639.34",
+    "templateName": "Grey Peacemaker",
+    "cardId": "21",
+    " schemaName ": "crew.worlds",
+    " Rarity ": "Abundant"
+  },
+  {
+    "templateId": "19583",
+    "points10x": "15,709.59",
+    "points": "1,570.96",
+    "templateName": "Standard Sword",
+    "cardId": "2",
+    " schemaName ": " arms.worlds ",
+    " Rarity ": " Abundant "
+  },
+  {
+    "templateId": "19648",
+    "points10x": "15,709.59",
+    "points": "1,570.96",
+    "templateName": "Female Human",
+    "cardId": "4",
+    " schemaName ": " faces.worlds ",
+    " Rarity ": " Abundant "
+  },
+  {
+    "templateId": "19649",
+    "points10x": "15,709.59",
+    "points": "1,570.96",
+    "templateName": "Male Human",
+    "cardId": "5",
+    " schemaName ": " faces.worlds ",
+    " Rarity ": " Abundant "
+  },
+  {
+    "templateId": "19609",
+    "points10x": "15,676.43",
+    "points": "1,567.64",
+    "templateName": "Rock Cudgel",
+    "cardId": "28",
+    " schemaName ": " arms.worlds ",
+    " Rarity ": " Abundant "
+  },
+  {
+    "templateId": "19619",
+    "points10x": "15,631.99",
+    "points": "1,563.20",
+    "templateName": "Standard Shield",
+    "cardId": "38",
+    " schemaName ": " arms.worlds ",
+    " Rarity ": " Abundant "
+  },
+  {
+    "templateId": "19632",
+    "points10x": "15,586.75",
+    "points": "1,558.67",
+    "templateName": "Grey Peacemaker",
+    "cardId": "9",
+    " schemaName ": "crew.worlds",
+    " Rarity ": "Abundant"
+  },
+  {
+    "templateId": "19637",
+    "points10x": "15,553.16",
+    "points": "1,555.32",
+    "templateName": "Stealth Mercenary",
+    "cardId": "14",
+    " schemaName ": "crew.worlds",
+    " Rarity ": "Abundant"
+  }
+]

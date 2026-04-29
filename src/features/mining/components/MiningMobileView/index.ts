@@ -1,0 +1,1 @@
+export { MiningMobileView } from './MiningMobileView'

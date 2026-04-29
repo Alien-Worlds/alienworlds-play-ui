@@ -1,0 +1,1 @@
+export { ProposalsTableVirtualised } from './ProposalsTableVirtualised'

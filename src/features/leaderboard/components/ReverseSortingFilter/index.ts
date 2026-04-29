@@ -1,0 +1,1 @@
+export { ReverseSortingFilter } from './ReverseSortingFilter'

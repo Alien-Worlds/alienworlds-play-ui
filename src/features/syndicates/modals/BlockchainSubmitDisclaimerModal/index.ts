@@ -1,0 +1,1 @@
+export { BlockchainSubmitDisclaimerModal } from './BlockchainSubmitDisclaimerModal'

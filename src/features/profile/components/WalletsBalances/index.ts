@@ -1,0 +1,1 @@
+export { WalletsBalances } from './WalletsBalances'

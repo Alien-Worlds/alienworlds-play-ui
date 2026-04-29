@@ -1,0 +1,1 @@
+export { LandRating } from './LandRating'

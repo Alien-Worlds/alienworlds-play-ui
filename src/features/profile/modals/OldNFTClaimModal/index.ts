@@ -1,0 +1,1 @@
+export { OldNFTClaimModal } from './OldNFTClaimModal'

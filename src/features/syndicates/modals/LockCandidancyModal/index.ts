@@ -1,0 +1,1 @@
+export { LockCandidancyModal } from './LockCandidancyModal'

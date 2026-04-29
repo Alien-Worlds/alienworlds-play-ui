@@ -1,0 +1,1 @@
+export { ConfirmStakingPower } from './ConfirmStakingPower'

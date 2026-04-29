@@ -1,0 +1,1 @@
+export { PlanetaryTotalVotes } from './PlanetaryTotalVotes'

@@ -1,0 +1,1 @@
+export { MissionsNewsletter } from './MissionsNewsletter'

@@ -1,0 +1,1 @@
+export { ClaimRewards } from './ClaimRewards'

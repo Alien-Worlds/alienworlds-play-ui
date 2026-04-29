@@ -1,0 +1,113 @@
+[
+  {
+    "series": 1,
+    "cardNumber": 1,
+    "title": "Courier Run",
+    "IPFSHash": "QmeixndncUVp435QZeEWipHCHgAVbjeJpZ8Ja5MjcaTGe5"
+  },
+
+  {
+    "series": 1,
+    "cardNumber": 2,
+    "title": "Supply Request",
+    "IPFSHash": "QmWsDUKyLe8WPGxsafzL3TUSN5NxrfjvHggd5CUBhLMP8f"
+  },
+
+  {
+    "series": 1,
+    "cardNumber": 3,
+    "title": "Planetary Scouting",
+    "IPFSHash": "QmQFS9wgVdJHD3FqXt26zSpvWhQAtwy1Fr7Xx2qKsQtWw4"
+  },
+
+  {
+    "series": 1,
+    "cardNumber": 4,
+    "title": "Recovery Mission",
+    "IPFSHash": "Qma2dUV8FtcHvyXPsyBubhoTWWcBw9z27BBFCwtPHjh966"
+  },
+
+  {
+    "series": 1,
+    "cardNumber": 5,
+    "title": "Battle Deployment",
+    "IPFSHash": "QmRHXoSsH6w9H7umGGGqc9heN5iSfW8dNFt1qVTkMWTaQn"
+  },
+
+  {
+    "series": 1,
+    "cardNumber": 6,
+    "title": "Galaxy Exploration",
+    "IPFSHash": "QmSxsFW1hR1T4K5e8q9DodqW4u88Ltw4ciytznDVLbJnzN"
+  },
+
+  {
+    "series": 1,
+    "cardNumber": 7,
+    "title": "Artifact Discovery",
+    "IPFSHash": "QmTwYYcAGNZCcVwy7tbnzNsJJQW9bEXvYm3jLReJbQHkQM"
+  },
+
+  {
+    "series": 1,
+    "cardNumber": 8,
+    "title": "Liberation Aid",
+    "IPFSHash": "QmWeRuFctSRcXzZL254w24HgMinzgmk6ZkMHvqhn9o5Z4b"
+  },
+
+  {
+    "series": 2,
+    "cardNumber": 1,
+    "title": "Retrieve Ledger",
+    "IPFSHash": "QmPPZwSYjGgJKD3zARGTLUVCshdjSBj1mVBuRfodTwvSat"
+  },
+
+  {
+    "series": 2,
+    "cardNumber": 2,
+    "title": "Reptilian Peace",
+    "IPFSHash": "QmaX32NUecni5qEPPCfoT1iQQHRdm7XMEKRHR8hNSM2dMK"
+  },
+
+  {
+    "series": 2,
+    "cardNumber": 3,
+    "title": "Install the Admiral",
+    "IPFSHash": "QmWuzETbQwb43kibxTZEUrTbiH4inGzSN9ECBtN16XnbRf"
+  },
+
+  {
+    "series": 2,
+    "cardNumber": 4,
+    "title": "The Negotiator",
+    "IPFSHash": "QmbsHuZH1Cgsppfr7WPArcujWkUrqDfsKywRRNTfH7VcXg"
+  },
+
+  {
+    "series": 2,
+    "cardNumber": 5,
+    "title": "Peacekeepers",
+    "IPFSHash": "QmREjwMToyDHxx87C1CN9U1JEFLVCcnkpufFsgFQMTTbtm"
+  },
+
+  {
+    "series": 2,
+    "cardNumber": 6,
+    "title": "Space Hub Opening",
+    "IPFSHash": "QmP43h1pgZUNgqKaQdznfTdnvExsBu9CXZVcptisu6Z2QB"
+  },
+
+  {
+    "series": 2,
+    "cardNumber": 7,
+    "title": "Solar Flare",
+    "IPFSHash": "QmSN6B2oDTXDMektfBsNGrFC2n9Kzby8hxBgUi8ZuRV6B6"
+  },
+
+  {
+    "series": 2,
+    "cardNumber": 8,
+    "title": "New Start",
+    "IPFSHash": "Qme2VkoTSrZfSbjaJxmQLFKUHrpUuhoFQ4F92YAU9vq69t"
+  }
+]

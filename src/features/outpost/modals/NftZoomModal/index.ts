@@ -1,0 +1,1 @@
+export { NftZoomModal } from './NftZoomModal'

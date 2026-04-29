@@ -1,0 +1,1 @@
+export { SyndicateView } from './SyndicateView'

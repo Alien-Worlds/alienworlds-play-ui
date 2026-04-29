@@ -1,0 +1,1 @@
+export { StakingVotePower } from './StakingVotePower'
