@@ -20,10 +20,10 @@
     "@emotion/react" "^11.11.3"
     "@emotion/styled" "^11.11.0"
 
-"@alien-worlds/uikit@0.5.7":
-  version "0.5.7"
-  resolved "https://registry.npmjs.org/@alien-worlds/uikit/-/uikit-0.5.7.tgz#9b68d3f09cb5f1518c96e691062fe45b4ea1c7ad"
-  integrity sha512-5AXSqI9oug/F46Xq+ycAkVcexd30a2MsIABsSAy5P78l04YlNzKxtR9iYpL3ujr+VbJLnVPJXR3YzAjQndmbJA==
+"@alien-worlds/uikit@0.5.8":
+  version "0.5.8"
+  resolved "https://registry.npmjs.org/@alien-worlds/uikit/-/uikit-0.5.8.tgz#e32bc36e915485e9fa4681a9cfed2d29cb86da58"
+  integrity sha512-ZY8j63e1mqr+fh3anZveWz/a/1jtLd0yDM3+jxevZxz4WF12l0ZOCH3yg9DVxC9z0x7W2FW8czi9r/PJNngXeg==
   dependencies:
     "@emotion/react" "^11.11.3"
     "@emotion/styled" "^11.11.0"
