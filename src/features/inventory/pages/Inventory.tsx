@@ -30,7 +30,6 @@ import { AssetsFilterPanel } from 'features/inventory/components/AssetsFilterPan
 import { InventoryErrorBoundary } from 'features/inventory/components/ErrorBoundary'
 import { InventoryFiltersDrawer } from 'features/inventory/components/InventoryFiltersDrawer/InventoryFiltersDrawer'
 import { useAssetProcessing } from 'features/inventory/hooks/useAssetProcessing'
-import { useInventory } from 'features/inventory/hooks/useInventory'
 import { NFTCardTypes } from 'features/inventory/utils/NFTCardHelper'
 import {
   NFTCardBottomPanelRender,
@@ -88,18 +87,12 @@ const Inventory = () => {
   const [showZoomModal, setShowZoomModal] = useState(false)
   const [openInventoryFilterDrawer, setOpenInventoryFilterDrawer] = useState(false)
 
-  // Use the new inventory hook for better state management
-  const {
-    loading: inventoryLoading,
-    pagination,
-    actions,
-  } = useInventory(filteredAndSortedAssets || [], walletId, bagAssets || [])
-
   // Use the new asset processing hook
   const { processAssets } = useAssetProcessing()
 
   // Legacy state for backward compatibility
   const [sortedAssets, setSortedAssets] = useState<NFTCardTypes[]>([])
+  const paginationHasMore = sortedAssets.length < (filteredAndSortedAssets?.length || 0)
 
   // Asset processing using new hook
   const showAssets = (reset: Boolean) => {
@@ -113,6 +106,26 @@ const Inventory = () => {
     if (newVisibleCount >= filteredAndSortedAssets.length) {
       newVisibleCount = filteredAndSortedAssets.length
     }
+    // #region agent log
+    fetch('http://127.0.0.1:7673/ingest/ed6b6d14-c584-4d87-aec2-7892ae89ae48', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-Debug-Session-Id': '0af25a' },
+      body: JSON.stringify({
+        sessionId: '0af25a',
+        runId: 'initial',
+        hypothesisId: 'H2',
+        location: 'src/features/inventory/pages/Inventory.tsx:showAssets',
+        message: 'showAssets computed visible count',
+        data: {
+          reset,
+          previousSortedAssetsLength: sortedAssets.length,
+          filteredAndSortedAssetsLength: filteredAndSortedAssets.length,
+          newVisibleCount,
+        },
+        timestamp: Date.now(),
+      }),
+    }).catch(() => {})
+    // #endregion
 
     // Use new asset processing hook instead of legacy function
     const processedAssets = processAssets(filteredAndSortedAssets.slice(0, newVisibleCount), {
@@ -128,10 +141,45 @@ const Inventory = () => {
 
   // Use new hook for pagination
   const renderMore = () => {
-    actions.loadMore()
+    // #region agent log
+    fetch('http://127.0.0.1:7673/ingest/ed6b6d14-c584-4d87-aec2-7892ae89ae48', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-Debug-Session-Id': '0af25a' },
+      body: JSON.stringify({
+        sessionId: '0af25a',
+        runId: 'initial',
+        hypothesisId: 'H3',
+        location: 'src/features/inventory/pages/Inventory.tsx:renderMore',
+        message: 'infinite scroll requested more items',
+        data: {
+          sortedAssetsLength: sortedAssets.length,
+          paginationHasMore,
+        },
+        timestamp: Date.now(),
+      }),
+    }).catch(() => {})
+    // #endregion
+    showAssets(false)
   }
 
   useEffect(() => {
+    // #region agent log
+    fetch('http://127.0.0.1:7673/ingest/ed6b6d14-c584-4d87-aec2-7892ae89ae48', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-Debug-Session-Id': '0af25a' },
+      body: JSON.stringify({
+        sessionId: '0af25a',
+        runId: 'initial',
+        hypothesisId: 'H1',
+        location: 'src/features/inventory/pages/Inventory.tsx:filteredAndSortedAssets.effect',
+        message: 'filteredAndSortedAssets changed',
+        data: {
+          filteredAndSortedAssetsLength: filteredAndSortedAssets?.length ?? 0,
+        },
+        timestamp: Date.now(),
+      }),
+    }).catch(() => {})
+    // #endregion
     showAssets(true)
     return () => {
       showAssets(false)
@@ -139,10 +187,32 @@ const Inventory = () => {
   }, [filteredAndSortedAssets])
 
   useEffect(() => {
+    // #region agent log
+    fetch('http://127.0.0.1:7673/ingest/ed6b6d14-c584-4d87-aec2-7892ae89ae48', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-Debug-Session-Id': '0af25a' },
+      body: JSON.stringify({
+        sessionId: '0af25a',
+        runId: 'initial',
+        hypothesisId: 'H4',
+        location: 'src/features/inventory/pages/Inventory.tsx:pagination.effect',
+        message: 'pagination state changed',
+        data: {
+          paginationHasMore,
+          sortedAssetsLength: sortedAssets.length,
+          totalFilteredAssetsLength: filteredAndSortedAssets?.length ?? 0,
+        },
+        timestamp: Date.now(),
+      }),
+    }).catch(() => {})
+    // #endregion
+  }, [paginationHasMore, sortedAssets.length, filteredAndSortedAssets?.length])
+
+  useEffect(() => {
     showInventoryPage()
   }, [])
   // Show loading spinner for both planet details and inventory loading
-  if (loading || inventoryLoading) return <LoadingSpinner />
+  if (loading) return <LoadingSpinner />
 
   return (
     <InventoryErrorBoundary>
@@ -245,7 +315,7 @@ const Inventory = () => {
             dataLength={sortedAssets.length}
             next={renderMore}
             style={{ padding: 0, margin: 0, overflow: 'hidden' }}
-            hasMore={pagination.hasMore}
+            hasMore={paginationHasMore}
             loader={
               <Flex w="100%" alignItems="center" justifyContent="center">
                 <Spinner />
