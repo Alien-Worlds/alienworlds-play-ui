@@ -12,10 +12,10 @@
   resolved "https://registry.npmjs.org/@adraffy/ens-normalize/-/ens-normalize-1.10.0.tgz#d2a39395c587e092d77cbbc80acf956a54f38bf7"
   integrity sha512-nA9XHtlAkYfJxY7bce8DcN7eKxWWCWkU+1GR9d+U6MbNpfwQp8TI7vqOsBsMcHoT4mBu2kypKoSKnghEzOOq5Q==
 
-"@alien-worlds/icons@0.0.49":
-  version "0.0.49"
-  resolved "https://registry.npmjs.org/@alien-worlds/icons/-/icons-0.0.49.tgz#8b1649bbc717d1a5c28ba3928e0ff4878b4151d6"
-  integrity sha512-hB31KByN7CSeGiOR4Jdff0E8RUgxR6LI41s5FyaHvM7/9ffO0OIeKGj8QCLcueET7s6UlrROaNMN2ixaTh2FiA==
+"@alien-worlds/icons@0.0.50":
+  version "0.0.50"
+  resolved "https://registry.npmjs.org/@alien-worlds/icons/-/icons-0.0.50.tgz#73eb14dfcf167b16d9dda6fccda285deb7b8a2f8"
+  integrity sha512-kH+QZHxglzJUHimLHSe0HHzP/4GmG7+KTL+vMjMBLhpJA0/7MtyqgQLrupKM0ViTyxj94HGu22RJ/gHe1umEBA==
   dependencies:
     "@emotion/react" "^11.11.3"
     "@emotion/styled" "^11.11.0"

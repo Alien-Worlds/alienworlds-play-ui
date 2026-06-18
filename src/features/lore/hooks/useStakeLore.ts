@@ -24,6 +24,9 @@ export function useStakeLore(): {
   walletId: string
   walletBalance: number
   stakedAmount: number
+  tlmPoolSize: number
+  poolShare: number
+  pendingRewards: number
   dailyReward: string
   handlers: StakeLoreHandlers
   state: StakeLoreState
@@ -48,6 +51,18 @@ export function useStakeLore(): {
   )
   const stakedAmount = useMemo(
     () => parseStakeAmount(get(loreVoterInfo, 'staked_amount')),
+    [loreVoterInfo]
+  )
+  const tlmPoolSize = useMemo(
+    () => parseTokenAmount(get(loreVoterInfo, 'tlm_pool_size')),
+    [loreVoterInfo]
+  )
+  const poolShare = useMemo(
+    () => parseStakeAmount(get(loreVoterInfo, 'percent_of_pool')),
+    [loreVoterInfo]
+  )
+  const pendingRewards = useMemo(
+    () => parseTokenAmount(get(loreVoterInfo, 'pending_rewards')),
     [loreVoterInfo]
   )
 
@@ -121,6 +136,9 @@ export function useStakeLore(): {
     walletId,
     walletBalance,
     stakedAmount,
+    tlmPoolSize,
+    poolShare,
+    pendingRewards,
     dailyReward,
     handlers: {
       onSubmitStake,
