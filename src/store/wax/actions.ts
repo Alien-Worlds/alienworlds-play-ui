@@ -569,6 +569,30 @@ export const tryUnStakeLore = pipe(
   })
 )
 
+export const tryClaimLoreReward = pipe(
+  async ({ state, effects }: Context) => {
+    state.wax.actionProgressState = RequestState.InProgress
+    await effects.wax.api.claimLoreReward()
+
+    if (state.wax.lastTransactionError) {
+      toastErrorMessage(state.wax.lastTransactionError)
+      state.wax.lastTransactionError = null
+      return false
+    }
+
+    toastMessage('TLM Reward claimed successfully.')
+    state.wax.actionProgressState = RequestState.Succeeded
+    executeAfter(state.main.syncAi.tlmBalance, DateTime.now().plus({ seconds: 5 }))
+    return true
+  },
+  catchError(({ state }: Context, error) => {
+    state.wax.actionProgressState = RequestState.Failed
+    toastErrorMessage(error?.message ?? 'Claim TLM Reward failed.')
+    console.error(error)
+    return false
+  })
+)
+
 export const tryLoreVoting = pipe(
   async (
     { state, effects }: Context,

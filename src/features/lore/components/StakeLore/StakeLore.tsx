@@ -1,6 +1,5 @@
 import { Flex, useBreakpointValue } from '@chakra-ui/react'
 import { StakeActions } from 'features/lore/components/StakeLore/StakeActions'
-import { StakeDailyRewardBanner } from 'features/lore/components/StakeLore/StakeDailyRewardBanner'
 import { StakeMetrics } from 'features/lore/components/StakeLore/StakeMetrics'
 import { StakeRewardsLore } from 'features/lore/components/StakeLore/StakeRewardsLore'
 import { useStakeLore } from 'features/lore/hooks/useStakeLore'
@@ -59,14 +58,15 @@ const StakeLore = ({ currentNumber }: { currentNumber: number }) => {
           isDesktop={isDesktop}
           isFullWidth={isFullWidth}
           walletBalance={walletBalance}
+          newDailyReward={state.newDailyReward}
         />
       </Flex>
-      <StakeDailyRewardBanner newDailyReward={state.newDailyReward} />
 
       <StakeRewardsLore
         poolShare={poolShare}
         pendingRewards={pendingRewards}
         dailyReward={dailyReward}
+        onClaimReward={handlers.onClaimReward}
       />
     </Flex>
   )

@@ -13,6 +13,7 @@ type StakeLoreHandlers = {
   onUnstakeAll: () => void
   onSubmitLore: () => void
   onChangeStakeInput: (amount: number) => void
+  onClaimReward: () => Promise<void>
 }
 
 type StakeLoreState = {
@@ -40,7 +41,7 @@ export function useStakeLore(): {
   const { walletDetails, loreVoterInfo, globals, loadingLores, walletDetailsLoading } =
     useLoreData()
   const {
-    wax: { tryStakeVotePowerLore },
+    wax: { tryStakeVotePowerLore, tryClaimLoreReward },
     modal: { setSecondaryModalActive, setPrimaryModalActive },
     main: { getLorePullRequests },
   } = useActions()
@@ -132,6 +133,16 @@ export function useStakeLore(): {
     setStakedInput(Number.isNaN(amount) ? 0 : amount)
   }, [])
 
+  const onClaimReward = useCallback(async () => {
+    if (isDemoUser) {
+      openLoginModalIfDemo()
+      return
+    }
+
+    await tryClaimLoreReward()
+    await client.refetchQueries({ include: [WALLET_DETAILS_QUERY_ALL] })
+  }, [client, isDemoUser, openLoginModalIfDemo, tryClaimLoreReward])
+
   return {
     walletId,
     walletBalance,
@@ -145,6 +156,7 @@ export function useStakeLore(): {
       onUnstakeAll,
       onSubmitLore,
       onChangeStakeInput,
+      onClaimReward,
     },
     state: {
       stakedInput,

@@ -74,6 +74,7 @@ export namespace Constants {
 
   // actions
   export const CONTRACT_LORE_WORLD_VOTE = 'vote'
+  export const CONTRACT_LORE_WORLD_CLAIM_REWARD = 'claimreward'
   export const CONTRACT_EOSIO_BUY_RAM_BYTES = 'buyrambytes'
   export const CONTRACT_M_FEDERATION_ACTION_MINE = 'mine'
   export const CONTRACT_FEDERATION_ACTION_SETTAG = 'settag'
