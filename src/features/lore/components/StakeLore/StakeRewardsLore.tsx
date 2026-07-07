@@ -87,7 +87,7 @@ export function StakeRewardsLore({
           xl: 'repeat(5,1fr)',
         }}
         width="100%"
-        gap={{ base: '25px', md: 8 }}
+        gap={{ base: '20px', md: 1, lg: 2, xl: 6, '2xl': 8 }}
       >
         <GridItem alignSelf="center">
           <Flex
@@ -127,7 +127,7 @@ export function StakeRewardsLore({
               style={{ position: 'relative' }}
             />
             <Flex direction="column" justifyContent="end">
-              <Text {...metricValueStyles}>{formatNumber(poolShare ?? 0, 4, 4)}</Text>
+              <Text {...metricValueStyles}>{formatNumber(poolShare ?? 0, 4, 4)}%</Text>
               <Text {...metricLabelStyles} color={Colors.DI_SERRIA}>
                 Your Pool Share
               </Text>
@@ -178,7 +178,7 @@ export function StakeRewardsLore({
           xl: 'repeat(4,1fr)',
         }}
         width="100%"
-        gap={{ base: '25px', md: 8 }}
+        gap={{ base: '15px', md: 6 }}
       >
         <GridItem alignSelf="center">
           <Flex

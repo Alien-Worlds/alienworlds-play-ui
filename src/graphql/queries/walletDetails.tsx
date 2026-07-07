@@ -49,9 +49,13 @@ export const WALLET_DETAILS_QUERY_ALL = gql`
         last_claim
         staked_amount
         vote_power
-        tlm_pool_size
-        percent_of_pool
-        pending_rewards
+        reward_global {
+          tlm_pool_size
+        }
+        voter_rewards {
+          pending_rewards
+          percent_of_pool
+        }
       }
     }
   }

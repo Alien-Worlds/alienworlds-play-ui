@@ -55,18 +55,17 @@ export function useStakeLore(): {
     [loreVoterInfo]
   )
   const tlmPoolSize = useMemo(
-    () => parseTokenAmount(get(loreVoterInfo, 'tlm_pool_size')),
+    () => parseTokenAmount(get(loreVoterInfo, 'reward_global.tlm_pool_size')),
     [loreVoterInfo]
   )
   const poolShare = useMemo(
-    () => parseStakeAmount(get(loreVoterInfo, 'percent_of_pool')),
+    () => parseStakeAmount(get(loreVoterInfo, 'voter_rewards.percent_of_pool')),
     [loreVoterInfo]
   )
   const pendingRewards = useMemo(
-    () => parseTokenAmount(get(loreVoterInfo, 'pending_rewards')),
+    () => parseTokenAmount(get(loreVoterInfo, 'voter_rewards.pending_rewards')),
     [loreVoterInfo]
   )
-
   const powerPerDay = useMemo(
     () => parseTokenAmount(get(globals, 'power_per_day')),
     [globals?.power_per_day]
