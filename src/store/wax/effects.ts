@@ -2460,7 +2460,7 @@ export const api = (() => {
             },
           ],
           data: {
-            comp_id: compId,
+            id: compId,
             player: options.getWalletId(),
           },
         },
