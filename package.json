@@ -6,7 +6,7 @@
     "@alien-worlds/icons": "0.0.50",
     "@alien-worlds/uikit": "0.5.8",
     "@apollo/client": "^3.12.9",
-    "@babel/core": "^7.29.6",
+    "@babel/core": "^8.0.0",
     "@babel/plugin-syntax-flow": "^7.23.3",
     "@babel/plugin-transform-react-jsx": "^7.14.9",
     "@babel/preset-react": "^7.23.3",
