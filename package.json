@@ -52,7 +52,7 @@
     "humanize-duration": "^3.27.1",
     "isarray": "^2.0.5",
     "js-sha256": "^0.9.0",
-    "lodash": "^4.17.21",
+    "lodash": "^4.18.1",
     "luxon": "^3.2.1",
     "octokit": "^4.0.2",
     "overmind": "^28.0.2",
