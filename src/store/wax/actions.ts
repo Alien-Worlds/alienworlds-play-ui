@@ -50,7 +50,6 @@ import { executeAfter, shouldExecute } from 'store/main/helpers'
 import { PagePath } from 'store/main/types'
 import { LoreFilter, ProposalsFilter } from 'store/wax/state'
 
-import { Context } from '..'
 import {
   OnboardingData,
   ShineData,
@@ -64,6 +63,7 @@ import {
   WaxUserPoints,
   DacInfoResponse,
 } from './types'
+import { Context } from '..'
 import { Constants } from '../../shared/util/constants'
 
 export const collectEvent = pipe(
