@@ -54,7 +54,7 @@
     "js-sha256": "^0.9.0",
     "lodash": "^4.17.21",
     "luxon": "^3.2.1",
-    "octokit": "^4.0.2",
+    "octokit": "^5.0.5",
     "overmind": "^28.0.2",
     "overmind-react": "^29.0.2",
     "postcss": "^8.4.35",
