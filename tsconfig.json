@@ -20,7 +20,8 @@
       "features/*": ["features/*"],
       "shared/*": ["shared/*"],
       "store/*": ["store/*"],
-      "assets/*": ["assets/*"]
+      "assets/*": ["assets/*"],
+      "overmind/config": ["../node_modules/overmind/lib/config"]
     }
   },
   "include": ["src"]

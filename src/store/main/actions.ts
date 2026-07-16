@@ -43,6 +43,7 @@ import {
 } from 'store/wax/actions'
 import { initializeOrReloadBscBalance } from 'store/web3/actions'
 
+import { Context } from '..'
 import {
   executeAfter,
   getDefaultSyncAi,
@@ -52,7 +53,6 @@ import {
   showOnboardingNewsletter,
 } from './helpers'
 import { LandOwnerDrawerType, PagePath, PullRequest, WalletType } from './types'
-import { Context } from '..'
 import { Constants } from '../../shared/util/constants'
 
 export const redirectAfterLoginOrLogout = pipe(
