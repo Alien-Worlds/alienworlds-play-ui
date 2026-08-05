@@ -1,4 +1,3 @@
-import { Flex } from '@chakra-ui/react'
 import Select from 'react-select'
 
 const darkStyles = {
@@ -68,7 +67,7 @@ interface AreaSelectProps {
 }
 export function ArenaSelect({ onChange, options }: AreaSelectProps) {
   return (
-    <Flex width="100%">
+    <div className="flex w-full">
       <Select
         options={options}
         styles={darkStyles}
@@ -80,6 +79,6 @@ export function ArenaSelect({ onChange, options }: AreaSelectProps) {
           IndicatorSeparator: () => null,
         }}
       />
-    </Flex>
+    </div>
   )
 }

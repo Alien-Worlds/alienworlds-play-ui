@@ -16,6 +16,7 @@ import reportWebVitals from './reportWebVitals'
 
 import './shared/styles/fonts/fonts.css'
 import './App.css'
+import './shared/styles/tailwind/tailwind.generated.css'
 import 'focus-visible/dist/focus-visible'
 
 const ga4react = new GA4React(appConfig.GoogleAnalytics)

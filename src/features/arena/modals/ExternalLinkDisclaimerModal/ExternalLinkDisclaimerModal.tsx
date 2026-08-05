@@ -1,20 +1,8 @@
-import { Button, BUTTON_SIZE } from '@alien-worlds/uikit'
-import {
-  Flex,
-  Image,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalOverlay,
-  ModalFooter,
-  Text,
-  useBreakpointValue,
-  ModalCloseButton,
-} from '@chakra-ui/react'
+import { Button } from '@alien-worlds/uikit'
+import { Dialog, DialogPanel } from '@headlessui/react'
 import AlienWorldsLogo from 'assets/images/alienworlds-db-logo_full_color.svg'
 import ArenaPortalWarningBg from 'assets/images/arena-portal/disclaimer_bg.jpg'
 import ScrollContainer from 'react-indiana-drag-scroll'
-import { Colors } from 'shared/util/colors'
 import { useAppState, useActions } from 'store'
 
 const ExternalLinkDisclaimerModal = () => {
@@ -36,133 +24,106 @@ const ExternalLinkDisclaimerModal = () => {
     }
     handleClose()
   }
-  const currentBreakpointButtonSize: keyof typeof BUTTON_SIZE = useBreakpointValue({
-    base: 'sm',
-    sm: 'sm',
-    md: 'sm',
-    lg: 'md',
-    xl: 'lg',
-    '2xl': 'lg',
-  })
+
   return (
-    <Modal
-      size="full"
-      autoFocus={false}
-      blockScrollOnMount
-      preserveScrollBarGap
+    <Dialog
+      open={!!secondaryModals.ExternalLinkDisclaimerModal}
       onClose={handleClose}
-      isOpen={secondaryModals.ExternalLinkDisclaimerModal}
+      className="relative z-[1400]"
     >
-      <ModalOverlay
-        backgroundSize="cover"
-        backgroundPosition="center"
-        backgroundAttachment="fixed"
-        backgroundImage={ArenaPortalWarningBg}
+      <div
+        className="fixed inset-0 bg-cover bg-center bg-fixed"
+        style={{ backgroundImage: `url(${ArenaPortalWarningBg})` }}
+        aria-hidden="true"
       />
-      <ModalContent
-        minH="initial"
-        alignSelf="center"
-        borderRadius="35px"
-        background={Colors.ARENA_DISCLAIMER_BG_GRADIENT}
-        maxWidth={{ base: '100vw', md: '70vw', xl: '40vw' }}
-      >
-        <ModalCloseButton />
-        <ModalBody fontFamily="tlm">
-          <Flex w="100%" alignItems="center" justifyContent="center">
-            <Image
-              my={6}
-              w="225px"
-              alignSelf="center"
-              paddingBlock="15px"
-              src={AlienWorldsLogo}
-              alt="Alien Worlds Logo"
-            />
-          </Flex>
-          <Text
-            w="100"
-            mb="30px"
-            fontSize={30}
-            fontFamily="orb"
-            fontWeight={400}
-            textAlign="center"
-            color={Colors.SNOW_WHITE}
+      <div className="fixed inset-0 flex w-screen items-center justify-center p-4">
+        <DialogPanel className="relative w-full max-w-[100vw] self-center rounded-[35px] bg-[radial-gradient(50%_50%_at_50%_50%,rgba(16,15,16,0.6)_0%,rgba(16,15,16,0.9)_100%)] font-tlm md:max-w-[70vw] xl:max-w-[40vw]">
+          <button
+            type="button"
+            onClick={handleClose}
+            aria-label="Close"
+            className="absolute right-4 top-4 text-2xl leading-none text-white"
           >
-            You are now leaving the Alien Worlds Metaverse website.
-          </Text>
-          <Flex
-            overflowY="auto"
-            direction="column"
-            textAlign="center"
-            maxH={{ base: '30vh', md: '35vh' }}
-            paddingInline={{ base: '5px', md: '40px' }}
-          >
-            <ScrollContainer
-              hideScrollbars={false}
-              className="scroll-container"
-              style={{ paddingInline: '10px' }}
-            >
-              <Text color={Colors.SNOW_WHITE} fontSize={18} paddingBottom={3} fontWeight={400}>
-                Alien Worlds offers links to other third party websites that may be of interest to
-                website visitors to the Alien Worlds Metaverse. When you click on these links you
-                will leave the Alien Worlds Metaverse website and will be redirected to another
-                third party website. These websites are not under the control of Alien Worlds.
-              </Text>
+            &times;
+          </button>
+          <div className="p-6">
+            <div className="flex w-full items-center justify-center">
+              <img
+                src={AlienWorldsLogo}
+                alt="Alien Worlds Logo"
+                className="my-6 w-[225px] self-center py-[15px]"
+              />
+            </div>
+            <p className="mb-[30px] text-center font-orb text-3xl font-normal text-white">
+              You are now leaving the Alien Worlds Metaverse website.
+            </p>
+            <div className="flex max-h-[30vh] flex-col overflow-y-auto px-[5px] text-center md:max-h-[35vh] md:px-10">
+              <ScrollContainer
+                hideScrollbars={false}
+                className="scroll-container"
+                style={{ paddingInline: '10px' }}
+              >
+                <p className="pb-3 text-lg font-normal text-white">
+                  Alien Worlds offers links to other third party websites that may be of interest to
+                  website visitors to the Alien Worlds Metaverse. When you click on these links you
+                  will leave the Alien Worlds Metaverse website and will be redirected to another
+                  third party website. These websites are not under the control of Alien Worlds.
+                </p>
 
-              <Text color={Colors.SNOW_WHITE} fontSize={18} paddingBlock={3} fontWeight={400}>
-                Alien Worlds is not responsible for the content of linked third party websites.
-                Alien Worlds is not an agent for these third parties nor guarantees their services
-                or products. Alien Worlds makes no representation or warranty regarding the accuracy
-                of the information contained in the linked sites.
-              </Text>
+                <p className="py-3 text-lg font-normal text-white">
+                  Alien Worlds is not responsible for the content of linked third party websites.
+                  Alien Worlds is not an agent for these third parties nor guarantees their services
+                  or products. Alien Worlds makes no representation or warranty regarding the
+                  accuracy of the information contained in the linked sites.
+                </p>
 
-              <Text color={Colors.SNOW_WHITE} fontSize={18} paddingBlock={3} fontWeight={400}>
-                Please be aware that the terms and conditions and security and privacy policies on
-                these sites may be different than Alien Worlds’ policies, so please read third party
-                terms and conditions and privacy and security policies closely. When you use a third
-                party site, you will be subject to its terms and conditions and no longer be
-                protected by Alien Worlds’ terms and conditions, security practices or privacy
-                policies.
-              </Text>
+                <p className="py-3 text-lg font-normal text-white">
+                  Please be aware that the terms and conditions and security and privacy policies on
+                  these sites may be different than Alien Worlds’ policies, so please read third
+                  party terms and conditions and privacy and security policies closely. When you use
+                  a third party site, you will be subject to its terms and conditions and no longer
+                  be protected by Alien Worlds’ terms and conditions, security practices or privacy
+                  policies.
+                </p>
 
-              <Text color={Colors.SNOW_WHITE} fontSize={18} paddingBlock={3} fontWeight={400}>
-                If you have any questions or concerns about the products and services offered on
-                linked third party websites, please contact the relevant third party directly.
-              </Text>
+                <p className="py-3 text-lg font-normal text-white">
+                  If you have any questions or concerns about the products and services offered on
+                  linked third party websites, please contact the relevant third party directly.
+                </p>
 
-              <Text color={Colors.SNOW_WHITE} fontSize={18} paddingBlock={3} fontWeight={400}>
-                By clicking on the GO TO SITE button below, you acknowledge the above statement and
-                will be taken to the linked site. If you want to remain on Alien Worlds' site,
-                select the STAY HERE button.
-              </Text>
-            </ScrollContainer>
-          </Flex>
-        </ModalBody>
-        <ModalFooter justifyContent="center">
-          <Flex direction="column" gap={4} width="100%" pb={12} alignItems="center">
-            <Button
-              width="100%"
-              maxWidth="300px"
-              fontSize={20}
-              variant="warning"
-              onClick={handleConfirm}
-              size={currentBreakpointButtonSize}
-            >
-              Go to Site
-            </Button>
-            <Button
-              width="100%"
-              maxWidth="300px"
-              fontSize={20}
-              variant="tertiary"
-              onClick={handleClose}
-              size={currentBreakpointButtonSize}
-            >
-              Stay Here
-            </Button>
-          </Flex>
-        </ModalFooter>
-      </ModalContent>
-    </Modal>
+                <p className="py-3 text-lg font-normal text-white">
+                  By clicking on the GO TO SITE button below, you acknowledge the above statement
+                  and will be taken to the linked site. If you want to remain on Alien Worlds' site,
+                  select the STAY HERE button.
+                </p>
+              </ScrollContainer>
+            </div>
+            <div className="flex justify-center pb-12 pt-4">
+              <div className="flex w-full flex-col items-center gap-4">
+                <Button
+                  fontSize={20}
+                  variant="warning"
+                  onClick={handleConfirm}
+                  size="md"
+                  className="w-full max-w-[300px] text-sm md:text-base lg:text-lg"
+                >
+                  Go to Site
+                </Button>
+                <Button
+                  fontSize={20}
+                  variant="tertiary"
+                  onClick={handleClose}
+                  size="md"
+                  className="w-full max-w-[300px] text-sm md:text-base lg:text-lg"
+                >
+                  Stay Here
+                </Button>
+              </div>
+            </div>
+          </div>
+        </DialogPanel>
+      </div>
+    </Dialog>
   )
 }
 
