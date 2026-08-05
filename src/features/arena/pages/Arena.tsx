@@ -204,7 +204,7 @@ export const Arena = () => {
                   key={styledTabId + index}
                   className={({ selected }) =>
                     `h-12 min-w-full font-orb text-sm font-bold tracking-[1.16px] outline-none lg:min-w-max lg:w-[212px] ${
-                      selected ? 'bg-[rgb(0,186,255)] text-white' : 'text-white'
+                      selected ? 'rounded-full bg-[rgb(0,186,255)] text-white' : 'text-white'
                     }`
                   }
                 >
