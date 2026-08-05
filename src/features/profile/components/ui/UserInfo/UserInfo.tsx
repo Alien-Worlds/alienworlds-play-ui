@@ -40,11 +40,7 @@ export const UserInfo: React.FC<UserInfoProps> = ({
   return (
     <Flex gap={2} className={className}>
       {showAvatar && (
-        <PlayerAvatar
-          size={PROFILE_CONSTANTS.AVATAR_SIZES.SMALL}
-          showNotifications
-          marginInline="0px"
-        />
+        <PlayerAvatar size={PROFILE_CONSTANTS.AVATAR_SIZES.SMALL} marginInline="0px" />
       )}
 
       <Flex direction="column" justifyContent="space-between">

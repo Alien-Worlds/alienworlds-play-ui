@@ -211,39 +211,6 @@ export const initializeOrReloadRefundsInProgress = pipe(
   })
 )
 
-export const initializeOrReloadNftsToClaim = pipe(
-  async ({ state, effects }: Context) => {
-    if (!state.wax.isLoggedIn) {
-      state.wax.nftsToClaim = null
-    }
-
-    if (
-      !shouldExecute(
-        state.main.syncAi.nftsToClaim,
-        state.main.isFocusedWindow && state.wax.isLoggedIn
-      )
-    ) {
-      return
-    }
-
-    state.main.syncAi.nftsToClaim.isInProgress = true
-
-    const result = await effects.wax.api.getNftsToClaim()
-
-    state.wax.nftsToClaim = get(result, 'length', 0)
-    const newTemplates = get(result, 'templates', [])
-    if (JSON.stringify(newTemplates) !== JSON.stringify(state.wax.nftsToClaimTemplates)) {
-      state.wax.nftsToClaimTemplates = newTemplates
-    }
-
-    executeAfter(state.main.syncAi.nftsToClaim, DateTime.now().plus({ minutes: 2 }))
-  },
-  catchError(({ state }: Context, error) => {
-    console.error(error)
-    state.main.syncAi.nftsToClaim.isInProgress = false
-  })
-)
-
 export const setBag = pipe(
   async ({ state, effects }: Context, asssetIds: string[]) => {
     await effects.wax.api.setBag(asssetIds)
@@ -877,22 +844,6 @@ export const executeOnboarding = pipe(
   })
 )
 
-export const claimNfts = pipe(
-  async ({ state, effects }: Context) => {
-    if (state.wax.nftsToClaim > 0) await effects.wax.api.claimNfts(state.wax.nftsToClaim)
-
-    if (state.wax.lastTransactionError) {
-      toastErrorMessage(state.wax.lastTransactionError)
-      state.wax.lastTransactionError = null
-      return
-    }
-
-    executeAfter(state.main.syncAi.assets, DateTime.now().plus({ seconds: 15 }))
-  },
-  catchError((_: Context, error) => {
-    console.error(error)
-  })
-)
 export const claimNftPts = pipe(
   async ({ state, effects }: Context) => {
     await effects.wax.api.claimNFTPts()

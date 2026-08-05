@@ -1,6 +1,3 @@
-import { useEffect } from 'react'
-
-import { Button } from '@alien-worlds/uikit'
 import { Flex, useBreakpointValue, Box, Text, Hide } from '@chakra-ui/react'
 import { useLevelNftRewards } from 'features/outpost/hooks/queries/useLevelNftRewards'
 import {
@@ -17,7 +14,7 @@ import {
 } from 'shared/components/UserLevelsBadges/UserLevelsBadges'
 import { BadgesMap } from 'shared/components/UserLevelsBadges/UserLevelsBadges'
 import { Colors } from 'shared/util/colors'
-import { useActions, useAppState } from 'store'
+import { useAppState } from 'store'
 
 import { Constants } from '../../../../shared/util/constants'
 
@@ -49,16 +46,9 @@ export const CurrentBadge = () => {
 export const Header = () => {
   const avatarSize = useBreakpointValue({ base: 5.6312, sm: 6.6312, md: 7.6312, lg: 8.6312, xl: 9 })
   const {
-    wax: { nftsToClaimTemplates, isDemoUser, walletId },
+    wax: { isDemoUser, walletId },
   } = useAppState()
-  const {
-    wax: { initializeOrReloadNftsToClaim },
-    modal: { setSecondaryModalActive },
-  } = useActions()
   const { currentLevelReward } = useLevelNftRewards()
-  useEffect(() => {
-    initializeOrReloadNftsToClaim()
-  }, [])
 
   return (
     <Flex
@@ -74,7 +64,7 @@ export const Header = () => {
       <Hide above="md">
         <Flex justifyContent="space-between" width="100%" px="34px" pt="40px" pb="30px">
           <Flex gap={2}>
-            <PlayerAvatar size={5.2} showNotifications marginInline="0px" />
+            <PlayerAvatar size={5.2} marginInline="0px" />
             <Flex direction="column" justifyContent="space-between">
               <Box>
                 <Tag fontSize="20px" fontWeight={600} color={Colors.SNOW_WHITE} />
@@ -162,21 +152,6 @@ export const Header = () => {
           <BalancesBtn />
           {/* <OutpostBtn /> */}
         </Flex>
-        {nftsToClaimTemplates.length > 0 && (
-          <Flex w="97%" mt="20px" ml="5px" align="center" justify="center">
-            <Button
-              variant="primary"
-              size="lg"
-              fontSize={20}
-              isFullWidth
-              onClick={() => {
-                setSecondaryModalActive({ modalName: 'OldNFTClaimModal', value: true })
-              }}
-            >
-              Claim Shards
-            </Button>
-          </Flex>
-        )}
       </Flex>
     </Flex>
   )

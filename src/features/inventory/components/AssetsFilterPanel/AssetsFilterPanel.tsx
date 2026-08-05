@@ -2,7 +2,7 @@ import { VFC } from 'react'
 
 import { ReverseSortingIcon, SortingIcon } from '@alien-worlds/icons'
 import { Button } from '@alien-worlds/uikit'
-import { css, Checkbox, Flex, Tab, TabList, Text, Container, Tabs, Box } from '@chakra-ui/react'
+import { css, Checkbox, Flex, Tab, TabList, Text, Container, Tabs } from '@chakra-ui/react'
 import { GlossaryInfoIcon } from 'features/glossary/components/GlossaryInfoIcon/GlossaryInfoIcon'
 import { TooltipLocations } from 'features/glossary/utils/glossaryConst'
 import { matchPath } from 'react-router'
@@ -44,12 +44,10 @@ const AssetsFilterPanel: VFC = () => {
   const isToolsPage = matchPath(PagePath.Tools, router.state.location.pathname)
   const {
     atomic: { assetsFilter, filteredAndSortedAssets },
-    wax: { nftsToClaim },
   } = useAppState()
 
   const {
     atomic: { setAssetsFilter },
-    wax: { claimNfts },
   } = useActions()
 
   const isInventoryPage = useMatch(PagePath.Inventory)
@@ -158,20 +156,6 @@ const AssetsFilterPanel: VFC = () => {
           )}
 
         <Flex align="center" justifyContent="center" gap={5} wrap="wrap">
-          {nftsToClaim > 0 && (
-            <Box>
-              <Button
-                variant="success"
-                size="sm"
-                onClick={() => {
-                  claimNfts()
-                }}
-              >
-                Claim NFTs
-              </Button>
-            </Box>
-          )}
-
           <Flex
             alignItems="center"
             position="relative"

@@ -1,5 +1,4 @@
 import { ReverseSortingIcon, SortingIcon } from '@alien-worlds/icons'
-import { Button } from '@alien-worlds/uikit'
 import { Flex, Container, Box, Text, Switch } from '@chakra-ui/react'
 import { FilterBySelectorMobile } from 'features/inventory/components/FilterBySelectorMobil/FilterBySelectorMobile'
 import { useMatch } from 'react-router-dom'
@@ -12,12 +11,10 @@ import { PagePath } from 'store/main/types'
 const AssetsFilterPanelMobile = () => {
   const {
     atomic: { assetsFilter },
-    wax: { nftsToClaim },
   } = useAppState()
 
   const {
     atomic: { setAssetsFilter },
-    wax: { claimNfts },
   } = useActions()
 
   const isInventoryPage = useMatch(PagePath.Inventory)
@@ -114,22 +111,6 @@ const AssetsFilterPanelMobile = () => {
               />
             </Flex>
           )}
-
-        <Flex wrap="wrap" w="full">
-          {nftsToClaim > 0 && (
-            <Box>
-              <Button
-                variant="success"
-                size="sm"
-                onClick={() => {
-                  claimNfts()
-                }}
-              >
-                Claim NFTs
-              </Button>
-            </Box>
-          )}
-        </Flex>
       </Flex>
     </Container>
   )
