@@ -16,6 +16,7 @@
     "@emotion/react": "^11.11.3",
     "@emotion/styled": "^11.3.0",
     "@eoscafe/hyperion": "^3.2.9",
+    "@headlessui/react": "^2.2.10",
     "@tanstack/react-query": "^4.35.0",
     "@tanstack/react-query-devtools": "^4.35.0",
     "@types/humanize-duration": "^3.27.1",
@@ -85,6 +86,10 @@
     "yup": "^1.2.0"
   },
   "scripts": {
+    "prestart:local": "yarn tailwind:build",
+    "prestart:local:node17": "yarn tailwind:build",
+    "prestart:development": "yarn tailwind:build",
+    "prestart:production": "yarn tailwind:build",
     "start:local": "yarn && dotenv -e ./.env react-scripts start",
     "start:local:node17": "dotenv -e ./.env NODE_OPTIONS=--openssl-legacy-provider react-scripts start",
     "start:development": "dotenv -e ./src/config/.env.development react-scripts start",
@@ -96,7 +101,10 @@
     "build:production:node17": "NODE_OPTIONS=--openssl-legacy-provider dotenv -e ./src/config/.env.production react-scripts build",
     "test": "react-scripts test --watchAll=false --passWithNoTests",
     "prepare": "husky install",
-    "prebuild": "rm -rf ./dist"
+    "prebuild": "rm -rf ./dist && yarn tailwind:build",
+    "tailwind:build": "tailwindcss -i ./src/shared/styles/tailwind/tailwind.input.css -o ./src/shared/styles/tailwind/tailwind.generated.css --minify",
+    "tailwind:watch": "tailwindcss -i ./src/shared/styles/tailwind/tailwind.input.css -o ./src/shared/styles/tailwind/tailwind.generated.css --watch",
+    "e2e": "playwright test"
   },
   "engines": {
     "node": ">= 16.16.0"
@@ -122,14 +130,21 @@
     "@babel/plugin-proposal-nullish-coalescing-operator": "^7.18.6",
     "@babel/plugin-proposal-optional-chaining": "^7.21.0",
     "@babel/plugin-transform-private-property-in-object": "^7.23.4",
+    "@playwright/test": "^1.62.1",
     "@tanstack/eslint-plugin-query": "^4.34.1",
+    "@testing-library/dom": "^10.4.1",
+    "@testing-library/jest-dom": "6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.3",
     "@types/babel__core": "^7.20.5",
+    "@types/jest": "^30.0.0",
     "@types/node": "^20.11.17",
     "@types/react": "^18.2.55",
     "@types/react-dom": "^18.2.19",
     "@types/react-router-dom": "^5.3.3",
     "@typescript-eslint/eslint-plugin": "^6",
     "@typescript-eslint/parser": "^6",
+    "autoprefixer": "^10.5.4",
     "babel-plugin-transform-remove-console": "^6.9.4",
     "eslint": "^8.56.0",
     "eslint-config-airbnb-typescript": "^17.1.0",
@@ -143,6 +158,7 @@
     "eslint-plugin-react-hooks": "^4.2.0",
     "husky": "^7.0.4",
     "lint-staged": "^12.3.4",
-    "prettier": "^2.3.2"
+    "prettier": "^2.3.2",
+    "tailwindcss": "^3"
   }
 }
