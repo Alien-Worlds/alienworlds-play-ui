@@ -7,7 +7,6 @@ import { ShiningModal } from 'features/mining/modals/ShiningModal'
 import { JoinMissionModal } from 'features/missions/modals/JoinMissionModal'
 import { LoginModal } from 'features/onboarding/modals/LoginModal'
 import { SignUpModal } from 'features/onboarding/modals/SignUpModal'
-import { OldNFTClaimModal } from 'features/profile/modals/OldNFTClaimModal'
 import { AddStakingVotePower } from 'features/syndicates/components/AddStakingVotePower'
 import { StakingVotePower } from 'features/syndicates/components/StakingVotePower'
 import { BlockchainChangeDaoConfigsDisclaimerModal } from 'features/syndicates/modals/BlockchainChangeDaoConfigsDisclaimerModal'
@@ -77,7 +76,6 @@ const ModalLayout = () => {
         <NotEnoughTokensToBecomeCandidateModal />
       )}
       {secondaryModals.UnstakeAllLoreModal && <UnstakeLoreModal />}
-      {secondaryModals.OldNFTClaimModal && <OldNFTClaimModal />}
       {secondaryModals.UserWhiteListModal && <UserWhiteListModal />}
       {secondaryModals.BlockchainChangeDaoConfigsDisclaimerModal && (
         <BlockchainChangeDaoConfigsDisclaimerModal />

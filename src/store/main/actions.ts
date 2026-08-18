@@ -37,7 +37,6 @@ import {
   filterAndSortProposals,
   initializeOrReloadTerms,
   initializeOrReloadResources,
-  initializeOrReloadNftsToClaim,
   loadManagingLandDetailsAndBoosts,
   initializeOrReloadRefundsInProgress,
 } from 'store/wax/actions'
@@ -1211,13 +1210,7 @@ export const updateWorld = parallel(
     filterAndSortMissions,
     updateMissionsOnSecondTick
   ),
-  parallel(
-    initializeOrReloadBscBalance,
-    initializeOrReloadNftsToClaim,
-
-    initializeOrReloadResources,
-    filterAndSortProposals
-  )
+  parallel(initializeOrReloadBscBalance, initializeOrReloadResources, filterAndSortProposals)
 )
 
 export const onInitializeOvermind = async ({ effects, actions, state }: Context) => {

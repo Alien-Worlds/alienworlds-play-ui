@@ -176,7 +176,7 @@ const TopBar = () => {
                 <HStack ml={2}>
                   {!isMobile && (
                     <Box>
-                      <PlayerAvatar showBadge showNotifications />
+                      <PlayerAvatar showBadge />
                     </Box>
                   )}
                   <VStack alignItems="start" pl="0px" pb="10px">

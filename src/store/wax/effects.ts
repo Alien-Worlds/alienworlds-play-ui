@@ -613,35 +613,6 @@ export const api = (() => {
 
       return <WaxShine>result?.rows?.[0] ?? null
     },
-    async getNftsToClaim(): Promise<{ length: number; templates: string[] } | null> {
-      if (!options || !options?.getWalletId()) return null
-
-      const query: WaxQuery = {
-        table: Constants.CONTRACT_TABLE_CLAIMS,
-        scope: Constants.CONTRACT_M_FEDERATION,
-        code: Constants.CONTRACT_M_FEDERATION,
-        upper_bound: options.getWalletId(),
-        lower_bound: options.getWalletId(),
-        limit: 1,
-      }
-      let result: WaxResult
-
-      const rpc = new JsonRpc(config.WaxFetchApiUrl, { fetch })
-      if (rpc) result = await rpc.get_table_rows(query)
-      else if (waxClient?.api) result = await waxClient.api.rpc.get_table_rows(query)
-      else if (wharfClient) result = await wharfClient.v1.chain.get_table_rows(query)
-
-      const templates: string[] = result.rows[0]?.template_ids ?? []
-      const hasMaxed = templates.some((x) => {
-        return Constants.MAXED_TEMPLATES.has(parseInt(`${x}`, 10))
-      })
-
-      if (hasMaxed) {
-        return { length: 0, templates }
-      }
-
-      return { length: templates.length || 0, templates }
-    },
     async getUserPoints() {
       if (!options || !options?.getWalletId()) return null
 
@@ -1520,42 +1491,6 @@ export const api = (() => {
       ]
 
       await this.executeTransactFinal(request)
-    },
-    async claimNfts(numOfNFts: number) {
-      if (!options || !options?.getWalletId()) return
-
-      const requests: WaxRequest = [
-        {
-          account: Constants.CONTRACT_EOSIO,
-          name: Constants.CONTRACT_EOSIO_BUY_RAM_BYTES,
-          authorization: [
-            {
-              actor: options.getWalletId(),
-              permission: 'active',
-            },
-          ],
-          data: {
-            payer: options.getWalletId(),
-            receiver: 'mint.worlds',
-            bytes: numOfNFts * 151,
-          },
-        },
-        {
-          account: Constants.CONTRACT_M_FEDERATION,
-          name: Constants.CONTRACT_M_FEDERATION_ACTION_CLAIMNFTS,
-          authorization: [
-            {
-              actor: options.getWalletId(),
-              permission: 'active',
-            },
-          ],
-          data: {
-            miner: options.getWalletId(),
-          },
-        },
-      ]
-
-      await this.executeTransactFinal(requests)
     },
     async claimNFTPts() {
       if (!options || !options?.getWalletId()) return

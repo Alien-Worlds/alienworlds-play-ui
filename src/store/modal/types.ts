@@ -8,7 +8,6 @@ type ModalActions = {
 export type SecondaryModals = {
   NotEnoughTokensGenericModal: boolean
   NotEnoughTokensToVoteModal: boolean
-  OldNFTClaimModal: boolean
   NotSignedMemberTermsModal: boolean
   SignMemberTermsModal: boolean
   ErrorModal: boolean
