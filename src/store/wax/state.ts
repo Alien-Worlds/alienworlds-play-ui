@@ -77,8 +77,6 @@ type WaxState = {
   refundsInProgress: WaxRefundInProgress[]
   lastTransactionError: string
   isShining: boolean
-  nftsToClaim: number
-  nftsToClaimTemplates: string[]
 
   // #region Landowner
   managingLandId: string
@@ -149,7 +147,6 @@ export const defaultState: WaxState = {
   stakeReleaseTime: null,
   isStakesOnRelease: false,
   isSyndicatesSidebarOpen: true,
-  nftsToClaimTemplates: [],
 
   dacCustodianProposalPayload: null,
   nftLandCardProperties: null,
@@ -206,7 +203,6 @@ export const defaultState: WaxState = {
   refundsInProgress: null,
   lastTransactionError: null,
   isShining: false,
-  nftsToClaim: null,
 
   dacCandidacyProposalPayload: null,
   generatedCandidancyProposal: null,

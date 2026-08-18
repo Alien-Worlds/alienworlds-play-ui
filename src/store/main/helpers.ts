@@ -171,10 +171,6 @@ export const getDefaultSyncAi = () =>
       isInProgress: false,
       executeAfter: DateTime.now(),
     },
-    nftsToClaim: {
-      isInProgress: false,
-      executeAfter: DateTime.now(),
-    },
     recentMissions: {
       isInProgress: false,
       executeAfter: DateTime.now(),

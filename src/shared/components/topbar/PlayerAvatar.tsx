@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 
 import { CheckIcon } from '@alien-worlds/icons'
 import { Avatar, LevelRing } from '@alien-worlds/uikit'
-import { Flex, Text } from '@chakra-ui/react'
+import { Flex } from '@chakra-ui/react'
 import { useLevelNftRewards } from 'features/outpost/hooks/queries/useLevelNftRewards'
 import { LoadingSpinner } from 'features/syndicates/components/LoadingSpinner/LoadingSpinner'
 import { motion } from 'framer-motion'
@@ -20,7 +20,6 @@ import { PagePath } from 'store/main/types'
 const PlayerAvatar = ({
   showBadge,
   showVerification,
-  showNotifications,
   size = 4,
   showLevelRing = false,
   marginInline = '20px',
@@ -28,13 +27,12 @@ const PlayerAvatar = ({
   size?: number
   showBadge?: boolean
   showVerification?: boolean
-  showNotifications?: boolean
   showLevelRing?: boolean
   marginInline?: string
 }) => {
   const {
     atomic: { avatarAsset },
-    wax: { isLoggedIn, isAuthenticating, nftsToClaimTemplates, walletId },
+    wax: { isLoggedIn, isAuthenticating, walletId },
   } = useAppState()
 
   const { walletDetails, loading }: { walletDetails: WalletDetailsResponse; loading: boolean } =
@@ -44,15 +42,10 @@ const PlayerAvatar = ({
   const navigate = useNavigate()
   const [avatarSrc, setAvatarSrc] = useState(null)
 
-  const [isNotification, setNotification] = useState<Boolean>(false)
-
   useEffect(() => {
     if (avatarAsset) setAvatarSrc(getNftImage(avatarAsset))
     else setAvatarSrc(maleHumanAvatar)
 
-    if (nftsToClaimTemplates.length > 0) {
-      setNotification(true)
-    }
     return () => {
       setAvatarSrc(null)
     }
@@ -69,9 +62,6 @@ const PlayerAvatar = ({
         position="relative"
         marginInline={marginInline}
         onClick={() => {
-          if (showNotifications) {
-            setNotification(false)
-          }
           navigate(PagePath.ProfileInfo)
         }}
       >
@@ -96,25 +86,6 @@ const PlayerAvatar = ({
         {walletDetails && showBadge && (
           <Flex zIndex={2} top="33px" left="35px" width="33px" height="33px" position="absolute">
             <BadgesMap level={currentLevelReward?.level} height="33px" width="33px" />
-          </Flex>
-        )}
-
-        {/* NOTIFICATIONS */}
-        {isNotification && showNotifications && (
-          <Flex
-            position="absolute"
-            zIndex={2}
-            bg={Colors.RADICAL_RED}
-            width="20px"
-            height="20px"
-            justifyContent="center"
-            alignContent="center"
-            alignItems="center"
-            borderRadius="full"
-            top={0}
-            left={0}
-          >
-            <Text fontFamily="orb">1</Text>
           </Flex>
         )}
 
