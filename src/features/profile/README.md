@@ -11,15 +11,17 @@ src/features/profile/
 ├── components/          # UI Components
 │   ├── ui/              # Reusable UI components
 │   ├── sections/        # Feature-specific sections
-│   └── layout/          # Layout components
+│   └── modals/          # Modal components
 ├── hooks/               # Custom React hooks
 ├── types/               # TypeScript definitions
 ├── constants/           # Configuration and constants
 ├── utils/               # Utility functions
-├── services/            # Business logic and API calls
+├── store/               # Zustand store (local UI state, e.g. claim-in-progress flags)
 ├── context/             # React context providers
 └── pages/               # Page components
 ```
+
+Styling is Tailwind CSS (no Chakra UI) and co-located `*.test.tsx`/`*.test.ts` files sit next to the code they test, following the same conventions as `src/features/arena/`.
 
 ## 🚀 Getting Started
 
@@ -171,7 +173,7 @@ const { claims, loading, error, claimReward } = useClaimsData()
 
 ## 🎨 Styling
 
-The profile feature uses a consistent design system with predefined constants:
+Components use Tailwind utility classes directly (no Chakra UI, no shared `Box`/`Flex` abstraction layer — raw `div`/`p`/`span` elements styled with `className`). Dynamic or computed values (gradients, per-rank colors from `shared/util/colors`, runtime-computed offsets) are set via inline `style` props rather than static classes, since Tailwind's build-time class generation can't express them.
 
 ```tsx
 import { PROFILE_CONSTANTS, UI_CONSTANTS } from 'features/profile/constants/profile.constants'
@@ -186,7 +188,20 @@ const primaryColor = UI_CONSTANTS.COLORS.PRIMARY
 const padding = UI_CONSTANTS.SPACING.MD
 ```
 
+## 🗃️ Store
+
+`store/profileStore.ts` is a small [Zustand](https://github.com/pmndrs/zustand) store holding profile-local UI state — currently just `claimingStates`, the per-claim-key "is this claim in flight" map used by `useClaimsData`. It is intentionally narrow in scope: server data (wallet details, DAO balances) stays in GraphQL query hooks, and global wallet/claim actions stay in the app's Overmind store (`store/wax`) — only local, UI-only state lives here.
+
+```tsx
+import { useProfileStore } from 'features/profile/store/profileStore'
+
+const claimingStates = useProfileStore((state) => state.claimingStates)
+const setClaiming = useProfileStore((state) => state.setClaiming)
+```
+
 ## 🧪 Testing
+
+Tests use Jest + React Testing Library (via CRA's `react-scripts test`), matching `src/features/arena/`'s conventions: co-located `*.test.tsx`/`*.test.ts` files (no `__tests__` folders), module-boundary mocks for `store` (Overmind), GraphQL hooks, and cross-feature dependencies, and `afterEach(() => jest.clearAllMocks())`.
 
 ### Component Testing
 
@@ -211,7 +226,7 @@ test('renders user information', () => {
 ### Hook Testing
 
 ```tsx
-import { renderHook } from '@testing-library/react-hooks'
+import { renderHook } from '@testing-library/react'
 import { useProfileData } from 'features/profile/hooks/useProfileData'
 
 test('returns profile data', () => {

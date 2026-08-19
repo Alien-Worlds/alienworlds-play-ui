@@ -10,8 +10,8 @@ import {
   NFTCardBottomPanel,
   NFTCardDetailsPanel,
   NFTCardTopRightPanel,
+  useBreakpointValue,
 } from '@alien-worlds/uikit'
-import { Divider, Flex, Text, useBreakpointValue } from '@chakra-ui/react'
 import { NFTCardSingleCardPrep, NFTCardTypes } from 'features/inventory/utils/NFTCardHelper'
 import {
   NFTCardOverlayRender,
@@ -74,37 +74,19 @@ export const ProfileInfo = () => {
   }, [])
   if (loading) return <LoadingSpinner />
   return (
-    <Flex
-      w="100%"
-      h="100%"
-      p="30px"
-      gap="50px"
-      align="center"
-      flexWrap="wrap"
-      justify="center"
-      borderRadius="25px"
-      background={Colors.BLACK_SOLID_90}
+    <div
+      className="flex h-full w-full flex-wrap items-center justify-center gap-[50px] rounded-[25px] p-[30px]"
+      style={{ background: Colors.BLACK_SOLID_90 }}
     >
-      <Flex
-        align="center"
-        justify="center"
-        direction="column"
-        minW={{ base: '250px', md: '300px', lg: '600px' }}
-      >
-        <Flex
-          w="100%"
-          pb="50px"
-          gap="10px"
-          ml={{ base: '0px', md: '25px' }}
-          justifyContent={{ base: 'center', md: 'start' }}
-        >
+      <div className="flex min-w-[250px] flex-col items-center justify-center md:min-w-[300px] lg:min-w-[600px]">
+        <div className="ml-0 flex w-full justify-center gap-[10px] pb-[50px] md:ml-[25px] md:justify-start">
           <ExperienceIcon boxSize={25} color={Colors.GRAY_CHATEAU} />
-          <Text color={Colors.GRAY_CHATEAU} fontFamily="tlm" fontSize="18px" fontWeight={400}>
+          <p className="font-tlm text-[18px] font-normal" style={{ color: Colors.GRAY_CHATEAU }}>
             Experience
-          </Text>
-        </Flex>
+          </p>
+        </div>
 
-        <Flex w="100%" mb={{ base: '0px', md: '-30px' }} justifyContent="center">
+        <div className="mb-0 flex w-full justify-center md:-mb-[30px]">
           {/* POINTS PROGRESS BAR */}
           {currentLevelReward && (
             <UserPointProgressBar
@@ -120,47 +102,32 @@ export const ProfileInfo = () => {
               currentRank={currentLevelReward?.level}
             />
           )}
-        </Flex>
-        <Divider
-          border="1px solid"
-          borderColor={Colors.SNOW_WHITE}
-          w={{ base: '80%', md: '95%' }}
+        </div>
+        <div
+          className="w-[80%] border-t border-solid md:w-[95%]"
+          style={{ borderColor: Colors.SNOW_WHITE }}
         />
         {/* NEXT REWARD */}
-        <Flex
-          pt="25px"
-          flexDirection="column"
-          alignItems={{ base: 'center', md: 'start' }}
-          opacity={userPoints?.top_level === 10 ? 0 : 1}
+        <div
+          className="flex flex-col items-center pt-[25px] md:items-start"
+          style={{ opacity: userPoints?.top_level === 10 ? 0 : 1 }}
         >
-          <Text
-            mb="20px"
-            fontFamily="orb"
-            fontSize="x-large"
-            textAlign="center"
-            paddingInline="18px"
-            letterSpacing="0.1em"
-            fontWeight="semibold"
-            color={Colors.DI_SERRIA}
+          <p
+            className="mb-[20px] px-[18px] text-center font-orb font-semibold tracking-[0.1em]"
+            style={{ fontSize: 'x-large', color: Colors.DI_SERRIA }}
           >
             NEXT Rank NFT Reward
-          </Text>
+          </p>
 
-          <Flex w="100%" mb="20px" direction="column">
+          <div className="mb-[20px] flex w-full flex-col">
             {nextLevelReward?.asset?.data?.description && (
-              <Text
-                fontSize="sm"
-                fontFamily="orb"
-                paddingInline="18px"
-                letterSpacing="0.1em"
-                textAlign={{ base: 'center', md: 'start' }}
-              >
+              <p className="px-[18px] text-center text-sm font-orb tracking-[0.1em] md:text-left">
                 {nextLevelReward.asset.data.description}
-              </Text>
+              </p>
             )}
 
             {/* CLAIM REWARD */}
-            <Flex justifyContent="center" pt="30px" cursor="default">
+            <div className="flex cursor-default justify-center pt-[30px]">
               {!isLoadingRedeemLevelOffer &&
                 userPoints?.total_points >= nextLevelReward?.required && (
                   <Button
@@ -174,7 +141,7 @@ export const ProfileInfo = () => {
                         : redeemLevelOfferAction({ levelOfferId: nextLevelReward.id })
                     }
                   >
-                    <Text fontSize={{ base: 16, md: 20 }}>Claim Rank & Reward</Text>
+                    <p className="text-[16px] md:text-[20px]">Claim Rank & Reward</p>
                   </Button>
                 )}
 
@@ -199,12 +166,12 @@ export const ProfileInfo = () => {
                   Claiming
                 </Button>
               )}
-            </Flex>
-          </Flex>
-        </Flex>
-      </Flex>
+            </div>
+          </div>
+        </div>
+      </div>
       {/* REWARD NFT CARD */}
-      <Flex direction="column" align="center" justify="center">
+      <div className="flex flex-col items-center justify-center">
         {asset && (
           <NFTCard title={asset.type?.name} rarity={asset.rarity?.name} shine="stone" animate>
             <NFTCardTopRightPanel>
@@ -243,7 +210,7 @@ export const ProfileInfo = () => {
             }}
           />
         )}
-      </Flex>
-    </Flex>
+      </div>
+    </div>
   )
 }

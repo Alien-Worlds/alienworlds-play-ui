@@ -1,9 +1,8 @@
 import { useState } from 'react'
 
 import { DTALIcon, LockIcon2, ProfitsIcon, TriliumIcon } from '@alien-worlds/icons'
-import { Button } from '@alien-worlds/uikit'
+import { Button, useBreakpointValue } from '@alien-worlds/uikit'
 import { useApolloClient } from '@apollo/client'
-import { Box, Flex, HStack, Text, useBreakpointValue } from '@chakra-ui/react'
 import { GlossaryInfoIcon } from 'features/glossary/components/GlossaryInfoIcon/GlossaryInfoIcon'
 import { TooltipLocations } from 'features/glossary/utils/glossaryConst'
 import { LoadingSpinner } from 'features/syndicates/components/LoadingSpinner/LoadingSpinner'
@@ -108,116 +107,76 @@ export const PlanetaryClaims = () => {
 
   if (wallletDetailsLoading || userDaoBalancesLoading) return <LoadingSpinner />
   return (
-    <Flex
-      w="100%"
-      direction="column"
-      alignItems="start"
-      alignSelf="center"
-      paddingInline={{ base: '5%', '2xl': '0px' }}
-    >
-      <Box mb={4} alignSelf={{ base: 'start', md: 'start' }}>
-        <HStack>
+    <div className="flex w-full flex-col items-start self-center px-[5%] 2xl:px-0">
+      <div className="mb-4 self-start">
+        <div className="flex items-center gap-2">
           <TriliumIcon color={Colors.GRAY} boxSize="20px" />
-          <Text ml={2} fontSize="small" color={Colors.GRAY} fontFamily="orb">
+          <p
+            className="ml-2 text-sm font-normal"
+            style={{ color: Colors.GRAY, fontFamily: 'Orbitron, sans-serif' }}
+          >
             Claims
-          </Text>
-        </HStack>
-      </Box>
-      <Flex direction="column" gap="15px" w="100%">
+          </p>
+        </div>
+      </div>
+      <div className="flex w-full flex-col gap-[15px]">
         {/* Mining Reward */}
-        <Flex
-          w="100%"
-          pb="10px"
-          gap="15px"
-          flexWrap="wrap"
-          alignItems="start"
-          justifyContent={{ base: 'start', sm: 'space-between' }}
-        >
-          <Flex minW={{ base: '200px', sm: '235px' }}>
-            <Flex pr={5} pt={2}>
+        <div className="flex w-full flex-wrap items-start justify-start gap-[15px] pb-[10px] sm:justify-between">
+          <div className="flex min-w-[200px] sm:min-w-[235px]">
+            <div className="flex pr-[20px] pt-[8px]">
               <TriliumIcon boxSize={40} color={getClaimIconColor()} />
               {claimMiningRewardsTimeInHours > 0 && (
-                <Text
-                  w="60px"
-                  fontFamily="orb"
-                  fontWeight={600}
-                  position="absolute"
-                  letterSpacing="1px"
-                  color={Colors.RADICAL_RED}
-                  fontSize={{ base: 16, md: 20 }}
-                  pt={{ base: '10px', md: '5px' }}
-                  ml={claimMiningRewardsTimeInHours > 9 ? '-3px' : '8px'}
+                <p
+                  className="absolute w-[60px] font-orb text-[16px] font-semibold tracking-[1px] pt-[10px] md:pt-[5px] md:text-[20px]"
+                  style={{
+                    color: Colors.RADICAL_RED,
+                    marginLeft: claimMiningRewardsTimeInHours > 9 ? '-3px' : '8px',
+                  }}
                 >
                   {claimMiningRewardsTimeInHours}h
-                </Text>
+                </p>
               )}
-            </Flex>
-            <Flex direction="column" justifyContent="center" gap={1} pt="2px">
-              <Flex
-                h="35px"
-                mb="-5px"
-                direction="row"
-                alignItems="baseline"
-                justifyContent="flex-start"
-              >
-                <Text
-                  fontFamily="orb"
-                  fontWeight={400}
-                  display="inline-block"
-                  color={Colors.SNOW_WHITE}
-                  fontSize={{ base: 16, md: 20 }}
+            </div>
+            <div className="flex flex-col justify-center gap-1 pt-[2px]">
+              <div className="mb-[-5px] flex h-[35px] flex-row items-baseline justify-start">
+                <p
+                  className="inline-block text-[16px] font-normal md:text-[20px]"
+                  style={{ color: Colors.SNOW_WHITE, fontFamily: 'Orbitron, sans-serif' }}
                 >
                   {formatNumber(claimableMiningRewards, 4, 4)}
-                </Text>
-                <Text
-                  ml={2}
-                  fontFamily="orb"
-                  fontWeight={600}
-                  color={Colors.PERSIAN_GREEN}
-                  fontSize={{ base: 16, md: 20 }}
+                </p>
+                <p
+                  className="ml-2 text-[16px] font-semibold md:text-[20px]"
+                  style={{ color: Colors.PERSIAN_GREEN, fontFamily: 'Orbitron, sans-serif' }}
                 >
                   TLM
-                </Text>
-              </Flex>
-              <Text
-                mt="-1px"
-                fontSize={12}
-                fontFamily="tlm"
-                fontWeight={600}
-                lineHeight={0.1}
-                color={Colors.JUMBO}
+                </p>
+              </div>
+              <p
+                className="mt-[-1px] text-[12px] font-semibold leading-[0.1]"
+                style={{ color: Colors.JUMBO, fontFamily: "'Titillium Web', sans-serif" }}
               >
                 Mining Reward
-              </Text>
-            </Flex>
-          </Flex>
-          <Flex
-            ml={{ base: 0, md: 'auto' }}
-            justifyContent="center"
-            width={{ base: '100%', md: 'max-content' }}
-          >
+              </p>
+            </div>
+          </div>
+          <div className="ml-0 flex w-full justify-center md:ml-auto md:w-max">
             {claimMiningRewardsTimeInHours > 0 && (
-              <Text
-                fontFamily="orb"
-                fontWeight={600}
-                position="absolute"
-                letterSpacing="1px"
-                color={Colors.RADICAL_RED}
-                pt={{ base: '7px', md: '5px' }}
-                fontSize={{ base: 16, md: 20 }}
-                pr={{ base: '100', sm: '170px' }}
-                ml={{
-                  base: claimMiningRewardsTimeInHours > 9 ? '-20px' : '-15px',
-                  sm: claimMiningRewardsTimeInHours > 9 ? '25px' : '13px',
-                }}
+              <p
+                className={`absolute font-orb text-[16px] font-semibold tracking-[1px] pt-[7px] md:pt-[5px] md:text-[20px] sm:pr-[170px] ${
+                  claimMiningRewardsTimeInHours > 9
+                    ? 'ml-[-20px] sm:ml-[25px]'
+                    : 'ml-[-15px] sm:ml-[13px]'
+                }`}
+                style={{ color: Colors.RADICAL_RED }}
               >
                 {claimMiningRewardsTimeInHours}h
-              </Text>
+              </p>
             )}
             {claimMiningRewardsTimeInHours > 0 && (
-              <Flex mr="-10px" mt="-5px">
+              <div className="mr-[-10px] mt-[-5px] flex">
                 <LockIcon2 boxSize="20px" color={Colors.RADICAL_RED} />
-              </Flex>
+              </div>
             )}
             <Button
               size="md"
@@ -240,64 +199,38 @@ export const PlanetaryClaims = () => {
             >
               {getButtonText()}
             </Button>
-          </Flex>
-        </Flex>
+          </div>
+        </div>
         {/* Commision Reward */}
-        <Flex
-          w="100%"
-          gap="15px"
-          flexWrap="wrap"
-          alignItems="start"
-          justifyContent={{ base: 'start', sm: 'space-between' }}
-        >
-          <Flex minW={{ base: '200px', sm: '235px' }}>
-            <Box pr={3} pt={2}>
+        <div className="flex w-full flex-wrap items-start justify-start gap-[15px] sm:justify-between">
+          <div className="flex min-w-[200px] sm:min-w-[235px]">
+            <div className="pr-[12px] pt-[8px]">
               <ProfitsIcon boxSize={48} color={Colors.SNOW_WHITE} />
-            </Box>
-            <Flex direction="column" justifyContent="center" gap={1} pt="2px">
-              <Flex
-                h="35px"
-                mb="-5px"
-                direction="row"
-                alignItems="baseline"
-                justifyContent="flex-start"
-              >
-                <Text
-                  fontFamily="orb"
-                  fontWeight={400}
-                  display="inline-block"
-                  color={Colors.SNOW_WHITE}
-                  fontSize={{ base: 16, md: 20 }}
+            </div>
+            <div className="flex flex-col justify-center gap-1 pt-[2px]">
+              <div className="mb-[-5px] flex h-[35px] flex-row items-baseline justify-start">
+                <p
+                  className="inline-block text-[16px] font-normal md:text-[20px]"
+                  style={{ color: Colors.SNOW_WHITE, fontFamily: 'Orbitron, sans-serif' }}
                 >
                   {formatNumber(claimableLandownerCommissions, 4, 4)}
-                </Text>
-                <Text
-                  ml={2}
-                  fontFamily="orb"
-                  fontWeight={600}
-                  color={Colors.PERSIAN_GREEN}
-                  fontSize={{ base: 16, md: 20 }}
+                </p>
+                <p
+                  className="ml-2 text-[16px] font-semibold md:text-[20px]"
+                  style={{ color: Colors.PERSIAN_GREEN, fontFamily: 'Orbitron, sans-serif' }}
                 >
                   TLM
-                </Text>
-              </Flex>
-              <Text
-                mt="-1px"
-                fontSize={12}
-                fontFamily="tlm"
-                fontWeight={600}
-                lineHeight={0.1}
-                color={Colors.JUMBO}
+                </p>
+              </div>
+              <p
+                className="mt-[-1px] text-[12px] font-semibold leading-[0.1]"
+                style={{ color: Colors.JUMBO, fontFamily: "'Titillium Web', sans-serif" }}
               >
                 Commission Reward
-              </Text>
-            </Flex>
-          </Flex>
-          <Flex
-            ml={{ base: 0, md: 'auto' }}
-            justifyContent="center"
-            width={{ base: '100%', md: 'max-content' }}
-          >
+              </p>
+            </div>
+          </div>
+          <div className="ml-0 flex w-full justify-center md:ml-auto md:w-max">
             <Button
               size="md"
               fontSize={16}
@@ -328,63 +261,38 @@ export const PlanetaryClaims = () => {
             >
               Claim TLM
             </Button>
-          </Flex>
-        </Flex>
+          </div>
+        </div>
         {/* DTAL reward */}
-        <Flex
-          w="100%"
-          gap="15px"
-          flexWrap="wrap"
-          alignItems="start"
-          justifyContent={{ base: 'start', sm: 'space-between' }}
-        >
-          <Flex minW={{ base: '200px', sm: '235px' }}>
-            <Box pr={3} pt={2}>
+        <div className="flex w-full flex-wrap items-start justify-start gap-[15px] sm:justify-between">
+          <div className="flex min-w-[200px] sm:min-w-[235px]">
+            <div className="pr-[12px] pt-[8px]">
               <DTALIcon boxSize={48} color={Colors.SNOW_WHITE} />
-            </Box>
-            <Flex direction="column" justifyContent="center" gap={1}>
-              <Flex
-                h="35px"
-                mb="-5px"
-                direction="row"
-                alignItems="baseline"
-                justifyContent="flex-start"
-              >
-                <Text
-                  fontFamily="orb"
-                  fontWeight={400}
-                  display="inline-block"
-                  color={Colors.SNOW_WHITE}
-                  fontSize={{ base: 16, md: 20 }}
+            </div>
+            <div className="flex flex-col justify-center gap-1">
+              <div className="mb-[-5px] flex h-[35px] flex-row items-baseline justify-start">
+                <p
+                  className="inline-block text-[16px] font-normal md:text-[20px]"
+                  style={{ color: Colors.SNOW_WHITE, fontFamily: 'Orbitron, sans-serif' }}
                 >
                   {formatNumber(claimableLandownerAllowance, 4, 4)}
-                </Text>
-                <Text
-                  ml={2}
-                  fontFamily="orb"
-                  fontWeight={600}
-                  color={Colors.PERSIAN_GREEN}
-                  fontSize={{ base: 16, md: 20 }}
+                </p>
+                <p
+                  className="ml-2 text-[16px] font-semibold md:text-[20px]"
+                  style={{ color: Colors.PERSIAN_GREEN, fontFamily: 'Orbitron, sans-serif' }}
                 >
                   TLM
-                </Text>
-              </Flex>
-              <Text
-                fontSize={12}
-                fontFamily="tlm"
-                fontWeight={600}
-                lineHeight={0.1}
-                color={Colors.JUMBO}
+                </p>
+              </div>
+              <p
+                className="text-[12px] font-semibold leading-[0.1]"
+                style={{ color: Colors.JUMBO, fontFamily: "'Titillium Web', sans-serif" }}
               >
                 DTAL Reward
-              </Text>
-            </Flex>
-          </Flex>
-          <Flex
-            ml={{ base: 0, md: 'auto' }}
-            justifyContent="center"
-            width={{ base: '100%', md: 'max-content' }}
-          >
+              </p>
+            </div>
+          </div>
+          <div className="ml-0 flex w-full justify-center md:ml-auto md:w-max">
             <Button
               size="md"
               fontSize={16}
@@ -408,8 +316,8 @@ export const PlanetaryClaims = () => {
             >
               Claim TLM
             </Button>
-          </Flex>
-        </Flex>
+          </div>
+        </div>
         {/* STAKES WITH TIME RELEASE */}
 
         {map(
@@ -418,35 +326,16 @@ export const PlanetaryClaims = () => {
             ([, data]) => data.stake_details.unstakes.length > 0
           ),
           ([planet, data]) => (
-            <Flex
-              w="100%"
+            <div
               key={v4()}
-              flexWrap="wrap"
-              py={{ base: '20px', sm: '0px' }}
-              columnGap={{ base: '22%', sm: '0px' }}
-              justifyContent={{ base: 'center', sm: 'space-between' }}
-              alignItems="center"
+              className="flex w-full flex-wrap items-center justify-center gap-x-[22%] py-[20px] sm:justify-between sm:gap-x-0 sm:py-0"
             >
-              <Flex
-                gap={{ base: '0px', sm: '15px' }}
-                direction={{ base: 'column', sm: 'row' }}
-                flex={1}
-              >
+              <div className="flex flex-1 flex-col gap-0 sm:flex-row sm:gap-[15px]">
                 {/* PLANETS STAKES */}
-                <Flex
-                  pb="10px"
-                  gap="15px"
-                  minW={{ base: '220px', md: '300px' }}
-                  alignItems="center"
-                >
-                  <Box
-                    position="relative"
-                    display="flex"
-                    alignItems="center"
-                    justifyContent="center"
-                    boxSize="50px"
-                    backgroundColor={Colors.RADICAL_RED}
-                    borderRadius="50%"
+                <div className="flex min-w-[220px] items-center gap-[15px] pb-[10px] md:min-w-[300px]">
+                  <div
+                    className="relative flex size-[50px] items-center justify-center rounded-full"
+                    style={{ backgroundColor: Colors.RADICAL_RED }}
                   >
                     <PlanetIconRGB
                       planetName={capitalize(convertPlanetIdToName(planet))}
@@ -461,64 +350,65 @@ export const PlanetaryClaims = () => {
                         paddingBottom: '2px',
                       }}
                     />
-                  </Box>
+                  </div>
                   {/* STAKE AMOUNT */}
-                  <Flex direction="column" w="190px" gap={1} pt="2px">
-                    <Flex>
-                      <Text fontSize={{ base: 14, md: 20 }} fontFamily="orb">
+                  <div className="flex w-[190px] flex-col gap-1 pt-[2px]">
+                    <div className="flex">
+                      <p
+                        className="text-[14px] md:text-[20px]"
+                        style={{ fontFamily: 'Orbitron, sans-serif' }}
+                      >
                         {formatNumber(data.stake_details.unstakes[0].stake, 4, 4)}
-                      </Text>
-                      <Text
-                        ml={2}
-                        fontFamily="orb"
-                        fontWeight={600}
-                        fontSize={{ base: 14, md: 20 }}
-                        background={Colors.RADICAL_RED}
-                        backgroundClip="text"
+                      </p>
+                      <p
+                        className="ml-2 text-[14px] font-semibold md:text-[20px]"
+                        style={{
+                          background: Colors.RADICAL_RED,
+                          backgroundClip: 'text',
+                          fontFamily: 'Orbitron, sans-serif',
+                        }}
                       >
                         TLM
                         {/* Extracting token symbol */}
-                      </Text>
-                    </Flex>
-                    <Flex alignItems="center" gap={1} mt="-7px">
-                      <Text fontSize={12} fontFamily="tlm" fontWeight={600} color={Colors.JUMBO}>
+                      </p>
+                    </div>
+                    <div className="mt-[-7px] flex items-center gap-1">
+                      <p
+                        className="text-[12px] font-semibold"
+                        style={{ color: Colors.JUMBO, fontFamily: "'Titillium Web', sans-serif" }}
+                      >
                         Tokens in {capitalize(planet)} Release Date
-                      </Text>
+                      </p>
                       <GlossaryInfoIcon
                         width={15}
                         glossaryId={TooltipLocations.GOVERNANCE_SIDEBAR_STAKED_TOKENS}
                       />
-                    </Flex>
-                  </Flex>
-                </Flex>
-              </Flex>
+                    </div>
+                  </div>
+                </div>
+              </div>
 
               {/* STAKE RELEASE TIME (Centered) */}
-              <Flex
-                direction="column"
-                alignItems={{ base: 'start', md: 'center' }}
-                textAlign="center"
-                flex={1}
-              >
-                <Text fontSize={14} color={Colors.SNOW_WHITE} fontFamily="tlm">
+              <div className="flex flex-1 flex-col items-start text-center md:items-center">
+                <p
+                  className="text-[14px]"
+                  style={{ color: Colors.SNOW_WHITE, fontFamily: "'Titillium Web', sans-serif" }}
+                >
                   {split(data.stake_details.unstakes[0].release_time, 'T')?.[0]?.replaceAll(
                     '-',
                     '/'
                   )}
-                </Text>
-                <Text fontSize={14} color={Colors.GRAY} fontFamily="tlm">
+                </p>
+                <p
+                  className="text-[14px]"
+                  style={{ color: Colors.GRAY, fontFamily: "'Titillium Web', sans-serif" }}
+                >
                   {split(data.stake_details.unstakes[0].release_time, 'T')?.[1]} (UTC)
-                </Text>
-              </Flex>
+                </p>
+              </div>
 
               {/* CLAIM TOKENS BUTTON */}
-              <Flex
-                p={{ base: 3, md: 0 }}
-                justifyContent="center"
-                mr={{ base: -1, md: 0 }}
-                ml={{ base: 0, md: 'auto' }}
-                width={{ base: '100%', md: 'max-content' }}
-              >
+              <div className="ml-0 mr-[-4px] flex w-full justify-center p-3 md:ml-auto md:mr-0 md:w-max md:p-0">
                 <Button
                   isFullWidth
                   size="md"
@@ -541,11 +431,11 @@ export const PlanetaryClaims = () => {
                 >
                   Claim TLM
                 </Button>
-              </Flex>
-            </Flex>
+              </div>
+            </div>
           )
         )}
-      </Flex>
-    </Flex>
+      </div>
+    </div>
   )
 }

@@ -1,4 +1,4 @@
-import { Box, Flex, HStack, Text, useBreakpoint } from '@chakra-ui/react'
+import { useBreakpoint } from '@alien-worlds/uikit'
 import {
   UserLevelsBadge,
   UserLevelsBadgeTitle,
@@ -328,128 +328,100 @@ const UserPointProgressBar = ({
   const percentage = (value / total) * 100
 
   return (
-    <Box
-      width={{ base: '90%', md: '95%' }}
-      justifyContent="center"
-      position="relative"
-      display="flex"
-      mb="80px"
-      bg={Colors.TRANSPARENT}
+    <div
+      className="relative mb-[80px] flex w-[90%] justify-center md:w-[95%]"
+      style={{ backgroundColor: Colors.TRANSPARENT }}
     >
       {/* Current badge */}
-      <Box position="absolute" zIndex={6} left={{ base: -5, md: 0 }} bottom={{ base: 6, md: -2 }}>
+      <div className="absolute bottom-[24px] left-[-20px] z-[6] md:bottom-[-8px] md:left-0">
         <UserLevelsBadge
           width={rankProperties[currentRank].currentBadgeWidth[breakPoint]}
           height={rankProperties[currentRank].currentBadgeHeight[breakPoint]}
           levelId={currentRank}
           isTitle={false}
         />
-      </Box>
+      </div>
 
       {/* Next badge */}
-      <Box
-        position="absolute"
-        zIndex={5}
-        right={0}
-        bg={rankProperties[currentRank].nextLevelBadgeBg}
-        width="60px"
-        height="80px"
-        borderRadius="12px"
-        justifyItems="center"
-        display="flex"
-        justifyContent="center"
+      <div
+        className="absolute right-0 z-[5] flex h-[80px] w-[60px] items-center justify-center rounded-[12px]"
+        style={{ background: rankProperties[currentRank].nextLevelBadgeBg }}
       >
         <UserLevelsBadge width="54px" height="54px" levelId={nextRank} isTitle={false} />
-      </Box>
+      </div>
 
       {/* current value and total value */}
-      <HStack
-        zIndex={5}
-        bottom={1}
-        spacing={0.5}
-        position="absolute"
-        right={{ base: currentRank === 10 ? 10 : 16, sm: 16, md: 20 }}
+      <div
+        className={`absolute bottom-[4px] z-[5] flex items-center gap-[2px] sm:right-[64px] md:right-[80px] ${
+          currentRank === 10 ? 'right-[40px]' : 'right-[64px]'
+        }`}
       >
-        <Text fontFamily="orb" fontSize="12px" fontWeight={600} letterSpacing="0.05rem">
+        <p className="font-orb text-[12px] font-semibold tracking-[0.05rem]">
           {formatUserPointsWithDecimal(value)}
-        </Text>
-        <Text fontFamily="orb" fontSize="12px" fontWeight={600} letterSpacing="0.05rem">
-          /
-        </Text>
+        </p>
+        <p className="font-orb text-[12px] font-semibold tracking-[0.05rem]">/</p>
 
-        <Text fontFamily="orb" fontSize="12px" fontWeight={600} letterSpacing="0.05rem">
+        <p className="font-orb text-[12px] font-semibold tracking-[0.05rem]">
           {formatUserPointsWithDecimal(total)}
-        </Text>
-      </HStack>
+        </p>
+      </div>
       {/* Next Rank */}
 
-      <Flex position="absolute" zIndex={5} right={20} bottom={-5}>
+      <div className="absolute bottom-[-20px] right-[80px] z-[5] flex">
         {nextRank && nextRank < 11 && (
-          <Flex>
-            <Text fontFamily="tlm" fontSize="12px" letterSpacing="0.1rem">
-              Next:
-            </Text>
+          <div className="flex">
+            <p className="font-tlm text-[12px] tracking-[0.1rem]">Next:</p>
             <UserLevelsBadgeTitle
               levelId={nextRank}
               size="12px"
               fontFamily="tlm"
               fontWeight="normal"
             />
-          </Flex>
+          </div>
         )}
         {!nextRank && (
-          <Box>
-            <Text fontFamily="tlm" fontSize="12px" letterSpacing="0.1rem">
-              Well done!
-            </Text>
-          </Box>
+          <div>
+            <p className="font-tlm text-[12px] tracking-[0.1rem]">Well done!</p>
+          </div>
         )}
-      </Flex>
+      </div>
 
       {/* Main progress bar */}
-      <Box
-        w={{ base: '80%', md: '90%' }}
-        h={['90px', '90px', '60px', '60px', '60px']}
-        bg={Colors.GRADIENT_BISCAY}
-        borderRadius="sm"
-        overflow="hidden"
-        position="relative"
-        transform="skewX(-25deg)"
+      <div
+        className="relative h-[90px] w-[80%] overflow-hidden rounded-sm md:h-[60px] md:w-[90%]"
+        style={{ background: Colors.GRADIENT_BISCAY, transform: 'skewX(-25deg)' }}
       >
         {/* Display current badge title */}
-        <Box transform="skewX(25deg)" zIndex={5} position="relative">
-          <Box
-            w={['90px', '200px', '200px', '200px', '200px']}
-            position="absolute"
-            zIndex={3}
-            top={4}
-            left={rankProperties[currentRank].left[breakPoint]}
+        <div className="relative z-[5]" style={{ transform: 'skewX(25deg)' }}>
+          <div
+            className="absolute z-[3] w-[90px] top-[16px] sm:w-[200px]"
+            style={{ left: `${rankProperties[currentRank].left[breakPoint] * 4}px` }}
           >
             <UserLevelsBadgeTitle
               levelId={currentRank}
               size={rankProperties[currentRank].currentBadgeTitleSize[breakPoint]}
             />
-          </Box>
-        </Box>
+          </div>
+        </div>
 
         {/* Unfilled segment */}
-        <Box
-          position="absolute"
-          h="100%"
-          bg={rankProperties[currentRank].unfilledSegmentColor}
-          w="100%"
-          transform="skewX(0deg)"
-          zIndex="-2"
+        <div
+          className="absolute h-full w-full"
+          style={{
+            background: rankProperties[currentRank].unfilledSegmentColor,
+            transform: 'skewX(0deg)',
+            zIndex: -2,
+          }}
         />
 
         {/* Main (filled) segment */}
-        <Box
-          position="absolute"
-          h="100%"
-          bg={rankProperties[currentRank].unfilledSegmentColor}
-          w="100%"
-          transform="skewX(0deg)"
-          zIndex="-1"
+        <div
+          className="absolute h-full w-full"
+          style={{
+            background: rankProperties[currentRank].unfilledSegmentColor,
+            transform: 'skewX(0deg)',
+            zIndex: -1,
+          }}
         />
 
         {/* Display multiple border lines */}
@@ -457,52 +429,53 @@ const UserPointProgressBar = ({
           const offset = (index + 1) * 6.67
 
           return (
-            <Box
+            <div
               key={index}
-              position="absolute"
-              left={`${offset}%`}
-              top="0"
-              h="100%"
-              borderRightWidth="1.5px"
-              borderRightColor={Colors.BLACK_SOLID_100}
-              transform="skewX(0deg)"
-              zIndex="-1"
+              className="absolute top-0 h-full border-r-[1.5px]"
+              style={{
+                left: `${offset}%`,
+                borderRightColor: Colors.BLACK_SOLID_100,
+                transform: 'skewX(0deg)',
+                zIndex: -1,
+              }}
             />
           )
         })}
 
         {/* Filled segment */}
-        <Box
-          position="absolute"
-          h="100%"
-          bg={rankProperties[currentRank].filledSegmentColor}
-          w={`${percentage}%`}
-          transform="skewX(0deg)"
-          zIndex="2"
+        <div
+          className="absolute h-full"
+          style={{
+            background: rankProperties[currentRank].filledSegmentColor,
+            width: `${percentage}%`,
+            transform: 'skewX(0deg)',
+            zIndex: 2,
+          }}
         />
 
         {/* Border on the filled segment */}
-        <Box
-          position="absolute"
-          h="100%"
-          bg={Colors.BLACK_SOLID_100}
-          w={`${percentage}%`}
-          transform="skewX(0deg)"
-          zIndex="1"
+        <div
+          className="absolute h-full"
+          style={{
+            background: Colors.BLACK_SOLID_100,
+            width: `${percentage}%`,
+            transform: 'skewX(0deg)',
+            zIndex: 1,
+          }}
         />
 
         {/* White line on the bottom of the progress bar */}
-        <Box
-          position="absolute"
-          bottom={0}
-          h="5%"
-          bg={Colors.SNOW_WHITE}
-          w={`${percentage}%`}
-          transform="skewX(0deg)"
-          zIndex="3"
+        <div
+          className="absolute bottom-0 h-[5%]"
+          style={{
+            background: Colors.SNOW_WHITE,
+            width: `${percentage}%`,
+            transform: 'skewX(0deg)',
+            zIndex: 3,
+          }}
         />
-      </Box>
-    </Box>
+      </div>
+    </div>
   )
 }
 

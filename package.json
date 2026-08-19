@@ -83,7 +83,8 @@
     "uuid": "^8.3.2",
     "victory": "^36.6.8",
     "web-vitals": "^2.0.1",
-    "yup": "^1.2.0"
+    "yup": "^1.2.0",
+    "zustand": "^5.0.15"
   },
   "scripts": {
     "prestart:local": "yarn tailwind:build",
