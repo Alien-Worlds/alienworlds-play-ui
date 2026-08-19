@@ -21,7 +21,7 @@ export const ArenaItem = ({ data }: { data: ArenaPortalItemType }) => {
               setSecondaryModalActive({
                 modalName: 'ExternalLinkDisclaimerModal',
                 value: true,
-                onConfirm: () => openInNewTab(data.creatorUrl),
+                onConfirm: () => openInNewTab(data.url || data.action?.url),
               })
             }
           }}

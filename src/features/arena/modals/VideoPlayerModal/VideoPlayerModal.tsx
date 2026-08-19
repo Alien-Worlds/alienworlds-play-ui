@@ -36,7 +36,9 @@ const VideoPlayerModal = () => {
     <Dialog
       open={!!secondaryModals.VideoPlayerModal}
       onClose={handleClose}
-      className="relative z-[1400]"
+      // Chakra's theme sets zIndices.modal/topbar to 20000/21000 (see shared/styles/theme.ts),
+      // so the persistent sidebar and top bar would otherwise render above this Tailwind dialog.
+      className="relative z-[30000]"
     >
       <div className="fixed inset-0 bg-[rgba(0,0,0,0.8)] backdrop-blur-[1px]" aria-hidden="true" />
       <div className="fixed inset-0 flex w-screen items-center justify-center bg-[rgba(0,0,0,0.8)]">
