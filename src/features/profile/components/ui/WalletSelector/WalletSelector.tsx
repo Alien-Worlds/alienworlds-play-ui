@@ -7,7 +7,6 @@
 
 import React from 'react'
 
-import { Flex, Image, Text } from '@chakra-ui/react'
 import wcwLogo from 'assets/images/wcw_wallet_logo.png'
 import wombatLogo from 'assets/images/wombat_wallet_logo.png'
 import { Colors } from 'shared/util/colors'
@@ -33,49 +32,34 @@ export const WalletSelector: React.FC<WalletSelectorProps> = ({ className }) => 
   ]
 
   return (
-    <Flex gap={2} justifyContent="center" className={className}>
+    <div className={`flex justify-center gap-2 ${className ?? ''}`}>
       {wallets.map((wallet) => (
-        <Flex
+        <div
           key={wallet.id}
-          bg={
-            currentWallet === wallet.id
-              ? 'linear-gradient(180deg, #FFC600 41.67%, #EE7000 49.48%)'
-              : 'none'
-          }
-          p="2px"
-          borderRadius="12px"
-          display="inline-flex"
+          className="inline-flex rounded-[12px] p-[2px]"
+          style={{
+            background:
+              currentWallet === wallet.id
+                ? 'linear-gradient(180deg, #FFC600 41.67%, #EE7000 49.48%)'
+                : 'none',
+          }}
         >
-          <Flex
-            align="center"
-            p="8px"
-            minW="148px"
-            height="68px"
-            bg="#100F10"
-            borderRadius="10px"
-            color="white"
-            gap={4}
-            position="relative"
-          >
-            <Flex ml="8px">
-              <Image src={wallet.logo} boxSize="32px" alt={wallet.name} />
-            </Flex>
-            <Text fontSize="14px" fontWeight={700} fontFamily="tlm" color={Colors.SNOW_WHITE}>
+          <div className="relative flex min-w-[148px] items-center gap-4 rounded-[10px] bg-[#100F10] p-[8px] text-white h-[68px]">
+            <div className="ml-[8px]">
+              <img src={wallet.logo} className="size-[32px]" alt={wallet.name} />
+            </div>
+            <p className="font-tlm text-[14px] font-bold" style={{ color: Colors.SNOW_WHITE }}>
               {wallet.name}
-            </Text>
+            </p>
             {currentWallet === wallet.id && (
-              <Flex
-                borderRadius="100%"
-                boxSize="12px"
-                backgroundColor={Colors.DI_SERRIA}
-                position="absolute"
-                top="8px"
-                right="8px"
+              <div
+                className="absolute right-[8px] top-[8px] size-[12px] rounded-full"
+                style={{ backgroundColor: Colors.DI_SERRIA }}
               />
             )}
-          </Flex>
-        </Flex>
+          </div>
+        </div>
       ))}
-    </Flex>
+    </div>
   )
 }

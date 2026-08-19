@@ -1,6 +1,5 @@
 import { BalanceIcon, CopyIcon, Outpost2Icon, Profile3Icon } from '@alien-worlds/icons'
 import { Button, useBreakpointValue } from '@alien-worlds/uikit'
-import { Flex, Text } from '@chakra-ui/react'
 import { useNavigate } from 'react-router-dom'
 import { useCopyToClipboard } from 'react-use'
 import { Tag } from 'shared/components/topbar/Tag'
@@ -89,29 +88,16 @@ export const TagWithWalletBtn = () => {
   } = useAppState()
   const [, copyToClipboard] = useCopyToClipboard()
   return (
-    <Flex
-      pl="10px"
-      mr="-10px"
-      direction="column"
-      mt={{ base: '0px', md: '5px' }}
-      pb={{ base: '20px', md: '30px' }}
-      gap={{ base: '20px', md: '5px' }}
-      w={{ base: '100%', md: 'initial' }}
-      alignItems={{ base: 'center', xl: 'start' }}
-    >
+    <div className="-mr-[10px] flex w-full flex-col items-center gap-[20px] pb-[20px] pl-[10px] pt-0 md:w-auto md:gap-[5px] md:pb-[30px] md:pt-[5px] xl:items-start">
       <Tag fontSize="36px" width="250px" textAlign={{ base: 'center', xl: 'start' }} />
-      <Flex gap="10px" alignContent={{ base: 'center', xl: 'start' }}>
-        <Text
-          mt={{ base: '0px', md: '15px' }}
-          fontSize="16px"
-          fontFamily="tlm"
-          fontWeight={400}
-          lineHeight={0.3}
-          color={Colors.DI_SERRIA}
+      <div className="flex content-center gap-[10px] xl:content-start">
+        <p
+          className="mt-0 font-tlm text-[16px] font-normal leading-[0.3] md:mt-[15px]"
+          style={{ color: Colors.DI_SERRIA }}
         >
           {isDemoUser ? Constants.DEMO_ACCOUNT_TAG : walletId}
-        </Text>
-        <Flex mt={{ base: '-10px', md: '5px' }}>
+        </p>
+        <div className="-mt-[10px] flex md:mt-[5px]">
           <CopyIcon
             boxSize="25px"
             cursor="pointer"
@@ -121,8 +107,8 @@ export const TagWithWalletBtn = () => {
               toastMessage('Wallet ID copied to Clipboard!')
             }}
           />
-        </Flex>
-      </Flex>
-    </Flex>
+        </div>
+      </div>
+    </div>
   )
 }

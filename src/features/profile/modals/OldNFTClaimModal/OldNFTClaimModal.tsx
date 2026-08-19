@@ -2,17 +2,7 @@ import React, { useEffect, useState, useCallback, useMemo } from 'react'
 
 import { ShardsIcon } from '@alien-worlds/icons'
 import { Button } from '@alien-worlds/uikit'
-import {
-  Modal,
-  ModalContent,
-  ModalBody,
-  ModalCloseButton,
-  Flex,
-  Text,
-  ModalOverlay,
-  HStack,
-  chakra,
-} from '@chakra-ui/react'
+import { Dialog, DialogPanel } from '@headlessui/react'
 import outpostNFTPointsMappings from 'assets/data/outpostNFTPointsMappings.json'
 import { map, replace, toNumber } from 'lodash'
 import { Colors } from 'shared/util/colors'
@@ -56,73 +46,71 @@ const OldNFTClaimModal = React.memo(() => {
 
   return useMemo(() => {
     return (
-      <Modal size="xl" isOpen={secondaryModals.OldNFTClaimModal} isCentered onClose={handleClose}>
-        <ModalOverlay bg={Colors.BLACK_ALPHA_40} backdropFilter="blur(10px) " />
-        <ModalContent
-          border={`3px solid ${Colors.DI_SERRIA}`}
-          bg={Colors.OUTPOST_CLAIMNFTS_BG_GRADIENT}
-        >
-          <ModalCloseButton
-            zIndex={2000}
-            size="lg"
-            mt={{ base: 0, md: '-50px' }}
-            mr={{ base: 0, md: '-50px' }}
-          />
-          <ModalBody>
-            <Flex
-              padding={12}
-              justifyItems="center"
-              alignItems="center"
-              alignContent="center"
-              justifyContent="center"
-              textAlign="center"
-              direction="column"
-              gap={4}
-              maxW="100%"
+      <Dialog
+        open={!!secondaryModals.OldNFTClaimModal}
+        onClose={handleClose}
+        className="relative z-[1400]"
+      >
+        <div
+          className="fixed inset-0 backdrop-blur-[10px]"
+          style={{ backgroundColor: Colors.BLACK_ALPHA_40 }}
+          aria-hidden="true"
+        />
+        <div className="fixed inset-0 flex w-screen items-center justify-center p-4">
+          <DialogPanel
+            className="relative w-full max-w-xl rounded-md"
+            style={{
+              border: `3px solid ${Colors.DI_SERRIA}`,
+              background: Colors.OUTPOST_CLAIMNFTS_BG_GRADIENT,
+            }}
+          >
+            <button
+              type="button"
+              onClick={handleClose}
+              aria-label="Close"
+              style={{ zIndex: 2000 }}
+              className="absolute right-3 top-2 text-3xl leading-none text-white md:-mr-[50px] md:-mt-[50px]"
             >
-              <Text fontFamily="orb" fontSize="48" color={Colors.SNOW_WHITE}>
+              &times;
+            </button>
+            <div className="flex max-w-full flex-col items-center justify-center gap-4 p-12 text-center">
+              <p className="font-orb text-[48px]" style={{ color: Colors.SNOW_WHITE }}>
                 Hello Explorer!
-              </Text>
-              <HStack gap={4}>
+              </p>
+              <div className="flex items-center gap-4">
                 <ShardsIcon boxSize="42px" color={Colors.DI_SERRIA} />
-                <Flex gap={0} direction="column" justifyContent="center" alignItems="center">
-                  <Text color={Colors.DI_SERRIA} fontSize="18px" fontWeight="bold">
+                <div className="flex flex-col items-center justify-center gap-0">
+                  <p className="text-[18px] font-bold" style={{ color: Colors.DI_SERRIA }}>
                     Shards
-                  </Text>
-                  <Text fontSize="30px" fontFamily="orb">
-                    {totalPoints}
-                  </Text>
-                </Flex>
-              </HStack>
-              <Text fontSize="18px">
+                  </p>
+                  <p className="font-orb text-[30px]">{totalPoints}</p>
+                </div>
+              </div>
+              <p className="text-[18px]">
                 You have{' '}
-                <chakra.span style={{ color: Colors.DI_SERRIA, fontWeight: 'bold' }}>
+                <span style={{ color: Colors.DI_SERRIA, fontWeight: 'bold' }}>
                   {nftsToClaimTemplates.length} NFT claims
-                </chakra.span>{' '}
+                </span>{' '}
                 that are no longer available. Convert them to
-                <chakra.span style={{ color: Colors.DI_SERRIA, fontWeight: 'bold' }}>
+                <span style={{ color: Colors.DI_SERRIA, fontWeight: 'bold' }}>
                   {' '}
                   {totalPoints} Shards
-                </chakra.span>{' '}
+                </span>{' '}
                 to be used <br /> in the NFT Outpost.
-              </Text>
-              <Text fontSize="18px">
+              </p>
+              <p className="text-[18px]">
                 Sorry for the inconvenience, we have added a <br />
-                <chakra.span style={{ color: Colors.DI_SERRIA, fontWeight: 'bold' }}>
-                  30% Bonus
-                </chakra.span>{' '}
-                to the converted Shards.
-              </Text>
+                <span style={{ color: Colors.DI_SERRIA, fontWeight: 'bold' }}>30% Bonus</span> to
+                the converted Shards.
+              </p>
               <Button fontSize={20} variant="primary" size="lg" isFullWidth onClick={handleSubmit}>
                 Get Shards
               </Button>
-            </Flex>
-          </ModalBody>
-        </ModalContent>
-      </Modal>
+            </div>
+          </DialogPanel>
+        </div>
+      </Dialog>
     )
-
-    return null
   }, [secondaryModals, handleClose, totalPoints, nftsToClaimTemplates.length, handleSubmit])
 })
 

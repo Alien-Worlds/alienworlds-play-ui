@@ -7,7 +7,7 @@
 
 import React, { Component, ErrorInfo, ReactNode } from 'react'
 
-import { Box, Button, Flex, Text, VStack } from '@chakra-ui/react'
+import { Button } from '@alien-worlds/uikit'
 import { Colors } from 'shared/util/colors'
 
 import { ERROR_MESSAGES } from '../../constants/profile.constants'
@@ -58,23 +58,20 @@ export class ProfileErrorBoundary extends Component<Props, State> {
 
       // Default error UI
       return (
-        <Box
-          p={8}
-          bg={Colors.BLACK_SOLID_90}
-          borderRadius="12px"
-          border="1px solid"
-          borderColor={Colors.RADICAL_RED}
+        <div
+          className="rounded-[12px] border border-solid p-8"
+          style={{ background: Colors.BLACK_SOLID_90, borderColor: Colors.RADICAL_RED }}
         >
-          <VStack spacing={4} align="center">
-            <Text fontSize="lg" fontWeight="bold" color={Colors.RADICAL_RED} textAlign="center">
+          <div className="flex flex-col items-center gap-4">
+            <p className="text-center text-lg font-bold" style={{ color: Colors.RADICAL_RED }}>
               {ERROR_MESSAGES.PROFILE_LOAD_FAILED}
-            </Text>
+            </p>
 
-            <Text fontSize="sm" color={Colors.GRAY_CHATEAU} textAlign="center">
+            <p className="text-center text-sm" style={{ color: Colors.GRAY_CHATEAU }}>
               Something went wrong while loading your profile. Please try again.
-            </Text>
+            </p>
 
-            <Flex gap={4}>
+            <div className="flex gap-4">
               <Button variant="primary" size="md" onClick={this.handleRetry}>
                 Try Again
               </Button>
@@ -82,17 +79,20 @@ export class ProfileErrorBoundary extends Component<Props, State> {
               <Button variant="secondary" size="md" onClick={() => window.location.reload()}>
                 Refresh Page
               </Button>
-            </Flex>
+            </div>
 
             {process.env.NODE_ENV === 'development' && this.state.error && (
-              <Box p={4} bg={Colors.BLACK_NEUTRAL} borderRadius="8px" maxW="100%" overflow="auto">
-                <Text fontSize="xs" color={Colors.RADICAL_RED} fontFamily="mono">
+              <div
+                className="max-w-full overflow-auto rounded-[8px] p-4"
+                style={{ background: Colors.BLACK_NEUTRAL }}
+              >
+                <p className="font-mono text-xs" style={{ color: Colors.RADICAL_RED }}>
                   {this.state.error.message}
-                </Text>
-              </Box>
+                </p>
+              </div>
             )}
-          </VStack>
-        </Box>
+          </div>
+        </div>
       )
     }
 

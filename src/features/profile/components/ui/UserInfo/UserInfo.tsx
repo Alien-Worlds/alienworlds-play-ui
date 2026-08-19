@@ -7,7 +7,6 @@
 
 import React from 'react'
 
-import { Box, Flex, Text } from '@chakra-ui/react'
 import { PlayerAvatar } from 'shared/components/topbar/PlayerAvatar'
 import { Tag } from 'shared/components/topbar/Tag'
 import { UserLevelsBadgeTitle } from 'shared/components/UserLevelsBadges/UserLevelsBadges'
@@ -38,7 +37,7 @@ export const UserInfo: React.FC<UserInfoProps> = ({
   const displayWalletId = formatWalletDisplay(walletId, isDemoUser)
 
   return (
-    <Flex gap={2} className={className}>
+    <div className={`flex gap-2 ${className ?? ''}`}>
       {showAvatar && (
         <PlayerAvatar
           size={PROFILE_CONSTANTS.AVATAR_SIZES.SMALL}
@@ -47,19 +46,19 @@ export const UserInfo: React.FC<UserInfoProps> = ({
         />
       )}
 
-      <Flex direction="column" justifyContent="space-between">
-        <Box>
+      <div className="flex flex-col justify-between">
+        <div>
           <Tag fontSize="20px" fontWeight={600} color={Colors.SNOW_WHITE} />
-          <Text fontSize="14px" fontFamily="tlm" color={Colors.DI_SERRIA} fontWeight={400}>
+          <p className="font-tlm text-[14px] font-normal" style={{ color: Colors.DI_SERRIA }}>
             {displayWalletId}
-          </Text>
-        </Box>
+          </p>
+        </div>
 
         {showLevel && level && (
-          <Flex alignItems="center" gap={1}>
-            <Text color={Colors.SILVER} fontFamily="tlm" fontWeight={400} fontSize="14px">
+          <div className="flex items-center gap-1">
+            <p className="font-tlm text-[14px] font-normal" style={{ color: Colors.SILVER }}>
               Rank:
-            </Text>
+            </p>
             <UserLevelsBadgeTitle
               textAlign="start"
               levelId={level}
@@ -68,9 +67,9 @@ export const UserInfo: React.FC<UserInfoProps> = ({
               fontFamily="tlm"
               letterSpacing="0rem"
             />
-          </Flex>
+          </div>
         )}
-      </Flex>
-    </Flex>
+      </div>
+    </div>
   )
 }

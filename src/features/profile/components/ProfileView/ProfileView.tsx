@@ -7,7 +7,6 @@
 
 import React from 'react'
 
-import { Flex } from '@chakra-ui/react'
 import { LoadingSpinner } from 'features/syndicates/components/LoadingSpinner/LoadingSpinner'
 
 import { useProfileContext } from '../../context/ProfileContext'
@@ -24,10 +23,10 @@ export const ProfileView: React.FC = () => {
   }
 
   return (
-    <Flex direction="column" w="100%" gap={4}>
+    <div className="flex w-full flex-col gap-4">
       <ProfileHeader variant="full" showBadge={true} />
       <BalanceSection />
       <WalletSelector />
-    </Flex>
+    </div>
   )
 }

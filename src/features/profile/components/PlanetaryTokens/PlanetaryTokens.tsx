@@ -1,5 +1,4 @@
 import { GovernanceIcon3 } from '@alien-worlds/icons'
-import { Box, Flex, HStack, Text } from '@chakra-ui/react'
 import { GlossaryInfoIcon } from 'features/glossary/components/GlossaryInfoIcon/GlossaryInfoIcon'
 import { TooltipLocations } from 'features/glossary/utils/glossaryConst'
 import { getPlanetGradient } from 'features/mining/utils/planet'
@@ -39,45 +38,35 @@ export const PlanetaryTokens = () => {
   const balances = []
   if (walletDaoDetailsLoading || userDaoBalancesLoading) return <LoadingSpinner />
   return (
-    <Flex
-      w="100%"
-      direction="column"
-      alignSelf="center"
-      alignItems="start"
-      paddingInline={{ base: '5%', '2xl': '0px' }}
-    >
-      <Box mb={4} alignSelf={{ base: 'start', md: 'start' }}>
-        <HStack>
+    <div className="flex w-full flex-col items-start self-center px-[5%] 2xl:px-0">
+      <div className="mb-4 self-start">
+        <div className="flex items-center gap-2">
           <GovernanceIcon3 color={Colors.GRAY} boxSize="20px" />
-          <Text ml={2} fontSize="small" color={Colors.GRAY} fontFamily="orb">
+          <p
+            className="ml-2 text-sm font-normal"
+            style={{ color: Colors.GRAY, fontFamily: 'Orbitron, sans-serif' }}
+          >
             Planetary Staked TLM
-          </Text>
-        </HStack>
-      </Box>
+          </p>
+        </div>
+      </div>
 
-      <Flex w={{ base: '100%', md: '100%' }} h="100%" justifyContent="center" flexWrap="wrap">
-        <Flex direction="column" alignItems="start" w="100%" rowGap="15px">
+      <div className="flex h-full w-full flex-wrap justify-center">
+        <div className="flex w-full flex-col items-start" style={{ rowGap: '15px' }}>
           {balances && (
             <>
               {map(
                 balances.filter((p) => p.planet !== 'testa'),
                 (p: PlanetBalanceType) => (
-                  <Flex
-                    w="100%"
+                  <div
                     key={v4()}
-                    rowGap="15px"
-                    flexWrap="wrap"
-                    justifyContent="space-between"
+                    className="flex w-full flex-wrap justify-between"
+                    style={{ rowGap: '15px' }}
                   >
                     {/* PLANETS TOKENS */}
-                    <Flex minW="250px" w="250px">
-                      <HStack w="100%" display="flex" alignItems="center" justifyContent="start">
-                        <Box
-                          position="relative"
-                          display="flex"
-                          alignContent="center"
-                          justifyContent="center"
-                        >
+                    <div className="flex w-[250px] min-w-[250px]">
+                      <div className="flex w-full items-center justify-start gap-2">
+                        <div className="relative flex content-center justify-center">
                           <PlanetIcon
                             planetName={capitalize(convertPlanetIdToName(p.planet))}
                             style={{
@@ -89,57 +78,46 @@ export const PlanetaryTokens = () => {
                               height: 48,
                             }}
                           />
-                        </Box>
-                        <Flex direction="column" pb="10px" pt="2px" gap={1}>
-                          <Flex
-                            h="35px"
-                            mb="-5px"
-                            direction="row"
-                            alignItems="baseline"
-                            justifyContent="flex-start"
-                          >
-                            <Text
-                              fontFamily="orb"
-                              fontWeight={400}
-                              display="inline-block"
-                              color={Colors.SNOW_WHITE}
-                              fontSize={{ base: 14, md: 20 }}
+                        </div>
+                        <div className="flex flex-col gap-1 pb-[10px] pt-[2px]">
+                          <div className="mb-[-5px] flex h-[35px] flex-row items-baseline justify-start">
+                            <p
+                              className="inline-block text-[14px] font-normal md:text-[20px]"
+                              style={{
+                                color: Colors.SNOW_WHITE,
+                                fontFamily: 'Orbitron, sans-serif',
+                              }}
                             >
                               {formatNumber(planetStakes[p.planet], 4, 4)}
-                            </Text>
-                            <Text
-                              ml={2}
-                              fontFamily="orb"
-                              fontWeight={600}
-                              fontSize={{ base: 14, md: 20 }}
-                              background={getPlanetGradient(convertPlanetIdToName(p.planet))}
-                              backgroundClip="text"
+                            </p>
+                            <p
+                              className="ml-2 text-[14px] font-semibold md:text-[20px]"
+                              style={{
+                                background: getPlanetGradient(convertPlanetIdToName(p.planet)),
+                                backgroundClip: 'text',
+                                fontFamily: 'Orbitron, sans-serif',
+                              }}
                             >
                               TLM
-                            </Text>
-                          </Flex>
-                          <Text
-                            fontSize={12}
-                            fontFamily="tlm"
-                            fontWeight={600}
-                            lineHeight={0.1}
-                            color={Colors.JUMBO}
+                            </p>
+                          </div>
+                          <p
+                            className="text-[12px] font-semibold leading-[0.1]"
+                            style={{
+                              color: Colors.JUMBO,
+                              fontFamily: "'Titillium Web', sans-serif",
+                            }}
                           >
                             TLM in {capitalize(convertPlanetIdToName(p.planet))}
-                          </Text>
-                        </Flex>
-                      </HStack>
-                    </Flex>
+                          </p>
+                        </div>
+                      </div>
+                    </div>
                     {/* PLANETS STAKES */}
-                    <Flex minW="250px" w="250px" justifyContent="end" gap="10px">
-                      <Box
-                        borderRadius="50%"
-                        position="relative"
-                        display="flex"
-                        alignItems="center"
-                        justifyContent="center"
-                        boxSize="50px"
-                        backgroundColor={Colors.RADICAL_RED}
+                    <div className="flex w-[250px] min-w-[250px] justify-end gap-[10px]">
+                      <div
+                        className="relative flex size-[50px] items-center justify-center rounded-full"
+                        style={{ backgroundColor: Colors.RADICAL_RED }}
                       >
                         <PlanetIconRGB
                           planetName={capitalize(convertPlanetIdToName(p.planet))}
@@ -154,72 +132,66 @@ export const PlanetaryTokens = () => {
                             paddingBottom: '2px',
                           }}
                         />
-                      </Box>
-                      <Flex flexDirection="column" pt="2px" w="160px">
-                        <Flex>
-                          <Text fontSize={{ base: 14, md: 20 }} fontFamily="orb">
+                      </div>
+                      <div className="flex w-[160px] flex-col pt-[2px]">
+                        <div className="flex">
+                          <p
+                            className="text-[14px] md:text-[20px]"
+                            style={{ fontFamily: 'Orbitron, sans-serif' }}
+                          >
                             {formatNumber(p.staked, 4, 4)}
-                          </Text>
-                          <Text
-                            ml={2}
-                            fontFamily="orb"
-                            fontWeight={600}
-                            fontSize={{ base: 14, md: 20 }}
-                            background={Colors.RADICAL_RED}
-                            backgroundClip="text"
+                          </p>
+                          <p
+                            className="ml-2 text-[14px] font-semibold md:text-[20px]"
+                            style={{
+                              background: Colors.RADICAL_RED,
+                              backgroundClip: 'text',
+                              fontFamily: 'Orbitron, sans-serif',
+                            }}
                           >
                             TLM
-                          </Text>
-                        </Flex>
-                        <Flex alignItems="center" gap={1} mt="-5px">
-                          <Text
-                            pt="2px"
-                            fontSize={12}
-                            fontFamily="tlm"
-                            fontWeight={600}
-                            lineHeight={0.1}
-                            color={Colors.JUMBO}
+                          </p>
+                        </div>
+                        <div className="mt-[-5px] flex items-center gap-1">
+                          <p
+                            className="pt-[2px] text-[12px] font-semibold leading-[0.1]"
+                            style={{
+                              color: Colors.JUMBO,
+                              fontFamily: "'Titillium Web', sans-serif",
+                            }}
                           >
                             Staked TLM in {capitalize(convertPlanetIdToName(p.planet))}
-                          </Text>
+                          </p>
                           <GlossaryInfoIcon
                             width={15}
                             glossaryId={TooltipLocations.GOVERNANCE_SIDEBAR_STAKED_TOKENS}
                           />
-                        </Flex>
-                      </Flex>
-                    </Flex>
-                  </Flex>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 )
               )}
             </>
           )}
-        </Flex>
-      </Flex>
-      <Flex w="100%" h="100%" justifyContent="center" flexWrap="wrap">
-        <Flex direction="column" alignItems="start" w="100%" rowGap="15px">
+        </div>
+      </div>
+      <div className="flex h-full w-full flex-wrap justify-center">
+        <div className="flex w-full flex-col items-start" style={{ rowGap: '15px' }}>
           {userDaoBalances && (
             <>
               {map(
                 filter(Object.entries(userDaoBalances), ([planet]) => planet !== 'testa'),
                 ([planet, data]) => (
-                  <Flex
-                    w="100%"
+                  <div
                     key={v4()}
-                    rowGap="15px"
-                    flexWrap="wrap"
-                    justifyContent="space-between"
-                    alignItems="center"
+                    className="flex w-full flex-wrap items-center justify-between"
+                    style={{ rowGap: '15px' }}
                   >
                     {/* PLANETS TOKENS */}
-                    <Flex minW="250px" w="250px">
-                      <HStack w="100%" alignItems="center" justifyContent="start">
-                        <Box
-                          position="relative"
-                          display="flex"
-                          alignContent="center"
-                          justifyContent="center"
-                        >
+                    <div className="flex w-[250px] min-w-[250px]">
+                      <div className="flex w-full items-center justify-start gap-2">
+                        <div className="relative flex content-center justify-center">
                           <PlanetIcon
                             planetName={capitalize(convertPlanetIdToName(planet))}
                             style={{
@@ -231,14 +203,15 @@ export const PlanetaryTokens = () => {
                               height: 48,
                             }}
                           />
-                        </Box>
-                        <Flex direction="column" pb="10px" pt="2px" gap={1}>
-                          <Flex h="35px" mb="-5px" alignItems="baseline">
-                            <Text
-                              fontFamily="orb"
-                              fontWeight={400}
-                              color={Colors.SNOW_WHITE}
-                              fontSize={{ base: 14, md: 20 }}
+                        </div>
+                        <div className="flex flex-col gap-1 pb-[10px] pt-[2px]">
+                          <div className="mb-[-5px] flex h-[35px] items-baseline">
+                            <p
+                              className="text-[14px] font-normal md:text-[20px]"
+                              style={{
+                                color: Colors.SNOW_WHITE,
+                                fontFamily: 'Orbitron, sans-serif',
+                              }}
                             >
                               {data.stake_details.available_tlm_in_dao
                                 ? formatNumber(
@@ -251,46 +224,36 @@ export const PlanetaryTokens = () => {
                                     4
                                   )
                                 : '0.0000'}
-                            </Text>
-                            <Text
-                              ml={2}
-                              fontFamily="orb"
-                              fontWeight={600}
-                              fontSize={{ base: 14, md: 20 }}
-                              background={getPlanetGradient(convertPlanetIdToName(planet))}
-                              backgroundClip="text"
+                            </p>
+                            <p
+                              className="ml-2 text-[14px] font-semibold md:text-[20px]"
+                              style={{
+                                background: getPlanetGradient(convertPlanetIdToName(planet)),
+                                backgroundClip: 'text',
+                                fontFamily: 'Orbitron, sans-serif',
+                              }}
                             >
                               TLM
-                            </Text>
-                          </Flex>
-                          <Text
-                            fontSize={12}
-                            fontFamily="tlm"
-                            fontWeight={600}
-                            lineHeight={0.1}
-                            color={Colors.JUMBO}
+                            </p>
+                          </div>
+                          <p
+                            className="text-[12px] font-semibold leading-[0.1]"
+                            style={{
+                              color: Colors.JUMBO,
+                              fontFamily: "'Titillium Web', sans-serif",
+                            }}
                           >
                             TLM in {capitalize(convertPlanetIdToName(planet))}
-                          </Text>
-                        </Flex>
-                      </HStack>
-                    </Flex>
+                          </p>
+                        </div>
+                      </div>
+                    </div>
 
                     {/* PLANETS STAKES */}
-                    <Flex
-                      minW="250px"
-                      w="250px"
-                      justifyContent={{ base: 'start', md: 'end' }}
-                      gap="10px"
-                    >
-                      <Box
-                        borderRadius="50%"
-                        position="relative"
-                        display="flex"
-                        alignItems="center"
-                        justifyContent="center"
-                        boxSize="50px"
-                        backgroundColor={Colors.RADICAL_RED}
+                    <div className="flex w-[250px] min-w-[250px] justify-start gap-[10px] md:justify-end">
+                      <div
+                        className="relative flex size-[50px] items-center justify-center rounded-full"
+                        style={{ backgroundColor: Colors.RADICAL_RED }}
                       >
                         <PlanetIconRGB
                           planetName={capitalize(convertPlanetIdToName(planet))}
@@ -305,52 +268,54 @@ export const PlanetaryTokens = () => {
                             paddingBottom: '2px',
                           }}
                         />
-                      </Box>
-                      <Flex flexDirection="column" pt="2px" w="160px">
-                        <Flex>
-                          <Text fontSize={{ base: 14, md: 20 }} fontFamily="orb">
+                      </div>
+                      <div className="flex w-[160px] flex-col pt-[2px]">
+                        <div className="flex">
+                          <p
+                            className="text-[14px] md:text-[20px]"
+                            style={{ fontFamily: 'Orbitron, sans-serif' }}
+                          >
                             {formatNumber(
                               get(data, 'stake_details.staked_amount', '0.0000 TLM'),
                               4,
                               4
                             )}
-                          </Text>
-                          <Text
-                            ml={2}
-                            fontFamily="orb"
-                            fontWeight={600}
-                            fontSize={{ base: 14, md: 20 }}
-                            background={Colors.RADICAL_RED}
-                            backgroundClip="text"
+                          </p>
+                          <p
+                            className="ml-2 text-[14px] font-semibold md:text-[20px]"
+                            style={{
+                              background: Colors.RADICAL_RED,
+                              backgroundClip: 'text',
+                              fontFamily: 'Orbitron, sans-serif',
+                            }}
                           >
                             TLM
-                          </Text>
-                        </Flex>
-                        <Flex alignItems="center" gap={1} mt="-5px">
-                          <Text
-                            pt="2px"
-                            fontSize={12}
-                            fontFamily="tlm"
-                            fontWeight={600}
-                            lineHeight={0.1}
-                            color={Colors.JUMBO}
+                          </p>
+                        </div>
+                        <div className="mt-[-5px] flex items-center gap-1">
+                          <p
+                            className="pt-[2px] text-[12px] font-semibold leading-[0.1]"
+                            style={{
+                              color: Colors.JUMBO,
+                              fontFamily: "'Titillium Web', sans-serif",
+                            }}
                           >
                             Staked TLM in {capitalize(convertPlanetIdToName(planet))}
-                          </Text>
+                          </p>
                           <GlossaryInfoIcon
                             width={15}
                             glossaryId={TooltipLocations.GOVERNANCE_SIDEBAR_STAKED_TOKENS}
                           />
-                        </Flex>
-                      </Flex>
-                    </Flex>
-                  </Flex>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 )
               )}
             </>
           )}
-        </Flex>
-      </Flex>
-    </Flex>
+        </div>
+      </div>
+    </div>
   )
 }
