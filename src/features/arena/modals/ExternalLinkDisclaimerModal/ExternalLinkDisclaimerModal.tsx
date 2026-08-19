@@ -29,7 +29,9 @@ const ExternalLinkDisclaimerModal = () => {
     <Dialog
       open={!!secondaryModals.ExternalLinkDisclaimerModal}
       onClose={handleClose}
-      className="relative z-[1400]"
+      // Chakra's theme sets zIndices.modal/topbar to 20000/21000 (see shared/styles/theme.ts),
+      // so the persistent sidebar and top bar would otherwise render above this Tailwind dialog.
+      className="relative z-[30000]"
     >
       <div
         className="fixed inset-0 bg-cover bg-center bg-fixed"

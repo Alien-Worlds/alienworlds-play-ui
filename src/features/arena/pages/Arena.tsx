@@ -221,7 +221,7 @@ export const Arena = () => {
               return (
                 <TabPanel className="w-full p-0" key={tabPanelId + index}>
                   <div className="flex w-full flex-col gap-12">
-                    <div className="grid w-full grid-cols-3 gap-4 md:grid-cols-4 xl:grid-cols-6">
+                    <div className="grid w-full grid-cols-[repeat(auto-fill,minmax(140px,1fr))] justify-items-center gap-x-10 gap-y-6">
                       {map(arenaFilteredItems, (item, index) => {
                         return <ArenaItem data={item.attributes} key={arenaItemId + index} />
                       })}
