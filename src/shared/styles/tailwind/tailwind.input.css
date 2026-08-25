@@ -1,0 +1,6 @@
+/* Preflight (Tailwind's base reset) is intentionally omitted here — it applies
+   globally (html, body, headings, etc.) and would conflict with Chakra's own
+   CSS reset which the rest of the app still relies on. Only components/utilities
+   are generated, scoped to #root via `important` in tailwind.config.js. */
+@tailwind components;
+@tailwind utilities;

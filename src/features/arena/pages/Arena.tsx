@@ -2,23 +2,11 @@ import { useEffect, useState } from 'react'
 
 import { AlienWorldsIcon, ArenaIcon } from '@alien-worlds/icons'
 import { BUTTON_VARIANT } from '@alien-worlds/uikit'
-import {
-  Flex,
-  Grid,
-  Hide,
-  TabPanel,
-  TabPanels,
-  Text,
-  VStack,
-  useBreakpointValue,
-} from '@chakra-ui/react'
-import { TabList, Tab, Tabs } from '@chakra-ui/react'
-import styled from '@emotion/styled'
+import { Tab, TabGroup, TabList, TabPanel, TabPanels } from '@headlessui/react'
 import { ArenaItem } from 'features/arena/components/ArenaItem'
 import { ArenaSelect } from 'features/arena/components/ArenaSelect'
 import { useArenaPortal, useArenaCategories } from 'features/arena/hooks/useArenaPortal'
 import { filter, get, includes, map, some, toLower } from 'lodash'
-import { Colors } from 'shared/util/colors'
 import { useActions } from 'store'
 import { v4 as uuidv4 } from 'uuid'
 
@@ -101,17 +89,6 @@ export type ArenaPortalDevItemType = {
   description: string
 }
 
-const StyledTab = styled(Tab)({
-  width: '212px',
-  height: '48px',
-  backgroundColor: Colors.COD_GRAY,
-  fontFamily: 'Orbitron',
-  letterSpacing: '1.16px',
-  fontSize: '14px',
-  fontWeight: '700',
-  color: Colors.SNOW_WHITE,
-})
-
 function findArenaItemsByCategory(
   portalItems: ArenaPortalItemResponseType[],
   searchString: string
@@ -135,10 +112,6 @@ export const Arena = () => {
   const [arenaItemId] = useState(() => uuidv4())
   const [styledTabId] = useState(() => uuidv4())
   const [tabPanelId] = useState(() => uuidv4())
-  const oreintationValue: 'horizontal' | 'vertical' = useBreakpointValue({
-    base: 'vertical',
-    lg: 'horizontal',
-  })
   const selectOptions = map(arenaCategories, (category) => ({
     value: category.attributes.name,
     label: category.attributes.name,
@@ -150,7 +123,7 @@ export const Arena = () => {
   selectOptions.unshift(allOption)
 
   const {
-    main: { showArenaPortalPage },
+    arena: { showArenaPortalPage },
   } = useActions()
 
   useEffect(() => {
@@ -169,174 +142,97 @@ export const Arena = () => {
   }, [])
 
   return (
-    <VStack px={{ base: '18px', sm: 8 }}>
-      <Flex
-        pb={{ base: '20px', md: 8 }}
-        w="full"
-        gap="20px"
-        textAlign="start"
-        direction={{
-          base: 'column-reverse',
-          md: 'row',
-        }}
-      >
-        <Flex width="100%" justifyContent="space-between" alignItems="center">
-          <Hide below="md">
-            {' '}
-            <Flex gap="30px">
-              <Flex direction="column" gap="15px" alignItems="center" justifyContent="start">
-                <AlienWorldsIcon width="130px" height="45px" style={{ marginBottom: -20 }} />
-                <Text fontFamily="orb" fontSize={14} letterSpacing="0.2em" fontWeight={500} mt={19}>
-                  COMMUNITY
-                </Text>
-              </Flex>
-              <Flex direction="column" gap="5px">
-                <Flex alignItems="center" gap={4}>
-                  <Flex
-                    width={10}
-                    height={10}
-                    borderRadius="full"
-                    justifyContent="center"
-                    alignItems="center"
-                    bg={Colors.SNOW_WHITE}
-                  >
-                    <ArenaIcon boxSize={24} color="black" />
-                  </Flex>
-                  <Text fontFamily="orb" fontSize="3xl">
-                    Arena Portal
-                  </Text>
-                </Flex>
+    <div className="flex w-full flex-col items-center px-[18px] sm:px-8">
+      <div className="flex w-full flex-col-reverse gap-5 pb-5 text-left md:flex-row md:pb-8">
+        <div className="flex w-full items-center justify-between">
+          <div className="hidden gap-[30px] md:flex">
+            <div className="flex flex-col items-center justify-start gap-[15px]">
+              <AlienWorldsIcon width="130px" height="45px" style={{ marginBottom: -20 }} />
+              <p className="mt-[19px] font-orb text-sm font-medium tracking-[0.2em]">COMMUNITY</p>
+            </div>
+            <div className="flex flex-col gap-[5px]">
+              <div className="flex items-center gap-4">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white">
+                  <ArenaIcon boxSize={24} color="black" />
+                </div>
+                <p className="font-orb text-3xl">Arena Portal</p>
+              </div>
 
-                <Text fontFamily="tlm" color={Colors.GRAY_CHATEAU} px={{ base: '10px', md: 0 }}>
-                  Welcome to the Arena - Your Hub for Alien Worlds Community Projects. Let's Explore
-                  & Play!
-                </Text>
-              </Flex>
-            </Flex>
-          </Hide>
-          <Hide above="md">
-            <Flex flexDirection="column" gap={2}>
-              <Flex justifyContent="space-between" width="100%">
-                <Flex alignItems="center" gap={4}>
-                  <Flex
-                    width={8}
-                    height={8}
-                    borderRadius="full"
-                    justifyContent="center"
-                    alignItems="center"
-                    bg={Colors.SNOW_WHITE}
-                  >
-                    <ArenaIcon boxSize="20px" color="black" />
-                  </Flex>
-                  <Text fontFamily="orb" fontSize="24px">
-                    Arena Portal
-                  </Text>
-                </Flex>
-
-                <Flex direction="column" alignItems="center" justifyContent="start">
-                  <AlienWorldsIcon width="64px" />
-                  <Text fontFamily="orb" fontSize="7px" letterSpacing="0.2em" fontWeight={500}>
-                    COMMUNITY
-                  </Text>
-                </Flex>
-              </Flex>
-              <Text fontSize={{ base: '14px', md: '16px' }} color={Colors.GRAY_CHATEAU}>
+              <p className="px-[10px] font-tlm text-[rgba(166,168,170,1)] md:px-0">
                 Welcome to the Arena - Your Hub for Alien Worlds Community Projects. Let's Explore &
                 Play!
-              </Text>
-            </Flex>
-          </Hide>
-        </Flex>
-      </Flex>
-      <Hide above="md">
-        <Flex direction="column" width="100%" gap={8}>
-          <ArenaSelect options={selectOptions} onChange={(option) => setSelectedOption(option)} />
-          <Flex width="100%" direction="column" gap={3} alignItems="center" justifyItems="center">
-            <Grid
-              width="100%"
-              gridTemplateColumns={{
-                base: 'repeat(3,1fr)',
+              </p>
+            </div>
+          </div>
+          <div className="flex flex-col gap-2 md:hidden">
+            <div className="flex w-full justify-between">
+              <div className="flex items-center gap-4">
+                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white">
+                  <ArenaIcon boxSize="20px" color="black" />
+                </div>
+                <p className="font-orb text-2xl">Arena Portal</p>
+              </div>
 
-                sm: 'repeat(3,1fr)',
-                md: 'repeat(3,1fr)',
-              }}
-              gap="20px"
-              justifyItems="center"
-            >
-              {map(filteredArenaItems, (item, index) => {
-                return <ArenaItem data={item.attributes} key={arenaItemId + index} />
-              })}
-            </Grid>
-          </Flex>
-        </Flex>
-      </Hide>
-      <Hide below="md">
-        {' '}
-        <Flex width="100%" mb={8} justifyContent={{ md: 'center', lg: 'start' }}>
-          <Tabs
-            variant="soft-rounded"
-            width="80%"
-            minW={{ base: '80%', lg: 'auto' }}
-            flexDirection="column"
-            orientation={oreintationValue}
-          >
-            <Flex
-              width="100%"
-              justifyContent="space-between"
-              flexDirection={{ base: 'column', lg: 'row' }}
-              gap={4}
-              alignItems="center"
-            >
-              <TabList
-                backgroundColor={Colors.COD_GRAY}
-                borderRadius="20px"
-                minW={{ base: '80%', lg: 'max-content' }}
-                alignItems="center"
-                maxW="max-content"
-              >
-                {map(tabOptions, (tab, index) => (
-                  <StyledTab
-                    key={styledTabId + index}
-                    minW={{ base: '100%', lg: 'max-content' }}
-                    _selected={{ color: Colors.SNOW_WHITE, bg: Colors.DODGE_BLUE }}
-                  >
-                    {tab}
-                  </StyledTab>
-                ))}
-              </TabList>
-            </Flex>
-            <TabPanels mt={8} padding={0}>
-              {tabOptions.map((tab, index) => {
-                let arenaFilteredItems: ArenaPortalItemResponseType[] = arenaItems
-                if (tab !== 'All') arenaFilteredItems = findArenaItemsByCategory(arenaItems, tab)
+              <div className="flex flex-col items-center justify-start">
+                <AlienWorldsIcon width="64px" />
+                <p className="font-orb text-[7px] font-medium tracking-[0.2em]">COMMUNITY</p>
+              </div>
+            </div>
+            <p className="text-sm text-[rgba(166,168,170,1)] md:text-base">
+              Welcome to the Arena - Your Hub for Alien Worlds Community Projects. Let's Explore &
+              Play!
+            </p>
+          </div>
+        </div>
+      </div>
+      <div className="flex w-full flex-col gap-8 md:hidden">
+        <ArenaSelect options={selectOptions} onChange={(option) => setSelectedOption(option)} />
+        <div className="flex w-full flex-col items-center justify-items-center gap-3">
+          <div className="grid w-full grid-cols-3 justify-items-center gap-5">
+            {map(filteredArenaItems, (item, index) => {
+              return <ArenaItem data={item.attributes} key={arenaItemId + index} />
+            })}
+          </div>
+        </div>
+      </div>
+      <div className="hidden w-full mb-8 justify-center md:flex lg:justify-start">
+        <TabGroup className="flex w-4/5 min-w-[80%] flex-col lg:min-w-0">
+          <div className="flex w-full flex-col items-center justify-between gap-4 lg:flex-row">
+            <TabList className="flex min-w-[80%] max-w-max items-center rounded-[20px] bg-[rgb(17,17,17)]">
+              {map(tabOptions, (tab, index) => (
+                <Tab
+                  key={styledTabId + index}
+                  className={({ selected }) =>
+                    `h-12 min-w-full font-orb text-sm font-bold tracking-[1.16px] outline-none lg:min-w-max lg:w-[212px] ${
+                      selected ? 'rounded-full bg-[rgb(0,186,255)] text-white' : 'text-white'
+                    }`
+                  }
+                >
+                  {tab}
+                </Tab>
+              ))}
+            </TabList>
+          </div>
+          <TabPanels className="mt-8 p-0">
+            {tabOptions.map((tab, index) => {
+              let arenaFilteredItems: ArenaPortalItemResponseType[] = arenaItems
+              if (tab !== 'All') arenaFilteredItems = findArenaItemsByCategory(arenaItems, tab)
 
-                return (
-                  <TabPanel padding={0} width="100%" key={tabPanelId + index}>
-                    <Flex width="100%" direction="column" gap={12}>
-                      <Grid
-                        width="100%"
-                        gridTemplateColumns={{
-                          base: 'repeat(3,1fr)',
-
-                          sm: 'repeat(3,1fr)',
-                          md: 'repeat(4,1fr)',
-                          lg: 'repeat(4,1fr)',
-                          xl: 'repeat(6,1fr)',
-                        }}
-                        gap={16}
-                      >
-                        {map(arenaFilteredItems, (item, index) => {
-                          return <ArenaItem data={item.attributes} key={arenaItemId + index} />
-                        })}
-                      </Grid>
-                    </Flex>
-                  </TabPanel>
-                )
-              })}
-            </TabPanels>
-          </Tabs>
-        </Flex>
-      </Hide>
-    </VStack>
+              return (
+                <TabPanel className="w-full p-0" key={tabPanelId + index}>
+                  <div className="flex w-full flex-col gap-12">
+                    <div className="grid w-full grid-cols-[repeat(auto-fill,minmax(140px,1fr))] justify-items-center gap-x-10 gap-y-6">
+                      {map(arenaFilteredItems, (item, index) => {
+                        return <ArenaItem data={item.attributes} key={arenaItemId + index} />
+                      })}
+                    </div>
+                  </div>
+                </TabPanel>
+              )
+            })}
+          </TabPanels>
+        </TabGroup>
+      </div>
+    </div>
   )
 }

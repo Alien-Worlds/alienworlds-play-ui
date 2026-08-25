@@ -1,5 +1,3 @@
-import { hasUTCDateAlreadyOccurred, openInNewTab } from 'shared/util/helpers'
-
 import { useMemo } from 'react'
 
 import {
@@ -11,10 +9,9 @@ import {
   SocialTwitterIcon,
 } from '@alien-worlds/icons'
 import { Button } from '@alien-worlds/uikit'
-import { Flex, HStack, Link, Stack, VStack, Text, Spacer } from '@chakra-ui/react'
-import { Colors } from 'shared/util/colors'
 import { ArenaPortalItemType } from 'features/arena/pages/Arena'
 import { get, isEmpty, map, replace } from 'lodash'
+import { hasUTCDateAlreadyOccurred, openInNewTab } from 'shared/util/helpers'
 import { useActions } from 'store'
 
 type ArenaPortalItemProps = {
@@ -39,10 +36,14 @@ const CreatorLink = ({
   onClick?: () => void
 }) => {
   if (url) {
-    return <Link onClick={onClick}>{name}</Link>
+    return (
+      <a onClick={onClick} className="cursor-pointer">
+        {name}
+      </a>
+    )
   }
 
-  return <Text>{name}</Text>
+  return <span>{name}</span>
 }
 
 export const ArenaPortalItem = ({ data }: ArenaPortalItemProps) => {
@@ -83,54 +84,20 @@ export const ArenaPortalItem = ({ data }: ArenaPortalItemProps) => {
   }
 
   return (
-    <VStack backgroundColor={Colors.BLACK_SOLID_65} borderRadius="20px 20px 0 0">
-      <VStack
-        bgImage={`url(${data?.image?.data?.attributes?.url})`}
-        bgPosition="center"
-        bgRepeat="no-repeat"
-        w="full"
-        height={60}
-        justifyContent="space-between"
-        borderRadius="20px 20px 0 0"
-        backgroundSize="cover"
-        flexShrink={0}
-        overflow="hidden"
+    <div className="flex w-full flex-col items-center rounded-t-[20px] bg-[rgba(0,0,0,0.65)]">
+      <div
+        className="flex h-60 w-full shrink-0 flex-col justify-between overflow-hidden rounded-t-[20px] bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: `url(${data?.image?.data?.attributes?.url})` }}
       >
-        <Flex
-          w="100%"
-          rowGap="40px"
-          justifyContent="space-between"
-          direction={{ base: 'column', lg: 'column', xl: 'row' }}
-        >
+        <div className="flex w-full flex-col justify-between gap-y-10 xl:flex-row">
           {get(data, 'sashlabel.length') > 0 && (
-            <Flex
-              p={1}
-              h={6}
-              mt={6}
-              w="35%"
-              ml="-10%"
-              minW="130px"
-              position="relative"
-              alignItems="center"
-              alignSelf="flex-start"
-              bg={Colors.SNOW_WHITE}
-              justifyContent="center"
-              transform="rotateZ(-45deg)"
-              clipPath="inset(-10 0, 100% 0, 50% 100%)"
-            >
-              <Text
-                cursor="default"
-                fontFamily="orb"
-                fontSize={16}
-                fontWeight={500}
-                userSelect="none"
-                color={Colors.BLACK_NEUTRAL}
-              >
+            <div className="relative ml-[-10%] mt-6 flex h-6 w-[35%] min-w-[130px] rotate-[-45deg] items-center justify-center self-start bg-white p-1 [clip-path:inset(-10_0,_100%_0,_50%_100%)]">
+              <span className="cursor-default select-none font-orb text-base font-medium text-[rgba(15,15,15,1)]">
                 {data.sashlabel}
-              </Text>
-            </Flex>
+              </span>
+            </div>
           )}
-          <HStack alignSelf={{ base: 'center', sm: 'flex-end' }} p={6}>
+          <div className="flex items-center justify-center gap-2 self-center p-6 sm:self-end">
             {!isEmpty(data.video) && (
               <Button
                 size="sm"
@@ -141,58 +108,44 @@ export const ArenaPortalItem = ({ data }: ArenaPortalItemProps) => {
                 Play Trailer
               </Button>
             )}
-          </HStack>
-        </Flex>
-        <HStack
-          w="full"
-          justifyContent="space-between"
-          py={6}
-          px={{ base: 3, sm: 6 }}
-          background={Colors.ARENA_PORTAL_ITEM_GRADIENT}
-        >
-          <HStack justifyContent="space-between" gap={1}>
+          </div>
+        </div>
+        <div className="flex w-full items-center justify-between bg-[linear-gradient(180deg,rgba(0,0,0,0)_0%,#000000_100%)] px-3 py-6 sm:px-6">
+          <div className="flex items-center justify-between gap-1">
             {!isEmpty(data.socialLinks) &&
               map(data.socialLinks, (social, index) => (
-                <Link href={social.url} target="_blank" rel="noopener" key={index}>
+                <a href={social.url} target="_blank" rel="noopener noreferrer" key={index}>
                   {ArenaPortalSocialLinkIcons[social.name]}
-                </Link>
+                </a>
               ))}
-          </HStack>
-          <Flex fontFamily="orb" fontSize={20} fontWeight={500}>
+          </div>
+          <div className="font-orb text-xl font-medium">
             {!isEmpty(data.version) && replace(data.version, 'V', 'V. ')}
-          </Flex>
-        </HStack>
-      </VStack>
-      <VStack p="0 24px 40px 24px" width="full" justifyContent="space-between" height="full">
-        <Flex color={Colors.GRAY_CHATEAU} fontSize={14} pt={4}>
-          {data.description}
-        </Flex>
-        <Spacer />
-        <VStack alignSelf="flex-start" alignItems="flex-start" pb={4}>
-          <Flex fontSize={20} fontFamily="orb">
-            {data.title}
-          </Flex>
-          <Flex color={Colors.GRAY_CHATEAU} fontSize={14} lineHeight={0}>
+          </div>
+        </div>
+      </div>
+      <div className="flex h-full w-full flex-col items-center justify-between px-6 pb-10 pt-0">
+        <div className="pt-4 text-sm text-[rgba(166,168,170,1)]">{data.description}</div>
+        <div className="flex-1" />
+        <div className="flex flex-col items-start self-start pb-4">
+          <div className="font-orb text-xl">{data.title}</div>
+          <div className="flex text-sm leading-none text-[rgba(166,168,170,1)]">
             <CreatorLink
               name={data.creator}
               url={data.creatorUrl}
               onClick={visitDeveloperHandler}
             />
-          </Flex>
-        </VStack>
+          </div>
+        </div>
 
-        <Stack w="full" justifyContent="space-between" pb={4} direction={{ base: 'row' }}>
-          <VStack alignItems="flex-start" pb={{ base: 4 }} flex="1">
-            <Flex fontSize={20} fontFamily="orb" textAlign="right">
-              {data.platform}
-            </Flex>
-            <Flex color={Colors.GRAY_CHATEAU} fontSize={14} lineHeight={0}>
-              Platform
-            </Flex>
-          </VStack>
-        </Stack>
+        <div className="flex w-full flex-row justify-between pb-4">
+          <div className="flex flex-1 flex-col items-start pb-4">
+            <div className="text-right font-orb text-xl">{data.platform}</div>
+            <div className="text-sm leading-none text-[rgba(166,168,170,1)]">Platform</div>
+          </div>
+        </div>
 
-        <Flex w="full">
+        <div className="flex w-full">
           <Button
             size="lg"
             variant={get(data, 'action.style') || 'primary'}
@@ -203,8 +156,8 @@ export const ArenaPortalItem = ({ data }: ArenaPortalItemProps) => {
           >
             {isItemReleased ? get(data, 'action.label', '') : 'Coming Soon'}
           </Button>
-        </Flex>
-      </VStack>
-    </VStack>
+        </div>
+      </div>
+    </div>
   )
 }
