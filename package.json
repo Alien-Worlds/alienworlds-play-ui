@@ -1,9 +1,9 @@
 {
   "name": "alienworlds",
-  "version": "5.2.5",
+  "version": "5.2.6",
   "private": true,
   "dependencies": {
-    "@alien-worlds/icons": "0.0.49",
+    "@alien-worlds/icons": "0.0.50",
     "@alien-worlds/uikit": "0.5.8",
     "@apollo/client": "^3.12.9",
     "@babel/core": "^7.23.9",

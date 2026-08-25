@@ -62,6 +62,7 @@ export namespace Colors {
   export const PERSIAN_GREEN = 'rgba(3, 173, 142, 1)'
   export const CORNFLOWER_BLUE = 'rgba( 97, 149, 237, 1)'
   export const HELIOTROPE = 'rgba(178, 110, 241, 1)'
+  export const PUNCH = 'rgba(216, 71, 43,1)'
 
   // gradients
   export const GRADIENT_BLACK =

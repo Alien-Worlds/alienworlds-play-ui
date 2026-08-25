@@ -40,6 +40,13 @@ export type WalletDetailsResponse = {
     vote_power: string
     last_claim: string
     staked_amount: string
+    reward_global: {
+      tlm_pool_size: string
+    }
+    voter_rewards: {
+      pending_rewards: string
+      percent_of_pool: string
+    }
   }
 }
 

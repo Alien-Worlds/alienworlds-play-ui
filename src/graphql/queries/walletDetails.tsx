@@ -46,9 +46,21 @@ export const WALLET_DETAILS_QUERY_ALL = gql`
       last_shine
       land_ratings_deposit
       tokenized_lore {
-        vote_power
         last_claim
         staked_amount
+        vote_power
+        voter_rewards {
+          vp_participating
+          reward_per_vp_paid
+          rewards_accrued
+          pending_rewards
+          percent_of_pool
+        }
+        reward_global {
+          reward_per_vp_stored
+          tlm_pool_size
+          total_vp_participating
+        }
       }
     }
   }

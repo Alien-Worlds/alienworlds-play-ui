@@ -1425,6 +1425,26 @@ export const api = (() => {
       request.push(refundAction)
       await this.executeTransactFinal(request)
     },
+    async claimLoreReward() {
+      if (!options || !options?.getWalletId()) return
+      const actionsPermissions: ProposalPermissionLevel[] = [
+        {
+          actor: options.getWalletId(),
+          permission: 'active',
+        },
+      ]
+
+      const claimAction = {
+        account: Constants.CONTRACT_LORE_WORLDS,
+        name: Constants.CONTRACT_LORE_WORLD_CLAIM_REWARD,
+        authorization: actionsPermissions,
+        data: {
+          voter: options.getWalletId(),
+        },
+      }
+
+      await this.executeTransactFinal([claimAction])
+    },
     async voteCandidates(dacId: string, newVotes: string[]) {
       if (!options || !options?.getWalletId()) return
 
