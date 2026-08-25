@@ -52,7 +52,7 @@ export const Header = () => {
     >
       <div className="flex w-full justify-between px-[34px] pb-[30px] pt-[40px] md:hidden">
         <div className="flex gap-2">
-          <PlayerAvatar size={5.2} showNotifications marginInline="0px" />
+          <PlayerAvatar size={5.2} marginInline="0px" />
           <div className="flex flex-col justify-between">
             <div>
               <Tag fontSize="20px" fontWeight={600} color={Colors.SNOW_WHITE} />
