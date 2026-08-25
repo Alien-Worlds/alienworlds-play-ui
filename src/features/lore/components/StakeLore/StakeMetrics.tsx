@@ -1,4 +1,10 @@
-import { LockIcon, TotalVotePowerIcon, TotalVotePowerPlusIcon, WaxIcon } from '@alien-worlds/icons'
+import {
+  LockIcon,
+  TLMPoolSizeIcon,
+  TotalVotePowerIcon,
+  TotalVotePowerPlusIcon,
+  WaxIcon,
+} from '@alien-worlds/icons'
 import { Box, Flex, Grid, GridItem, Icon, Text } from '@chakra-ui/react'
 import { Colors } from 'shared/util/colors'
 import { formatNumber } from 'shared/util/numbers'
@@ -7,6 +13,7 @@ type StakeMetricsProps = {
   walletId: string
   walletBalance: number
   stakedAmount: number
+  tlmPoolSize: number
   currentVotePower: number
   dailyReward: string
 }
@@ -28,6 +35,7 @@ export function StakeMetrics({
   walletId,
   walletBalance,
   stakedAmount,
+  tlmPoolSize,
   currentVotePower,
   dailyReward,
 }: StakeMetricsProps) {
@@ -37,7 +45,7 @@ export function StakeMetrics({
         base: 'repeat(1,1fr)',
         md: 'repeat(2,1fr)',
         lg: 'repeat(3,1fr)',
-        xl: 'repeat(5,1fr)',
+        xl: 'repeat(6,1fr)',
       }}
       width="100%"
       gap={{ base: '25px', md: 8 }}
@@ -127,6 +135,19 @@ export function StakeMetrics({
             </Text>
             <Text {...metricLabelStyles} color={Colors.DODGE_BLUE}>
               Daily VP Reward
+            </Text>
+          </Flex>
+        </Flex>
+      </GridItem>
+      <GridItem alignSelf="center">
+        <Flex gap={3}>
+          <TLMPoolSizeIcon boxSize="42px" color={Colors.SNOW_WHITE} />
+          <Flex direction="column" justifyContent="end">
+            <Text {...metricValueStyles} color={Colors.SNOW_WHITE}>
+              {formatNumber(tlmPoolSize ?? 0, 4, 4)}
+            </Text>
+            <Text {...metricLabelStyles} color={Colors.SNOW_WHITE}>
+              TLM Pool Size
             </Text>
           </Flex>
         </Flex>

@@ -1,7 +1,7 @@
 import { Flex, useBreakpointValue } from '@chakra-ui/react'
 import { StakeActions } from 'features/lore/components/StakeLore/StakeActions'
-import { StakeDailyRewardBanner } from 'features/lore/components/StakeLore/StakeDailyRewardBanner'
 import { StakeMetrics } from 'features/lore/components/StakeLore/StakeMetrics'
+import { StakeRewardsLore } from 'features/lore/components/StakeLore/StakeRewardsLore'
 import { useStakeLore } from 'features/lore/hooks/useStakeLore'
 import { LoadingSpinner } from 'features/syndicates/components/LoadingSpinner/LoadingSpinner'
 import { Colors } from 'shared/util/colors'
@@ -14,8 +14,18 @@ const StakeLore = ({ currentNumber }: { currentNumber: number }) => {
       base: true,
       md: false,
     }) ?? false
-  const { walletId, walletBalance, stakedAmount, dailyReward, handlers, state, isLoading } =
-    useStakeLore()
+  const {
+    walletId,
+    walletBalance,
+    stakedAmount,
+    tlmPoolSize,
+    poolShare,
+    pendingRewards,
+    dailyReward,
+    handlers,
+    state,
+    isLoading,
+  } = useStakeLore()
 
   if (isLoading) return <LoadingSpinner />
 
@@ -34,9 +44,11 @@ const StakeLore = ({ currentNumber }: { currentNumber: number }) => {
           walletId={walletId}
           walletBalance={walletBalance}
           stakedAmount={stakedAmount}
+          tlmPoolSize={tlmPoolSize}
           currentVotePower={currentNumber}
           dailyReward={dailyReward}
         />
+
         <StakeActions
           onSubmitStake={handlers.onSubmitStake}
           onUnstakeAll={handlers.onUnstakeAll}
@@ -46,9 +58,16 @@ const StakeLore = ({ currentNumber }: { currentNumber: number }) => {
           isDesktop={isDesktop}
           isFullWidth={isFullWidth}
           walletBalance={walletBalance}
+          newDailyReward={state.newDailyReward}
         />
       </Flex>
-      <StakeDailyRewardBanner newDailyReward={state.newDailyReward} />
+
+      <StakeRewardsLore
+        poolShare={poolShare}
+        pendingRewards={pendingRewards}
+        dailyReward={dailyReward}
+        onClaimReward={handlers.onClaimReward}
+      />
     </Flex>
   )
 }

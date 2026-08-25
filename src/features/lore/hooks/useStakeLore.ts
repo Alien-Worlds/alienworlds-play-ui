@@ -13,6 +13,7 @@ type StakeLoreHandlers = {
   onUnstakeAll: () => void
   onSubmitLore: () => void
   onChangeStakeInput: (amount: number) => void
+  onClaimReward: () => Promise<void>
 }
 
 type StakeLoreState = {
@@ -24,6 +25,9 @@ export function useStakeLore(): {
   walletId: string
   walletBalance: number
   stakedAmount: number
+  tlmPoolSize: number
+  poolShare: number
+  pendingRewards: number
   dailyReward: string
   handlers: StakeLoreHandlers
   state: StakeLoreState
@@ -37,7 +41,7 @@ export function useStakeLore(): {
   const { walletDetails, loreVoterInfo, globals, loadingLores, walletDetailsLoading } =
     useLoreData()
   const {
-    wax: { tryStakeVotePowerLore },
+    wax: { tryStakeVotePowerLore, tryClaimLoreReward },
     modal: { setSecondaryModalActive, setPrimaryModalActive },
     main: { getLorePullRequests },
   } = useActions()
@@ -50,7 +54,18 @@ export function useStakeLore(): {
     () => parseStakeAmount(get(loreVoterInfo, 'staked_amount')),
     [loreVoterInfo]
   )
-
+  const tlmPoolSize = useMemo(
+    () => parseTokenAmount(get(loreVoterInfo, 'reward_global.tlm_pool_size')),
+    [loreVoterInfo]
+  )
+  const poolShare = useMemo(
+    () => parseStakeAmount(get(loreVoterInfo, 'voter_rewards.percent_of_pool')),
+    [loreVoterInfo]
+  )
+  const pendingRewards = useMemo(
+    () => parseTokenAmount(get(loreVoterInfo, 'voter_rewards.pending_rewards')),
+    [loreVoterInfo]
+  )
   const powerPerDay = useMemo(
     () => parseTokenAmount(get(globals, 'power_per_day')),
     [globals?.power_per_day]
@@ -117,16 +132,30 @@ export function useStakeLore(): {
     setStakedInput(Number.isNaN(amount) ? 0 : amount)
   }, [])
 
+  const onClaimReward = useCallback(async () => {
+    if (isDemoUser) {
+      openLoginModalIfDemo()
+      return
+    }
+
+    await tryClaimLoreReward()
+    await client.refetchQueries({ include: [WALLET_DETAILS_QUERY_ALL] })
+  }, [client, isDemoUser, openLoginModalIfDemo, tryClaimLoreReward])
+
   return {
     walletId,
     walletBalance,
     stakedAmount,
+    tlmPoolSize,
+    poolShare,
+    pendingRewards,
     dailyReward,
     handlers: {
       onSubmitStake,
       onUnstakeAll,
       onSubmitLore,
       onChangeStakeInput,
+      onClaimReward,
     },
     state: {
       stakedInput,
