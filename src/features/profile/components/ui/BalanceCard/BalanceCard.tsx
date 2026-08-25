@@ -7,7 +7,6 @@
 
 import React from 'react'
 
-import { Flex, Text } from '@chakra-ui/react'
 import { Colors } from 'shared/util/colors'
 
 import { formatBalance } from '../../../utils/profile.utils'
@@ -34,33 +33,30 @@ export const BalanceCard: React.FC<BalanceCardProps> = ({
   const formattedAmount = formatBalance(amount)
 
   return (
-    <Flex justifyContent="space-between" width="100%" className={className}>
-      <Flex alignItems="center" gap={2}>
+    <div className={`flex w-full justify-between ${className ?? ''}`}>
+      <div className="flex items-center gap-2">
         {showIcon && (
-          <Flex alignItems="center" justifyContent="center">
+          <div className="flex items-center justify-center">
             {React.cloneElement(icon, { color: Colors.DI_SERRIA })}
-          </Flex>
+          </div>
         )}
-        <Text
-          fontFamily="tlm"
-          fontWeight="bold"
-          fontSize="12px"
-          letterSpacing="0.1em"
-          color={Colors.DI_SERRIA}
+        <p
+          className="font-tlm text-[12px] font-bold tracking-[0.1em]"
+          style={{ color: Colors.DI_SERRIA }}
         >
           {label}
-        </Text>
-      </Flex>
-      <Flex alignItems="center" gap={1}>
-        <Text fontSize="14px" fontFamily="orb" fontWeight={700} color={color}>
+        </p>
+      </div>
+      <div className="flex items-center gap-1">
+        <p className="font-orb text-[14px] font-bold" style={{ color }}>
           {formattedAmount}
-        </Text>
+        </p>
         {currency && (
-          <Text fontSize="14px" fontFamily="orb" fontWeight={600} color={Colors.PERSIAN_GREEN}>
+          <p className="font-orb text-[14px] font-semibold" style={{ color: Colors.PERSIAN_GREEN }}>
             {currency}
-          </Text>
+          </p>
         )}
-      </Flex>
-    </Flex>
+      </div>
+    </div>
   )
 }

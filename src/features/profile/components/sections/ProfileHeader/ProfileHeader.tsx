@@ -7,8 +7,6 @@
 
 import React from 'react'
 
-import { Flex } from '@chakra-ui/react'
-
 import { useProfileContext } from '../../../context/ProfileContext'
 import { ProfileHeaderProps } from '../../../types/profile.types'
 import { BadgeDisplay } from '../../ui/BadgeDisplay'
@@ -27,7 +25,7 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
   }
 
   return (
-    <Flex justifyContent="space-between" className={className}>
+    <div className={`flex justify-between ${className ?? ''}`}>
       <UserInfo
         walletId={profileData.walletId}
         isDemoUser={profileData.isDemoUser}
@@ -43,6 +41,6 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
           size={variant === 'compact' ? 'small' : 'medium'}
         />
       )}
-    </Flex>
+    </div>
   )
 }

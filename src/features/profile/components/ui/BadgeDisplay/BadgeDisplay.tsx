@@ -7,7 +7,6 @@
 
 import React from 'react'
 
-import { Flex } from '@chakra-ui/react'
 import { BadgesMap } from 'shared/components/UserLevelsBadges/UserLevelsBadges'
 
 interface BadgeDisplayProps {
@@ -37,10 +36,10 @@ export const BadgeDisplay: React.FC<BadgeDisplayProps> = ({
   const sizeProps = getSize()
 
   return (
-    <Flex zIndex={2} className={className}>
+    <div className={`flex z-[2] ${className ?? ''}`}>
       {showMap && level && (
         <BadgesMap level={level} width={sizeProps.width} height={sizeProps.height} />
       )}
-    </Flex>
+    </div>
   )
 }

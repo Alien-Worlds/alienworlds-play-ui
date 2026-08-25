@@ -2,7 +2,6 @@ import { VFC } from 'react'
 
 import { LockIcon, MiningIcon, MissionsIcon, ShardsIcon, WaxIcon } from '@alien-worlds/icons'
 import { Button } from '@alien-worlds/uikit'
-import { Box, Flex, Icon, Text } from '@chakra-ui/react'
 import { GlossaryInfoIcon } from 'features/glossary/components/GlossaryInfoIcon/GlossaryInfoIcon'
 import { TooltipLocations } from 'features/glossary/utils/glossaryConst'
 import {
@@ -47,156 +46,109 @@ export const WalletsBalances: VFC = () => {
   const totalDAOsStakes = sumStakedAmount(userDaoBalances)
 
   return (
-    <Flex
-      h="100%"
-      py="25px"
-      gap="35px"
-      minW="200px"
-      flexWrap="wrap"
-      direction="column"
-      w={{ base: '100%', '2xl': '45%' }}
-      pr={{ base: '0px', '2xl': '30px' }}
-    >
+    <div className="flex h-full w-full min-w-[200px] flex-col flex-wrap gap-[35px] py-[25px] 2xl:w-[45%] 2xl:pr-[30px]">
       {/* MINING WALLET */}
-      <Flex
-        w="100%"
-        direction="column"
-        alignItems="start"
-        paddingInline={{ base: '5%', '2xl': '0px' }}
-      >
-        <Box mb={4} alignSelf={{ base: 'start', md: 'start' }}>
-          <Flex>
+      <div className="flex w-full flex-col items-start px-[5%] 2xl:px-0">
+        <div className="mb-4 self-start">
+          <div className="flex">
             <MiningIcon color={Colors.GRAY} boxSize="20px" />
 
-            <Text marginInline={2} fontSize="small" color={Colors.GRAY} fontFamily="Orbitron">
+            <p
+              className="mx-2 text-sm font-normal"
+              style={{ color: Colors.GRAY, fontFamily: 'Orbitron, sans-serif' }}
+            >
               Mining Wallet
-            </Text>
+            </p>
             <GlossaryInfoIcon
               width={16}
               height={16}
               glossaryId={TooltipLocations.PROFILE_MINING_WALLET}
             />
-          </Flex>
-        </Box>
-        <Flex
-          w="100%"
-          gap="20px"
-          flexWrap="wrap"
-          alignItems="start"
-          justifyContent={{ base: 'start', sm: 'space-between' }}
-        >
+          </div>
+        </div>
+        <div className="flex w-full flex-wrap items-start justify-start gap-[20px] sm:justify-between">
           {/* Wax Trilium */}
-          <Flex justifyContent="start" gap={3}>
+          <div className="flex justify-start gap-3">
             <WaxIcon color={Colors.DI_SERRIA} boxSize={40} style={{ position: 'relative' }} />
-            <Flex direction="column" justifyContent="end">
-              <Text lineHeight="0.8" fontFamily="Orbitron" fontSize={{ base: '16px', md: '20px' }}>
+            <div className="flex flex-col justify-end">
+              <p
+                className="text-[16px] leading-[0.8] md:text-[20px]"
+                style={{ fontFamily: 'Orbitron, sans-serif' }}
+              >
                 {formatNumber(walletDetails.tlm_balance, 4, 4)}
-              </Text>
-              <Text
-                fontFamily="Titillium Web"
-                fontWeight="bold"
-                fontSize={12}
-                letterSpacing="0.1em"
-                color={Colors.DI_SERRIA}
+              </p>
+              <p
+                className="text-[12px] font-bold tracking-[0.1em]"
+                style={{ fontFamily: "'Titillium Web', sans-serif", color: Colors.DI_SERRIA }}
               >
                 WAX Trillium
-              </Text>
-            </Flex>
-          </Flex>
+              </p>
+            </div>
+          </div>
           {/* Staked Wax Trilium */}
           {totalDAOsStakes > 0 && (
-            <Flex
-              justifyContent="start"
-              color={Colors.RADICAL_RED}
-              gap={3}
-              minW={{ base: '200px', '2xl': '235px' }}
+            <div
+              className="flex min-w-[200px] justify-start gap-3 2xl:min-w-[235px]"
+              style={{ color: Colors.RADICAL_RED }}
             >
-              <Box w={10} position="relative" fill={Colors.RADICAL_RED}>
-                <Icon
-                  as={LockIcon}
-                  boxSize={30}
-                  height="auto"
-                  position="absolute"
-                  left={5}
-                  bottom={4}
-                  zIndex={2}
+              <div className="relative w-[40px]" style={{ fill: Colors.RADICAL_RED }}>
+                <LockIcon
+                  className="absolute z-[2] h-auto w-[30px]"
+                  style={{ bottom: '16px', left: '20px' }}
                 />
                 <WaxIcon boxSize={40} color={Colors.RADICAL_RED} />
-              </Box>
-              <Flex direction="column" justifyContent="end">
-                <Text
-                  lineHeight="0.8"
-                  fontFamily="Orbitron"
-                  color={Colors.SNOW_WHITE}
-                  fontSize={{ base: '16px', md: '20px' }}
+              </div>
+              <div className="flex flex-col justify-end">
+                <p
+                  className="text-[16px] leading-[0.8] md:text-[20px]"
+                  style={{ fontFamily: 'Orbitron, sans-serif', color: Colors.SNOW_WHITE }}
                 >
                   {formatNumber(totalDAOsStakes, 4, 4)}
-                </Text>
-                <Text
-                  fontSize={12}
-                  fontWeight="bold"
-                  letterSpacing="0.1em"
-                  color={Colors.RADICAL_RED}
-                  fontFamily="Titillium Web"
+                </p>
+                <p
+                  className="text-[12px] font-bold tracking-[0.1em]"
+                  style={{ color: Colors.RADICAL_RED, fontFamily: "'Titillium Web', sans-serif" }}
                 >
                   Staked WAX Trillium
-                </Text>
-              </Flex>
-            </Flex>
+                </p>
+              </div>
+            </div>
           )}
-        </Flex>
-      </Flex>
+        </div>
+      </div>
       {/* SHARDS */}
-      <Flex
-        w="100%"
-        direction="column"
-        alignItems="start"
-        paddingInline={{ base: '5%', '2xl': '0px' }}
-      >
-        <Box mb={4} alignSelf={{ base: 'start', md: 'start' }}>
-          <Flex>
+      <div className="flex w-full flex-col items-start px-[5%] 2xl:px-0">
+        <div className="mb-4 self-start">
+          <div className="flex">
             <ShardsIcon color={Colors.GRAY} boxSize="20px" />
-            <Text ml={2} mb={1} fontSize="small" color={Colors.GRAY} fontFamily="Orbitron">
+            <p
+              className="mb-1 ml-2 text-sm font-normal"
+              style={{ color: Colors.GRAY, fontFamily: 'Orbitron, sans-serif' }}
+            >
               Shards
-            </Text>
-          </Flex>
-        </Box>
-        <Flex
-          w="100%"
-          gap="20px"
-          flexWrap="wrap"
-          alignItems="start"
-          justifyContent={{ base: 'start', sm: 'space-between' }}
-        >
+            </p>
+          </div>
+        </div>
+        <div className="flex w-full flex-wrap items-start justify-start gap-[20px] sm:justify-between">
           {/* Current Shards */}
-          <Flex justifyContent="start">
-            <Flex alignItems="center" justifyContent="center" h="30px" mr="10px">
+          <div className="flex justify-start">
+            <div className="mr-[10px] flex h-[30px] items-center justify-center">
               <ShardsIcon boxSize="40px" color={Colors.SNOW_WHITE} />
-            </Flex>
+            </div>
 
-            <Flex direction="column" alignItems="start">
-              <Text
-                ml="5px"
-                fontWeight={400}
-                fontFamily="orb"
-                textAlign="center"
-                letterSpacing="0.1em"
-                color={Colors.SNOW_WHITE}
-                fontSize={{ base: '16px', md: '20px' }}
+            <div className="flex flex-col items-start">
+              <p
+                className="ml-[5px] text-center text-[16px] font-normal tracking-[0.1em] md:text-[20px]"
+                style={{ fontFamily: 'Orbitron, sans-serif', color: Colors.SNOW_WHITE }}
               >
                 {formatUserPointsWithDecimal(
                   get(walletDetails, 'userpoints_details.redeemable_points', 0)
                 )}
-              </Text>
-            </Flex>
-          </Flex>
+              </p>
+            </div>
+          </div>
           {/* Use Shards */}
-          <Flex
-            w={{ base: '100%', sm: 'auto' }}
-            minW={{ base: '100%', md: 'max-content', '2xl': '235px' }}
-            maxW={{ base: '100%', md: 'max-content', '2xl': '235px' }}
-            justifyContent={{ base: 'center', '2xl': 'start' }}
-          >
+          <div className="flex w-full max-w-full justify-center sm:w-auto sm:max-w-none md:max-w-max md:min-w-max 2xl:min-w-[235px] 2xl:max-w-[235px] 2xl:justify-start">
             <Button
               size="md"
               fontSize={16}
@@ -209,66 +161,48 @@ export const WalletsBalances: VFC = () => {
             >
               Use Shards
             </Button>
-          </Flex>
-        </Flex>
-      </Flex>
+          </div>
+        </div>
+      </div>
       {/* MISSIONS */}
-      <Flex
-        w="100%"
-        direction="column"
-        alignItems="start"
-        paddingInline={{ base: '5%', '2xl': '0px' }}
-      >
-        <Box mb={4} alignSelf={{ base: 'start', md: 'start' }}>
-          <Flex>
+      <div className="flex w-full flex-col items-start px-[5%] 2xl:px-0">
+        <div className="mb-4 self-start">
+          <div className="flex">
             <MissionsIcon color={Colors.GRAY} boxSize="20px" />
-            <Flex gap="7px">
-              <Text ml={2} fontSize="small" color={Colors.GRAY} fontFamily="Orbitron">
+            <div className="flex gap-[7px]">
+              <p
+                className="ml-2 text-sm font-normal"
+                style={{ color: Colors.GRAY, fontFamily: 'Orbitron, sans-serif' }}
+              >
                 Missions BSC Wallets
-              </Text>
+              </p>
               <GlossaryInfoIcon
                 width={16}
                 height={16}
                 glossaryId={TooltipLocations.PROFILE_MISSIONS_WALLET}
               />
-            </Flex>
-          </Flex>
-        </Box>
-        <Flex
-          w="100%"
-          gap="20px"
-          flexWrap="wrap"
-          alignItems="start"
-          justifyContent={{ base: 'center', '2xl': 'start' }}
-        >
+            </div>
+          </div>
+        </div>
+        <div className="flex w-full flex-wrap items-start justify-center gap-[20px] 2xl:justify-start">
           {(wallet.connectedWallets.length === 0 || wallet.connecting) && (
-            <Flex
-              w="100%"
-              alignItems="start"
-              justifyContent={{ base: 'center', sm: 'space-between' }}
-            >
+            <div className="flex w-full items-start justify-center sm:justify-between">
               <ConnectWalletBtn onClick={() => wallet.connect()} />
-            </Flex>
+            </div>
           )}
           {wallet.connectedChain &&
             parseInt(wallet.connectedChain.id, 16) === config.BscChainId && (
-              <Flex
-                w="100%"
-                gap="20px"
-                flexWrap="wrap"
-                alignItems="start"
-                justifyContent={{ base: 'start', sm: 'space-between' }}
-              >
-                <Flex justifyContent="start" ml="-10px" minW="200px">
+              <div className="flex w-full flex-wrap items-start justify-start gap-[20px] sm:justify-between">
+                <div className="ml-[-10px] flex min-w-[200px] justify-start">
                   <TriliumBSCBalance />
-                </Flex>
-                <Flex justifyContent="start" minW={{ base: '200px', md: '235px' }} gap={3}>
+                </div>
+                <div className="flex min-w-[200px] justify-start gap-3 md:min-w-[235px]">
                   <StakedTriliumBalance />
-                </Flex>
-              </Flex>
+                </div>
+              </div>
             )}
-        </Flex>
-      </Flex>
-    </Flex>
+        </div>
+      </div>
+    </div>
   )
 }
