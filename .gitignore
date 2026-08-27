@@ -15,6 +15,15 @@ dist/
 # production
 /build
 
+# tailwind (generated from src/shared/styles/tailwind/tailwind.input.css)
+src/shared/styles/tailwind/tailwind.generated.css
+
+# playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+
 # misc
 .DS_Store
 /.idea

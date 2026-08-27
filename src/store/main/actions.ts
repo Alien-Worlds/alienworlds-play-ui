@@ -653,19 +653,6 @@ export const showShiningPage = pipe(
   })
 )
 
-export const showArenaPortalPage = pipe(
-  ({ actions }: Context) => {
-    actions.main.toggleMainDrawer(false)
-    actions.wax.collectEvent({
-      name: Constants.GA_PAGE_VISIT,
-      fields: { location: PagePath.ArenaPortal },
-    })
-  },
-  catchError((_: Context, error) => {
-    console.error(error)
-  })
-)
-
 export const showGovernancePage = pipe(
   ({ state, actions }: Context) => {
     actions.main.toggleMainDrawer(false)

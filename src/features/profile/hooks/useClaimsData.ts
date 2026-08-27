@@ -5,13 +5,14 @@
  * It provides functionality for fetching and claiming rewards.
  */
 
-import { useState, useMemo } from 'react'
+import { useMemo } from 'react'
 
 import { useUserDaoBalances } from 'graphql/hooks/useUserDaoBalances'
 import { useWalletDetails } from 'graphql/hooks/useWalletDetails'
 import { useAppState, useActions } from 'store'
 
 import { CLAIMS_CONSTANTS } from '../constants/profile.constants'
+import { useProfileStore } from '../store/profileStore'
 import { ClaimableReward, UseClaimsDataReturn } from '../types/profile.types'
 import { calculateTimeRemaining, isRewardClaimable, generateClaimKey } from '../utils/profile.utils'
 
@@ -32,7 +33,8 @@ export const useClaimsData = (): UseClaimsDataReturn => {
   const { walletDetails, loading: walletLoading } = useWalletDetails(walletId)
   const { userDaoBalances, loading: daoLoading } = useUserDaoBalances({ walletId })
 
-  const [claimingStates, setClaimingStates] = useState<Record<string, boolean>>({})
+  const claimingStates = useProfileStore((state) => state.claimingStates)
+  const setClaiming = useProfileStore((state) => state.setClaiming)
 
   const claims = useMemo((): ClaimableReward[] => {
     if (!walletDetails || !userDaoBalances) return []
@@ -96,7 +98,7 @@ export const useClaimsData = (): UseClaimsDataReturn => {
     const claimKey = generateClaimKey(type, planetId)
 
     try {
-      setClaimingStates((prev) => ({ ...prev, [claimKey]: true }))
+      setClaiming(claimKey, true)
 
       switch (type) {
         case 'mining':
@@ -120,7 +122,7 @@ export const useClaimsData = (): UseClaimsDataReturn => {
       console.error('Claim failed:', error)
       throw error
     } finally {
-      setClaimingStates((prev) => ({ ...prev, [claimKey]: false }))
+      setClaiming(claimKey, false)
     }
   }
 

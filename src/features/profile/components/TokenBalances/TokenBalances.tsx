@@ -1,6 +1,5 @@
 import { VFC } from 'react'
 
-import { Flex } from '@chakra-ui/react'
 import { PlanetaryClaims } from 'features/profile/components/PlanetaryClaims/PlanetaryClaims'
 import { PlanetaryTokens } from 'features/profile/components/PlanetaryTokens/PlanetaryTokens'
 // import { useWalletDaoDetails } from 'graphql/hooks/useWalletDaoDetails'
@@ -60,18 +59,9 @@ export const TokensBalances: VFC = () => {
   // }, [planetStakes])
 
   return (
-    <Flex
-      h="100%"
-      gap="25px"
-      minW="200px"
-      flexWrap="wrap"
-      direction="column"
-      pt={{ base: '0px', md: '25px' }}
-      w={{ base: '100%', '2xl': '50%' }}
-      pl={{ base: '0px', '2xl': '30px' }}
-    >
+    <div className="flex h-full min-w-[200px] flex-col flex-wrap gap-[25px] pt-0 w-full 2xl:w-1/2 pl-0 2xl:pl-[30px] md:pt-[25px]">
       <PlanetaryClaims />
       <PlanetaryTokens />
-    </Flex>
+    </div>
   )
 }

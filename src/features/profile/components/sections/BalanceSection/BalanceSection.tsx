@@ -8,7 +8,6 @@
 import React from 'react'
 
 import { NFTOldIcon, WaxIcon } from '@alien-worlds/icons'
-import { Flex } from '@chakra-ui/react'
 import { Colors } from 'shared/util/colors'
 import { formatUserPointsWithDecimal } from 'shared/util/helpers'
 
@@ -24,12 +23,9 @@ export const BalanceSection: React.FC = () => {
   }
 
   return (
-    <Flex
-      backgroundColor={Colors.BLACK_NEUTRAL}
-      p="16px"
-      direction="column"
-      gap={2}
-      borderRadius="12px"
+    <div
+      className="flex flex-col gap-2 rounded-[12px] p-[16px]"
+      style={{ backgroundColor: Colors.BLACK_NEUTRAL }}
     >
       <BalanceCard
         icon={<WaxIcon h="20px" w="20px" />}
@@ -44,6 +40,6 @@ export const BalanceSection: React.FC = () => {
         amount={formatUserPointsWithDecimal(balanceData.shards)}
         currency=""
       />
-    </Flex>
+    </div>
   )
 }

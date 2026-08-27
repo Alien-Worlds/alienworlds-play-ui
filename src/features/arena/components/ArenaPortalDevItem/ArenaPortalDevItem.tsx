@@ -1,102 +1,54 @@
 import { Button } from '@alien-worlds/uikit'
-import { AspectRatio, Box, Flex, Link, VStack, useBreakpointValue } from '@chakra-ui/react'
-import styled from '@emotion/styled/macro'
-import { Colors } from 'shared/util/colors'
 import { ArenaPortalDevItemType } from 'features/arena/pages/Arena'
 
 type ArenaPortalDevItemProps = {
   data: ArenaPortalDevItemType
 }
 
-const CardWrap = styled(Box)`
-  height: 100%;
-  left: 0;
-  position: absolute;
-  top: 0;
-  width: 100%;
-`
-
-const CardBorder = styled(Box)`
-  border: 30px solid;
-  border-image: url('/images/alienworlds-db-card-border.svg');
-  border-image-repeat: stretch;
-  border-image-slice: 50 40 40;
-  border-image-width: 10px 15px 15px;
-  height: 100%;
-  left: 0;
-  opacity: 0.3;
-  position: absolute;
-  top: 0;
-  width: 100%;
-`
-
-const CardContainer = styled(AspectRatio)`
-  background-color: rgba(0, 0, 0, 1);
-  border-radius: 20px;
-  overflow: hidden;
-  position: relative;
-  box-sizing: border-box;
-`
-
 export const ArenaPortalDevItem = ({ data }: ArenaPortalDevItemProps) => {
-  const currentButtonSize = useBreakpointValue({ base: '90%', sm: '100%' })
   return (
-    <CardContainer height={{ base: '650px', sm: '600px', md: '100%', xl: '600px' }}>
-      <CardWrap>
-        <CardBorder />
-        <VStack
-          backgroundColor={Colors.BLACK_SOLID_65}
-          borderRadius="20px 20px 0 0"
-          width="100%"
-          height="inherit"
-          justifyContent="space-between"
-        >
-          <VStack
-            bgImage={`url(${data.image})`}
-            bgPosition="center"
-            bgRepeat="no-repeat"
-            w="full"
-            h="290px"
-            minHeight="215px"
-            justifyContent="flex-end"
-            borderRadius="20px 20px 0 0"
-            backgroundSize="cover"
+    <div className="relative box-border h-[650px] overflow-hidden rounded-[20px] bg-black sm:h-[600px] md:h-full xl:h-[600px]">
+      <div className="absolute left-0 top-0 h-full w-full">
+        <div
+          className="absolute left-0 top-0 h-full w-full opacity-30"
+          style={{
+            border: '30px solid',
+            borderImage: "url('/images/alienworlds-db-card-border.svg')",
+            borderImageRepeat: 'stretch',
+            borderImageSlice: '50 40 40',
+            borderImageWidth: '10px 15px 15px',
+          }}
+        />
+        <div className="flex h-full w-full flex-col items-center justify-between rounded-t-[20px] bg-[rgba(0,0,0,0.65)]">
+          <div
+            className="flex h-[290px] w-full min-h-[215px] flex-col justify-end rounded-t-[20px] bg-cover bg-center bg-no-repeat"
+            style={{ backgroundImage: `url(${data.image})` }}
           >
-            <Flex width="full" py={6} background={Colors.ARENA_PORTAL_ITEM_GRADIENT} />
-          </VStack>
+            <div className="w-full bg-[linear-gradient(180deg,rgba(0,0,0,0)_0%,#000000_100%)] py-6" />
+          </div>
 
-          <VStack p="24px" w="100%">
-            <Flex
-              px="15px"
-              fontSize={{ base: 32, md: 24, lg: 32 }}
-              fontFamily="orb"
-              whiteSpace="pre-line"
-              letterSpacing="0.1em"
-              alignSelf="flex-start"
-            >
+          <div className="flex w-full flex-col items-center p-[24px]">
+            <div className="self-start whitespace-pre-line px-[15px] font-orb text-[32px] tracking-[0.1em] md:text-2xl lg:text-[32px]">
               {data.title}
-            </Flex>
+            </div>
 
-            <Flex fontSize={14} pb={8} px="15px" fontFamily="tlm" w="100%">
-              {data.description}
-            </Flex>
+            <div className="w-full px-[15px] pb-8 font-tlm text-sm">{data.description}</div>
 
-            <Flex w="full" textAlign="center" pb="15px">
-              <Link href={data.url} target="_blank" w="full">
+            <div className="w-full pb-[15px] text-center">
+              <a href={data.url} target="_blank" rel="noreferrer" className="block w-full">
                 <Button
                   size="lg"
                   variant="primary"
-                  isFullWidth
                   fontSize={22}
-                  maxWidth={currentButtonSize}
+                  className="mx-auto w-[90%] sm:w-full"
                 >
                   Join Now
                 </Button>
-              </Link>
-            </Flex>
-          </VStack>
-        </VStack>
-      </CardWrap>
-    </CardContainer>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   )
 }
