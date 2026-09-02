@@ -7,16 +7,7 @@
 
 import React, { Component, ErrorInfo, ReactNode } from 'react'
 
-import {
-  Box,
-  Text,
-  Button,
-  VStack,
-  Alert,
-  AlertIcon,
-  AlertTitle,
-  AlertDescription,
-} from '@chakra-ui/react'
+import { Button } from '@alien-worlds/uikit'
 
 import { ErrorBoundaryProps } from '../../types'
 
@@ -33,27 +24,22 @@ const DefaultErrorFallback: React.FC<{ error: Error; resetError: () => void }> =
   error,
   resetError,
 }) => (
-  <Box p={6} textAlign="center">
-    <Alert status="error" borderRadius="md" mb={4}>
-      <AlertIcon />
-      <Box>
-        <AlertTitle>Something went wrong!</AlertTitle>
-        <AlertDescription>
-          An error occurred while loading the inventory. Please try refreshing the page.
-        </AlertDescription>
-      </Box>
-    </Alert>
+  <div className="p-6 text-center">
+    <div className="mb-4 rounded-md bg-red-950/60 p-4 text-left text-red-100">
+      <p className="font-bold">Something went wrong!</p>
+      <p className="text-sm">
+        An error occurred while loading the inventory. Please try refreshing the page.
+      </p>
+    </div>
 
-    <VStack spacing={4}>
-      <Text fontSize="sm" color="gray.500" fontFamily="mono">
-        {error.message}
-      </Text>
+    <div className="flex flex-col items-center gap-4">
+      <p className="font-mono text-sm text-gray-400">{error.message}</p>
 
-      <Button colorScheme="blue" onClick={resetError} size="sm">
+      <Button variant="primary" size="sm" onClick={resetError}>
         Try Again
       </Button>
-    </VStack>
-  </Box>
+    </div>
+  </div>
 )
 
 /**
