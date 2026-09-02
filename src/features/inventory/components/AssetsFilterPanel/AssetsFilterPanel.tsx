@@ -2,7 +2,7 @@ import { VFC } from 'react'
 
 import { ReverseSortingIcon, SortingIcon } from '@alien-worlds/icons'
 import { Button } from '@alien-worlds/uikit'
-import { css, Checkbox, Flex, Tab, TabList, Text, Container, Tabs } from '@chakra-ui/react'
+import { Checkbox, Tab, TabGroup, TabList } from '@headlessui/react'
 import { GlossaryInfoIcon } from 'features/glossary/components/GlossaryInfoIcon/GlossaryInfoIcon'
 import { TooltipLocations } from 'features/glossary/utils/glossaryConst'
 import { matchPath } from 'react-router'
@@ -18,27 +18,6 @@ import {
 } from 'store/atomic/helpers'
 import { AssetSchema, AssetType, SortBy } from 'store/atomic/types'
 import { PagePath } from 'store/main/types'
-
-const TabItemStyle = {
-  fontFamily: 'Titillium Web',
-  color: '#afafaf',
-  fontWeight: 'bold',
-  letterSpacing: '0.1em',
-  borderRadius: 17.5,
-  _selected: {
-    backgroundColor: 'whiteAlpha.500',
-    color: 'white',
-  },
-  _focus: {
-    outline: 0,
-  },
-}
-
-const TabListStyle = {
-  borderWidth: '2px',
-  borderColor: 'whiteAlpha.500',
-  borderRadius: 20,
-}
 
 const AssetsFilterPanel: VFC = () => {
   const isToolsPage = matchPath(PagePath.Tools, router.state.location.pathname)
@@ -96,43 +75,32 @@ const AssetsFilterPanel: VFC = () => {
   if (!assetsFilter?.view) return <></>
 
   return (
-    <Container maxW="container.xl">
-      <Flex align="center" justify="center" overflow="visible" gap={2} wrap="wrap">
-        <Flex
-          justifyContent="center"
-          alignItems="center"
-          gap={2}
-          width={{ base: '100%', md: '60%' }}
-          flex="1 1 auto"
-        >
-          <Tabs
-            overflowX="hidden"
-            index={assetsFilter.view.selectedTabIndex}
+    <div className="mx-auto max-w-screen-xl">
+      <div className="flex flex-wrap items-center justify-center gap-2 overflow-visible">
+        <div className="flex w-full flex-[1_1_auto] items-center justify-center gap-2 md:w-3/5">
+          <TabGroup
+            selectedIndex={assetsFilter.view.selectedTabIndex}
             onChange={onSelectAssetSchema}
           >
             <TabList
-              {...TabListStyle}
-              css={css({
-                scrollbarWidth: 'none',
-                '::-webkit-scrollbar': { display: 'none' },
-                overflowScrolling: 'touch',
-                boxShadow: 'inset 0 -2px 0 rgba(0, 0, 0, 0.1)',
-                overflowX: 'scroll',
-              })}
+              className="flex items-center overflow-x-scroll rounded-[20px] border-2 border-white/50 shadow-[inset_0_-2px_0_rgba(0,0,0,0.1)] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+              style={{ overscrollBehavior: 'contain' }}
             >
               {assetsFilter.view.tabOptions.map((tab, index) => (
                 <Tab
-                  {...TabItemStyle}
-                  onClick={() => {
-                    onSelectAssetSchema(index)
-                  }}
                   key={index}
+                  onClick={() => onSelectAssetSchema(index)}
+                  className={({ selected }) =>
+                    `whitespace-nowrap rounded-[17.5px] px-4 py-2 font-tlm text-sm font-bold tracking-[0.1em] outline-none ${
+                      selected ? 'bg-white/50 text-white' : 'text-[#afafaf]'
+                    }`
+                  }
                 >
                   {tab.name}
                 </Tab>
               ))}
             </TabList>
-          </Tabs>
+          </TabGroup>
 
           <GlossaryInfoIcon
             width={23}
@@ -140,41 +108,30 @@ const AssetsFilterPanel: VFC = () => {
             glossaryId={TooltipLocations.INVENTORY_TABS}
             mr={3}
           />
-        </Flex>
+        </div>
 
         {isInventoryPage &&
           assetsFilter?.view?.tabOptions[assetsFilter?.view?.selectedTabIndex]?.name !== 'Land' && (
-            <Checkbox
-              isChecked={assetsFilter.groupByTemplate}
-              onChange={() => changeGroupByTemplate(!assetsFilter.groupByTemplate)}
-              fontFamily="Titillium Web"
-              letterSpacing="0.1em"
-              flex={0}
-            >
+            <label className="flex shrink-0 cursor-pointer items-center gap-2 font-tlm tracking-[0.1em]">
+              <Checkbox
+                checked={assetsFilter.groupByTemplate}
+                onChange={changeGroupByTemplate}
+                className="flex size-5 items-center justify-center rounded border-2 border-white/50 text-white data-[checked]:bg-white/50"
+              >
+                {assetsFilter.groupByTemplate && '✓'}
+              </Checkbox>
               Group
-            </Checkbox>
+            </label>
           )}
 
-        <Flex align="center" justifyContent="center" gap={5} wrap="wrap">
-          <Flex
-            alignItems="center"
-            position="relative"
-            zIndex={1000}
-            overflowY="visible"
-            flexWrap="wrap"
-            justifyContent="space-around"
-            rowGap={4}
-            ml="10px"
-          >
-            <Text
-              mr={2}
-              fontFamily="tlm"
-              letterSpacing="0.1em"
-              color={Colors.SNOW_WHITE}
-              whiteSpace="nowrap"
+        <div className="flex flex-wrap items-center justify-center gap-5">
+          <div className="relative z-[1000] ml-[10px] flex flex-wrap items-center justify-around gap-y-4 overflow-y-visible">
+            <p
+              className="mr-2 whitespace-nowrap font-tlm tracking-[0.1em]"
+              style={{ color: Colors.SNOW_WHITE }}
             >
               Sort by
-            </Text>
+            </p>
 
             <SortBySelector
               defaultValue={isToolsPage ? defaultSortByRarityOption : defaultSortByNameOption}
@@ -195,10 +152,10 @@ const AssetsFilterPanel: VFC = () => {
             >
               {assetsFilter.reversed ? 'Z-A' : 'A-Z'}
             </Button>
-          </Flex>
-        </Flex>
-      </Flex>
-    </Container>
+          </div>
+        </div>
+      </div>
+    </div>
   )
 }
 
