@@ -1,7 +1,6 @@
 import { useState, VFC, useEffect } from 'react'
 
 import { Dropdown, Option } from '@alien-worlds/uikit'
-import { Flex } from '@chakra-ui/react'
 import { map, filter } from 'lodash'
 import { useNavigate } from 'react-router-dom'
 import { useAppState, useActions } from 'store'
@@ -62,7 +61,7 @@ const FilterBySelectorMobile: VFC = () => {
   if (!assetsFilter?.view || items.length === 0) return <></>
 
   return (
-    <Flex direction="column" position="relative" minW="130px">
+    <div className="relative flex min-w-[130px] flex-col">
       <Dropdown
         defaultValue={[items[0]]}
         options={items}
@@ -72,7 +71,7 @@ const FilterBySelectorMobile: VFC = () => {
         variant="simple"
         size="md"
       />
-    </Flex>
+    </div>
   )
 }
 
