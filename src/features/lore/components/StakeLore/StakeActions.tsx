@@ -1,5 +1,4 @@
 import { Button, FormField } from '@alien-worlds/uikit'
-import { Flex, Grid, GridItem, Box } from '@chakra-ui/react'
 import { StakeDailyRewardBanner } from 'features/lore/components/StakeLore/StakeDailyRewardBanner'
 import { Formik } from 'formik'
 import { toNumber } from 'lodash'
@@ -32,13 +31,8 @@ export function StakeActions({
   const normalizedWalletBalance = Number(walletBalance.toFixed(4))
 
   return (
-    <Flex width="100%" flexDirection="column" gap={4}>
-      <Flex
-        width="100%"
-        flexDirection={{ base: 'column', lg: 'row' }}
-        justifyContent="space-between"
-        gap={4}
-      >
+    <div className="flex w-full flex-col gap-4">
+      <div className="flex w-full flex-col justify-between gap-4 lg:flex-row">
         <Formik
           initialValues={{
             amount: '',
@@ -49,14 +43,10 @@ export function StakeActions({
         >
           {({ handleSubmit, values, setFieldValue }) => (
             <form onSubmit={handleSubmit}>
-              <Grid
-                gap={4}
-                gridTemplateColumns={{ base: 'repeat(1,1fr)', lg: 'repeat(2,1fr)' }}
-                alignItems="flex-start"
-              >
-                <GridItem alignSelf="center">
-                  <Flex direction="column" gap={2}>
-                    <Box>
+              <div className="grid grid-cols-1 items-start gap-4 lg:grid-cols-2">
+                <div className="self-center">
+                  <div className="flex flex-col gap-2">
+                    <div>
                       <FormField
                         size="md"
                         name="amount"
@@ -80,10 +70,10 @@ export function StakeActions({
                         }}
                         validate={() => validateAmount(values.amount, normalizedWalletBalance)}
                       />
-                    </Box>
-                  </Flex>
-                </GridItem>
-                <GridItem>
+                    </div>
+                  </div>
+                </div>
+                <div>
                   <Button
                     size="lg"
                     type="submit"
@@ -96,8 +86,8 @@ export function StakeActions({
                   >
                     Stake TLM
                   </Button>
-                </GridItem>
-              </Grid>
+                </div>
+              </div>
             </form>
           )}
         </Formik>
@@ -114,7 +104,7 @@ export function StakeActions({
           Unstake All TLM
         </Button>
 
-        <Box display={!isDesktop ? 'block' : 'none'}>
+        <div className={!isDesktop ? 'block' : 'hidden'}>
           <Button
             size="lg"
             variant="primary"
@@ -126,10 +116,10 @@ export function StakeActions({
           >
             Submit Lore
           </Button>
-        </Box>
-      </Flex>
+        </div>
+      </div>
 
       <StakeDailyRewardBanner newDailyReward={newDailyReward} />
-    </Flex>
+    </div>
   )
 }

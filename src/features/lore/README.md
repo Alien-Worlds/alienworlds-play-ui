@@ -5,51 +5,74 @@
 - Centralises lore data fetching through `LoreDataProvider` to avoid duplicate network calls and make derived hooks available.
 - Splits user interactions into composable components (`Dashboard`, `StakeLore`, drawers/modals) to simplify maintenance.
 
-## Data Flow
-- `LoreDataProvider` wraps `pages/Lore` and exposes context via `useLoreData`, `useLoreLoadingState`, and helpers such as `useLiveVotePower`.
-- Queries:
-  - `useLores` → lore proposals and globals.
-  - `useWalletDetails` → wallet balances and lore voter state.
-- UI components reach data through hooks (no direct GraphQL calls).
-- Mutations and side effects remain orchestrated in store actions (`useActions`) to keep the UI declarative.
+## Structure
 
-## Key Components
-- `pages/Lore` – route-level composition that wires data, responsive layout, and modal triggers.
-- `components/Dashboard` – renders sortable lore proposal table with selection hooked to `LoreDrawer`.
-- `components/StakeLore` – stake/unstake and submission actions paired with live wallet data.
-- `components/LoreDrawer` – vote form with validations and clipboard helpers.
-- `modals/*` – submission/unstake flows, reusing shared styles and form utilities.
+```
+src/features/lore/
+├── components/
+│   ├── Dashboard/       # Lore proposal table (Tailwind), sortable, opens LoreDrawer on row select
+│   ├── LoreDrawer/       # Vote drawer (Tailwind + Headless UI Dialog), Formik vote form
+│   ├── LoreSelect/       # Mobile tab dropdown (react-select, unchanged from before)
+│   └── StakeLore/        # Stake/unstake actions, metrics, rewards explainer (all Tailwind)
+├── modals/
+│   ├── SubmitLoreModal/  # Lore submission form (Tailwind + Headless UI Dialog)
+│   └── UnstakeLoreModal/ # Unstake confirmation (Tailwind + Headless UI Dialog)
+├── data/
+│   └── LoreDataProvider.tsx  # GraphQL context: proposals, globals, wallet details
+├── hooks/
+│   ├── useLoreDashboard.ts   # Table sorting/selection logic
+│   ├── useStakeLore.ts       # Stake/unstake/claim business logic
+│   └── useLiveVotePower.ts   # Polls a locally-computed live vote power value
+├── store/
+│   └── loreStore.ts      # Zustand store for the feature's own local UI state
+├── utils/
+│   ├── staking.ts        # Token/stake amount parsing and reward math
+│   └── utils.ts          # Lore sorting + land asset filtering (shared with features/mining)
+├── types/
+│   └── loreTypes.ts
+└── pages/
+    └── Lore.tsx           # Route-level composition (Tailwind + Headless UI Tabs)
+```
 
-## Hooks
-- `useLoreData` – access raw data (`proposals`, `globals`, `walletDetails`, loading flags).
-- `useLoreLoadingState` – concise loading selector for route/feature gating.
-- `useLiveVotePower` – derives real-time vote power from globals and voter info at a configurable polling interval.
+## Where state lives
 
-## Architecture
-- `hooks/useStakeLore` and `hooks/useLoreDashboard` isolate business logic (staking flows, table selection/sorting) away from presentation.
-- Shared helpers live in `utils/staking.ts` and `utils/utils.ts`; add new token math/formatters here so both hooks and tests can reuse them.
-- UI is composed from leaf components:
-  - `StakeLore` → `StakeMetrics`, `StakeActions`, `StakeDailyRewardBanner`.
-  - `Dashboard` → `LoreTable` helpers (`SortByTh`, `loreTableBodyRenderer`) and `LoreDrawer`.
-- All network access still flows through `LoreDataProvider` → GraphQL hooks and Overmind actions.
+- **Wallet/chain data** (`isDemoUser`, `loreFilter`, staking/voting actions, modal visibility) stays
+  in Overmind's `wax`/`modal`/`main` namespaces via `useAppState`/`useActions` — it's shared app-wide
+  state, not local to this feature, so it wasn't touched by this migration.
+- **Dashboard row selection** (`selectedProposalId`, which also drives `LoreDrawer`'s open state) and
+  **the stake-amount input preview** (`stakedInput`, used to compute `newDailyReward`) are the two
+  pieces of state genuinely local to this feature. Both previously lived in ad-hoc `useState` inside
+  `useLoreDashboard`/`useStakeLore` and now live in `store/loreStore.ts` (Zustand), mirroring the
+  pattern used in `features/inventory/store/inventoryStore.ts` and `features/profile/store/profileStore.ts`.
+- All GraphQL data flows through `LoreDataProvider` → `useLoreData`/`useLoreLoadingState`/etc.
 
-## Extending the Feature
-- **Add a new dashboard column:** update `types/loreTypes.ts` → `LoreTableColumns`, adjust `loreTableRowRenderer`, and extend `LoreProposal` mapping logic in `LoreTableCellRenderer`. Keep renderers pure and format data via helpers in `utils/`.
-- **Augment staking UI:** reuse hooks from `hooks/useStakeLore` and add presentational components under `components/StakeLore/`. Form validation should remain in `StakeActions` with shared helpers (`validateAmount`).
-- **Add a modal or drawer:** create a component in `modals/` or `components/`, trigger it via Overmind actions inside hooks rather than directly from presentational code.
-- **Introduce new GraphQL data:** expose it through `LoreDataProvider` selectors, then consume via hooks—avoid placing GraphQL logic directly in components.
+## `utils/utils.ts`
+
+`filterAssets` in this file is **not** private to lore — it's imported directly by
+`features/mining/pages/Land.tsx` for land-asset filtering. It was left in place and given full test
+coverage, but wasn't relocated as part of this migration.
+
+## Styling
+
+Everything under `components/`, `modals/`, and `pages/Lore.tsx` is Tailwind CSS (see
+`tailwind.config.js`'s `content` glob), using `@headlessui/react` for the dialog/tab primitives that
+Chakra used to provide. `shared/components/FormCheckbox` (used by `SubmitLoreModal`) remains a Chakra
+component — it's shared with `features/onboarding`, so rewriting it was out of scope here, the same
+reasoning `features/inventory` used to leave `NFTCardHelper.tsx` as Chakra.
 
 ## Testing
-- Unit tests for lore utilities live under `src/features/lore/utils/__tests__/`. Run `yarn test src/features/lore/utils` to execute them.
-- When adding new helpers or hooks, include tests that cover boundary cases (empty stakes, malformed numbers, permission gating).
-- Prefer React Testing Library for components; mock `LoreDataProvider` context when exercising hooks or containers.
+
+- Every file in this feature has a co-located `*.test.tsx`/`*.test.ts`. Run `yarn test src/features/lore`.
+- `utils/staking.ts` and `utils/utils.ts` have plain unit tests (no rendering needed).
+- Component tests mock `store` (`useAppState`/`useActions`) with only the slices each file reads, and
+  mock `features/lore/data/LoreDataProvider` or the underlying GraphQL hooks where relevant — see
+  existing tests for the established mocking shape.
+- When adding new helpers or hooks, include tests that cover boundary cases (empty stakes, malformed
+  numbers, permission gating).
 
 ## Contribution Checklist
-- Run lint/tests before opening a PR (`yarn lint` / project defaults).
+- Run `yarn test` and `npx tsc --noEmit -p tsconfig.json` before opening a PR.
 - Add unit tests for new data helpers or business logic.
 - Prefer extending the hooks/services layer instead of introducing ad-hoc GraphQL calls inside components.
-- Reuse existing color tokens and typography (define missing tokens in the theme rather than inline styles).
-
-## Additional Resources
-- See `docs/lore/development.md` for environment setup, mock data strategies, and API contract notes.
-
+- Reuse existing color tokens (`shared/util/colors`) and Tailwind's `font-orb`/`font-tlm` classes rather
+  than inline font-family strings.

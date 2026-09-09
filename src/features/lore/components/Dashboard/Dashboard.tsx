@@ -1,18 +1,6 @@
 import { useState } from 'react'
 
 import { DropDownIcon, DropDownTwoWaysIcon } from '@alien-worlds/icons'
-import {
-  Flex,
-  Text,
-  TableContainer,
-  Table,
-  Thead,
-  Tr,
-  Th,
-  Tbody,
-  Td,
-  chakra,
-} from '@chakra-ui/react'
 import { LoreDrawer } from 'features/lore/components/LoreDrawer/LoreDrawer'
 import { useLoreDashboard } from 'features/lore/hooks/useLoreDashboard'
 import { LoreSortBy, LoreStatus, LoreTableColumns } from 'features/lore/types/loreTypes'
@@ -50,25 +38,18 @@ export const SortByTh = ({ sortBy, width }) => {
     })
   }
   return (
-    <Th
-      width={width}
-      border="none"
-      padding="10px"
-      cursor="pointer"
+    <th
+      style={{ width, border: 'none', padding: '10px' }}
+      className="cursor-pointer"
       onClick={() => onSelectSortBy(sortBy)}
     >
-      <chakra.span display="flex" textTransform="capitalize">
-        <Text
-          mr={2}
-          pl={3}
-          mb={4}
-          fontSize="sm"
-          fontFamily="tlm"
-          fontWeight="bold"
-          color={loreFilter.sortBy === sortBy ? Colors.SNOW_WHITE : Colors.GRAY_CHATEAU}
+      <span className="flex capitalize">
+        <p
+          className="mb-4 mr-2 pl-3 font-tlm text-sm font-bold"
+          style={{ color: loreFilter.sortBy === sortBy ? Colors.SNOW_WHITE : Colors.GRAY_CHATEAU }}
         >
           {LoreTableColumns[LoreSortBy[sortBy]]}
-        </Text>
+        </p>
         {loreFilter.sortBy === sortBy && (
           <>
             {rotate ? (
@@ -100,8 +81,8 @@ export const SortByTh = ({ sortBy, width }) => {
         )}
 
         {loreFilter.sortBy !== sortBy && <DropDownTwoWaysIcon boxSize="16px" />}
-      </chakra.span>
-    </Th>
+      </span>
+    </th>
   )
 }
 
@@ -113,7 +94,7 @@ export function loreTableRowRenderer() {
 
 export function loreTableHeaderRenderer() {
   return (
-    <Tr borderBottom="solid 1px" borderColor={Colors.JUMBO}>
+    <tr style={{ borderBottom: 'solid 1px', borderColor: Colors.JUMBO }}>
       <SortByTh sortBy={LoreSortBy.ID} width="2%" />
       <SortByTh sortBy={LoreSortBy.TITLE} width="25%" />
       <SortByTh sortBy={LoreSortBy.CREATEDBY} width="10%" />
@@ -123,22 +104,18 @@ export function loreTableHeaderRenderer() {
 
       <SortByTh sortBy={LoreSortBy.VOTES} width="5%" />
       <SortByTh sortBy={LoreSortBy.STATUS} width="8%" />
-    </Tr>
+    </tr>
   )
 }
 
-export const TLabel = ({ text, ...props }) => {
+export const TLabel = ({ text, color }: { text: string | number; color?: string }) => {
   return (
-    <Text
-      {...props}
-      fontSize="16px"
-      fontWeight={400}
-      fontFamily="tlm"
-      whiteSpace="nowrap"
-      letterSpacing="0.1em"
+    <p
+      className="whitespace-nowrap font-tlm text-[16px] font-normal tracking-[0.1em]"
+      style={{ color }}
     >
       {text}
-    </Text>
+    </p>
   )
 }
 export function loreStatusColorFinder(status: string) {
@@ -211,12 +188,12 @@ export function LoreTableCellRenderer(
       return <TLabel color={loreStatusColorFinder(lore.status)} text={startCase(lore.status)} />
     case LoreTableColumns.VOTES:
       return (
-        <Flex ml="7px">
+        <div className="ml-[7px] flex">
           <TLabel
             color={hovered ? Colors.DI_SERRIA : Colors.SNOW_WHITE}
             text={lore.total_yes_votes + '/' + lore.total_no_votes}
           />
-        </Flex>
+        </div>
       )
 
     default:
@@ -234,36 +211,33 @@ export function loreTableBodyRenderer({
   selectedProposalId: number | null
   onSelectLore: (lore: LoreProposal) => void
 }) {
-  const MotionTr = motion(Tr)
-  const MotionTbody = motion(Tbody)
-
   return (
-    <MotionTbody>
+    <motion.tbody>
       {map(lores, (lore) => {
         const isSelected = selectedProposalId === lore.proposal_id
 
         return (
-          <MotionTr
+          <motion.tr
             key={lore.proposal_id}
-            cursor="pointer"
-            height="58px"
-            p={4}
-            _hover={{ borderRadius: '8px', backgroundColor: Colors.MINE_SHAFT }}
+            className="h-[58px] cursor-pointer p-4 hover:rounded-lg hover:bg-[rgba(46,46,46,1)]"
             onClick={() => {
               onSelectLore(lore)
             }}
           >
             {map(loreTableRowRenderer(), (header: string) => {
               return (
-                <Td key={`${lore.proposal_id}-${header}`} p={0} pl={5} border="none">
+                <td
+                  key={`${lore.proposal_id}-${header}`}
+                  style={{ padding: 0, paddingLeft: '20px', border: 'none' }}
+                >
                   {LoreTableCellRenderer(header, lore, isSelected)}
-                </Td>
+                </td>
               )
             })}
-          </MotionTr>
+          </motion.tr>
         )
       })}
-    </MotionTbody>
+    </motion.tbody>
   )
 }
 
@@ -280,41 +254,35 @@ const Dashboard = ({ currentNumber }: { currentNumber: number }) => {
   if (isLoading) return <LoadingSpinner />
 
   return (
-    <Flex direction="column" gap={4}>
-      <Flex justifyContent="space-between" px={4}>
-        <Text fontSize="24px" fontWeight={600} fontFamily="tlm">
-          Click on a proposal to vote on lore
-        </Text>
-        <Text fontSize="20px" fontFamily="orb" fontWeight={400} color={Colors.CARIBBEAN_GREEN}>
+    <div className="flex flex-col gap-4">
+      <div className="flex justify-between px-4">
+        <p className="font-tlm text-[24px] font-semibold">Click on a proposal to vote on lore</p>
+        <p className="font-orb text-[20px] font-normal" style={{ color: Colors.CARIBBEAN_GREEN }}>
           {currentNumber} VP Available
-        </Text>
-      </Flex>
+        </p>
+      </div>
       <LoreDrawer
         isOpen={selectedLore !== null}
         onClose={clearSelection}
         lore={selectedLore}
         currentNumber={currentNumber}
       />
-      <Flex
-        backgroundColor={Colors.COD_GRAY}
-        opacity="0.9"
-        padding="40px"
-        borderRadius="20px"
-        flexDirection="column"
-        gap={4}
+      <div
+        className="flex flex-col gap-4 rounded-[20px] p-10"
+        style={{ backgroundColor: Colors.COD_GRAY, opacity: 0.9 }}
       >
-        <TableContainer>
-          <Table variant="simple">
-            <Thead>{loreTableHeaderRenderer()}</Thead>
+        <div className="w-full overflow-x-auto">
+          <table className="w-full">
+            <thead>{loreTableHeaderRenderer()}</thead>
             {loreTableBodyRenderer({
               lores: sortedLores,
               selectedProposalId,
               onSelectLore: (lore) => handleSelectLore(lore.proposal_id),
             })}
-          </Table>
-        </TableContainer>
-      </Flex>
-    </Flex>
+          </table>
+        </div>
+      </div>
+    </div>
   )
 }
 

@@ -1,18 +1,9 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { Button, Dropdown, FormField, FormTextarea, Option } from '@alien-worlds/uikit'
 import { useApolloClient } from '@apollo/client'
-import {
-  Modal,
-  ModalContent,
-  ModalBody,
-  ModalCloseButton,
-  Text,
-  Flex,
-  Box,
-  ModalOverlay,
-} from '@chakra-ui/react'
 import { SerializedStyles, css } from '@emotion/react'
+import { Dialog, DialogPanel } from '@headlessui/react'
 import { LoadingSpinner } from 'features/syndicates/components/LoadingSpinner'
 import { Formik } from 'formik'
 import { useLores } from 'graphql/hooks/useLoreProposals'
@@ -99,35 +90,40 @@ const SubmitLoreModal = () => {
 
   if (loadingLores) return <LoadingSpinner />
   return (
-    <Modal
-      size="md"
-      isOpen={secondaryModals.SubmitLoreModal}
+    <Dialog
+      open={!!secondaryModals.SubmitLoreModal}
       onClose={() => handleClose()}
-      isCentered
+      // Chakra's theme sets zIndices.modal/topbar to 20000/21000 (see shared/styles/theme.ts),
+      // so the persistent sidebar and top bar would otherwise render above this Tailwind dialog.
+      className="relative z-[30000]"
     >
-      <ModalOverlay />
-      <ModalContent
-        background={Colors.BLACK_SOLID_90}
-        justifyContent="center"
-        style={{
-          border: 'double 1px transparent',
-
-          borderRadius: '20px',
-          backgroundImage:
-            'linear-gradient(#100F10, #100F10), linear-gradient(to bottom, #9C33B6, #4F60BC,#4657A5, #009BD4)',
-          backgroundOrigin: 'border-box',
-          backgroundClip: 'content-box, border-box',
-        }}
-      >
-        <ModalCloseButton />
-        <ModalBody padding="40px">
-          <Flex flexDirection="column" gap={2}>
-            <Text fontFamily="tlm" fontSize="24px" fontWeight={600}>
-              Submit LORE
-            </Text>
-            <Text fontFamily="tlm" fontSize="16px" fontWeight={400} color={Colors.JUMBO}>
+      <div className="fixed inset-0 flex w-screen items-center justify-center p-4">
+        <DialogPanel
+          className="relative max-h-[90vh] w-full max-w-md justify-center overflow-y-auto"
+          style={{
+            background: Colors.BLACK_SOLID_90,
+            border: 'double 1px transparent',
+            borderRadius: '20px',
+            backgroundImage:
+              'linear-gradient(#100F10, #100F10), linear-gradient(to bottom, #9C33B6, #4F60BC,#4657A5, #009BD4)',
+            backgroundOrigin: 'border-box',
+            backgroundClip: 'content-box, border-box',
+          }}
+        >
+          <button
+            type="button"
+            aria-label="Close"
+            onClick={() => handleClose()}
+            className="absolute right-4 top-4 text-2xl leading-none"
+            style={{ color: Colors.SNOW_WHITE }}
+          >
+            &times;
+          </button>
+          <div className="flex flex-col gap-2 p-10">
+            <p className="font-tlm text-[24px] font-semibold">Submit LORE</p>
+            <p className="font-tlm text-[16px] font-normal" style={{ color: Colors.JUMBO }}>
               The submission for the Lore Proposal will cost a 200 TLM fee
-            </Text>
+            </p>
             <Formik
               initialValues={{
                 githubUrl: '',
@@ -154,17 +150,12 @@ const SubmitLoreModal = () => {
             >
               {({ handleSubmit, setFieldValue, values }) => (
                 <form onSubmit={handleSubmit}>
-                  <Flex
-                    direction={{ base: 'column', md: 'row' }}
-                    flexWrap="wrap"
-                    w={{ base: 'full', md: 'auto' }}
-                    gap={8}
-                  >
-                    <Flex direction="column" width="100%" gap={2} mt={4}>
-                      <Box>
-                        <Text fontFamily="Titillium Web" fontSize="14px" mb="8px" fontWeight={700}>
+                  <div className="flex w-full flex-col flex-wrap gap-8 md:w-auto md:flex-row">
+                    <div className="mt-4 flex w-full flex-col gap-2">
+                      <div>
+                        <p className="mb-2 font-tlm text-[14px] font-bold">
                           GitHub Pull Request URL
-                        </Text>
+                        </p>
                         <Dropdown
                           variant="modern"
                           options={options}
@@ -182,21 +173,16 @@ const SubmitLoreModal = () => {
                         />
 
                         {urlError && (
-                          <Text
-                            fontFamily="Titillium Web"
-                            color={Colors.RADICAL_RED}
-                            fontSize="14px"
-                            mb="8px"
-                            fontWeight={700}
+                          <p
+                            className="mb-2 font-tlm text-[14px] font-bold"
+                            style={{ color: Colors.RADICAL_RED }}
                           >
                             Github Pull Request URL is required
-                          </Text>
+                          </p>
                         )}
-                      </Box>
-                      <Box>
-                        <Text fontFamily="Titillium Web" fontSize="14px" fontWeight={700}>
-                          Title
-                        </Text>
+                      </div>
+                      <div>
+                        <p className="font-tlm text-[14px] font-bold">Title</p>
                         <FormField
                           size="md"
                           name="title"
@@ -214,18 +200,16 @@ const SubmitLoreModal = () => {
                           backgroundColor={Colors.BLACK_ALPHA_50}
                           validate={() => validateEmpty(values.title)}
                         />
-                      </Box>
-                      <Flex flexDirection="column" width="100%" gap={2}>
-                        <Text fontFamily="Titillium Web" fontSize="14px" fontWeight={700}>
-                          Description
-                        </Text>
+                      </div>
+                      <div className="flex w-full flex-col gap-2">
+                        <p className="font-tlm text-[14px] font-bold">Description</p>
                         <FormTextarea
                           name="description"
                           isFullWidth
                           placeholder="Enter a description..."
                           validate={() => validateEmpty(values.description)}
                         />
-                      </Flex>
+                      </div>
 
                       <FormCheckbox
                         name="termAndConditions"
@@ -236,7 +220,7 @@ const SubmitLoreModal = () => {
                         }}
                         alignItems="flex-start"
                       >
-                        <Text fontFamily="tlm" fontSize="12">
+                        <p className="font-tlm text-[12px]">
                           By clicking Submit Lore you acknowledge, agree and warrant that: (a) you
                           are over 18 years of age (b) your Proposal does not infringe the
                           intellectual property rights, privacy rights, publicity rights, or other
@@ -245,9 +229,9 @@ const SubmitLoreModal = () => {
                           title and interest to the Proposal and content therein, whether in words,
                           images, designs, videos etc., shall be and stand as irrevocably assigned
                           to Dacoco GmbH.
-                        </Text>
+                        </p>
                       </FormCheckbox>
-                    </Flex>
+                    </div>
 
                     <Button
                       size="lg"
@@ -265,16 +249,15 @@ const SubmitLoreModal = () => {
                     >
                       Submit Lore
                     </Button>
-                  </Flex>
+                  </div>
                 </form>
               )}
             </Formik>
-          </Flex>
-        </ModalBody>
-      </ModalContent>
-    </Modal>
+          </div>
+        </DialogPanel>
+      </div>
+    </Dialog>
   )
-  return null
 }
 
 export { SubmitLoreModal }
