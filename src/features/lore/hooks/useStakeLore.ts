@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useMemo } from 'react'
 
 import { useApolloClient } from '@apollo/client'
 import { WALLET_DETAILS_QUERY_ALL } from 'graphql/queries/walletDetails'
@@ -6,6 +6,7 @@ import { get } from 'lodash'
 import { useAppState, useActions } from 'store'
 
 import { useLoreData } from '../data/LoreDataProvider'
+import { useLoreStore } from '../store/loreStore'
 import { getDailyReward, parseStakeAmount, parseTokenAmount } from '../utils/staking'
 
 type StakeLoreHandlers = {
@@ -76,7 +77,8 @@ export function useStakeLore(): {
     [powerPerDay, stakedAmount]
   )
 
-  const [stakedInput, setStakedInput] = useState<number>(0)
+  const stakedInput = useLoreStore((state) => state.stakedInput)
+  const setStakedInput = useLoreStore((state) => state.setStakedInput)
 
   const newDailyReward = useMemo(() => {
     if (!powerPerDay) {
@@ -128,9 +130,12 @@ export function useStakeLore(): {
     setSecondaryModalActive({ modalName: 'SubmitLoreModal', value: true })
   }, [getLorePullRequests, isDemoUser, openLoginModalIfDemo, setSecondaryModalActive])
 
-  const onChangeStakeInput = useCallback((amount: number) => {
-    setStakedInput(Number.isNaN(amount) ? 0 : amount)
-  }, [])
+  const onChangeStakeInput = useCallback(
+    (amount: number) => {
+      setStakedInput(amount)
+    },
+    [setStakedInput]
+  )
 
   const onClaimReward = useCallback(async () => {
     if (isDemoUser) {

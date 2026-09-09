@@ -1,9 +1,10 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useMemo } from 'react'
 
 import { LoreProposal } from 'graphql/types'
 import { useAppState } from 'store'
 
 import { useLoreData } from '../data/LoreDataProvider'
+import { useLoreStore } from '../store/loreStore'
 import { sortLores } from '../utils/utils'
 
 type UseLoreDashboardResult = {
@@ -20,7 +21,9 @@ export function useLoreDashboard(): UseLoreDashboardResult {
   const {
     wax: { loreFilter },
   } = useAppState()
-  const [selectedProposalId, setSelectedProposalId] = useState<number | null>(null)
+  const selectedProposalId = useLoreStore((state) => state.selectedProposalId)
+  const selectProposal = useLoreStore((state) => state.selectProposal)
+  const clearSelectionInStore = useLoreStore((state) => state.clearSelection)
 
   const sortedLores = useMemo(
     () =>
@@ -37,13 +40,16 @@ export function useLoreDashboard(): UseLoreDashboardResult {
     [selectedProposalId, sortedLores]
   )
 
-  const handleSelectLore = useCallback((proposalId: number) => {
-    setSelectedProposalId(proposalId)
-  }, [])
+  const handleSelectLore = useCallback(
+    (proposalId: number) => {
+      selectProposal(proposalId)
+    },
+    [selectProposal]
+  )
 
   const clearSelection = useCallback(() => {
-    setSelectedProposalId(null)
-  }, [])
+    clearSelectionInStore()
+  }, [clearSelectionInStore])
 
   return {
     isLoading: loadingLores,

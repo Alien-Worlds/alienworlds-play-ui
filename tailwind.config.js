@@ -4,6 +4,7 @@ module.exports = {
     './src/features/arena/**/*.{ts,tsx}',
     './src/features/profile/**/*.{ts,tsx}',
     './src/features/inventory/**/*.{ts,tsx}',
+    './src/features/lore/**/*.{ts,tsx}',
   ],
   // Scoped under <body> (rather than #root) so Tailwind's utility classes win
   // over Chakra/Emotion's late-injected CSS-in-JS without needing `!important`
