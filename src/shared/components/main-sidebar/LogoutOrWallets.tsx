@@ -2,6 +2,7 @@ import { LogoutOldIcon } from '@alien-worlds/icons'
 import { Flex, Text, Image, Box } from '@chakra-ui/react'
 import walletsLine from 'assets/images/walletsLine.png'
 import { WalletsManager } from 'shared/components/main-sidebar/WalletsManager'
+import { useModalStore } from 'shared/store/modalStore'
 import { Colors } from 'shared/util/colors'
 import { clearCookies } from 'shared/util/helpers'
 import { useAppState, useActions } from 'store'
@@ -9,12 +10,12 @@ import { useAppState, useActions } from 'store'
 const LogoutOrWallets = () => {
   const {
     main: { logout },
-    modal: { setPrimaryModalActive },
   } = useActions()
   const {
     wax: { isDemoUser },
     main: { isCompactSidebar },
   } = useAppState()
+  const setPrimaryModalActive = useModalStore((state) => state.setPrimaryModalActive)
 
   const onClickLogout = () => {
     clearCookies()

@@ -30,12 +30,16 @@ jest.mock('store', () => ({
       tryStakeVotePowerLore: mockTryStakeVotePowerLore,
       tryClaimLoreReward: mockTryClaimLoreReward,
     },
-    modal: {
-      setSecondaryModalActive: mockSetSecondaryModalActive,
-      setPrimaryModalActive: mockSetPrimaryModalActive,
-    },
     main: { getLorePullRequests: mockGetLorePullRequests },
   }),
+}))
+
+jest.mock('shared/store/modalStore', () => ({
+  useModalStore: (selector: (state: unknown) => unknown) =>
+    selector({
+      setSecondaryModalActive: mockSetSecondaryModalActive,
+      setPrimaryModalActive: mockSetPrimaryModalActive,
+    }),
 }))
 
 describe('useStakeLore', () => {

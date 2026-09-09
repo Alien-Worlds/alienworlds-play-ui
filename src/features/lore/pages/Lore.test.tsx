@@ -49,12 +49,16 @@ jest.mock('store', () => ({
     wax: { isDemoUser: mockIsDemoUser },
   }),
   useActions: () => ({
-    modal: {
-      setSecondaryModalActive: mockSetSecondaryModalActive,
-      setPrimaryModalActive: mockSetPrimaryModalActive,
-    },
     main: { getLorePullRequests: mockGetLorePullRequests },
   }),
+}))
+
+jest.mock('shared/store/modalStore', () => ({
+  useModalStore: (selector: (state: unknown) => unknown) =>
+    selector({
+      setSecondaryModalActive: mockSetSecondaryModalActive,
+      setPrimaryModalActive: mockSetPrimaryModalActive,
+    }),
 }))
 
 import { Lore } from './Lore'

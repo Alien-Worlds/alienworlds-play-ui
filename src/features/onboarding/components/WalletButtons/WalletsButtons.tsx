@@ -5,12 +5,13 @@ import rectangle from 'assets/images/rectangle.png'
 import wcwLogo from 'assets/images/wcw_wallet_logo.png'
 import wombatLogo from 'assets/images/wombat_wallet_logo.png'
 import { get } from 'lodash'
+import { useModalStore } from 'shared/store/modalStore'
 import { useActions } from 'store'
 export const WalletsButtons = () => {
   const {
-    modal: { setPrimaryModalActive },
     main: { loginWaxInit, loginWombatInit },
   } = useActions()
+  const setPrimaryModalActive = useModalStore((state) => state.setPrimaryModalActive)
 
   const isWombatDisabled = get(window, 'wombat.isWombat') === undefined ? true : false
 

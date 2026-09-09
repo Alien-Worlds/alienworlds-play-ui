@@ -16,6 +16,7 @@ import {
 import { MemberTermsStatusBadge } from 'features/syndicates/components/MemberTermsStatusBadge/MemberTermsStatusBadge'
 import { motion } from 'framer-motion'
 import { find } from 'lodash'
+import { useModalStore } from 'shared/store/modalStore'
 import { Colors } from 'shared/util/colors'
 import { fallbackAvatarSrc } from 'shared/util/helpers'
 import { useActions, useAppState } from 'store'
@@ -26,13 +27,13 @@ const AnimatedBox = motion(Box)
 const WithDrawCandidancyModal = () => {
   const {
     wax: { walletId, selectedDacCandidates, generatedCandidancyProposal },
-    modal: { primaryModals },
   } = useAppState()
 
   const {
     wax: { withdrawCandidate },
-    modal: { setPrimaryModalActive },
   } = useActions()
+  const primaryModals = useModalStore((state) => state.primaryModals)
+  const setPrimaryModalActive = useModalStore((state) => state.setPrimaryModalActive)
 
   const [candidate, setCandidate] = useState<PlanetCandidateType>(null)
 

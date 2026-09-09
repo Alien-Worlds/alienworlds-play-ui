@@ -6,13 +6,12 @@ import { ExternalLinkDisclaimerModal } from './ExternalLinkDisclaimerModal'
 const mockSetSecondaryModalActive = jest.fn()
 let mockSecondaryModals: Record<string, unknown> = {}
 
-jest.mock('store', () => ({
-  useAppState: () => ({
-    modal: { secondaryModals: mockSecondaryModals },
-  }),
-  useActions: () => ({
-    modal: { setSecondaryModalActive: mockSetSecondaryModalActive },
-  }),
+jest.mock('shared/store/modalStore', () => ({
+  useModalStore: (selector: (state: unknown) => unknown) =>
+    selector({
+      secondaryModals: mockSecondaryModals,
+      setSecondaryModalActive: mockSetSecondaryModalActive,
+    }),
 }))
 
 describe('ExternalLinkDisclaimerModal', () => {

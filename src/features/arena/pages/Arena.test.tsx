@@ -5,12 +5,16 @@ import { MemoryRouter } from 'react-router-dom'
 import { Arena } from './Arena'
 
 const mockShowArenaPortalPage = jest.fn()
-const mockSetSecondaryModalActive = jest.fn()
 jest.mock('store', () => ({
   useActions: () => ({
     arena: { showArenaPortalPage: mockShowArenaPortalPage },
-    modal: { setSecondaryModalActive: mockSetSecondaryModalActive },
   }),
+}))
+
+const mockSetSecondaryModalActive = jest.fn()
+jest.mock('shared/store/modalStore', () => ({
+  useModalStore: (selector: (state: unknown) => unknown) =>
+    selector({ setSecondaryModalActive: mockSetSecondaryModalActive }),
 }))
 
 const arenaItems = [

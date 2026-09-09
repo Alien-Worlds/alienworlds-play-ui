@@ -19,8 +19,9 @@ import { motion } from 'framer-motion'
 import { useDaoDetails } from 'graphql/hooks/useDaoDetails'
 import { DaoDetailsResponse } from 'graphql/types'
 import { useNavigate } from 'react-router-dom'
+import { useModalStore } from 'shared/store/modalStore'
 import { Colors } from 'shared/util/colors'
-import { useActions, useAppState } from 'store'
+import { useAppState } from 'store'
 import { PagePath } from 'store/main/types'
 
 const AnimatedBox = motion(Box)
@@ -28,12 +29,10 @@ const AnimatedBox = motion(Box)
 const NotSignedMemberTermsModal = () => {
   const {
     wax: { selectedDacId },
-    modal: { secondaryModals },
   } = useAppState()
 
-  const {
-    modal: { setSecondaryModalActive },
-  } = useActions()
+  const secondaryModals = useModalStore((state) => state.secondaryModals)
+  const setSecondaryModalActive = useModalStore((state) => state.setSecondaryModalActive)
   const navigate = useNavigate()
   const handleClose = () => {
     setSecondaryModalActive({ modalName: 'NotSignedMemberTermsModal', value: false })

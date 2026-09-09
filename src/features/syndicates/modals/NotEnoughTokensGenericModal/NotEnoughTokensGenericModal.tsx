@@ -18,20 +18,19 @@ import { LoadingSpinner } from 'features/syndicates/components/LoadingSpinner/Lo
 import { motion } from 'framer-motion'
 import { useDaoDetails } from 'graphql/hooks/useDaoDetails'
 import { DaoDetailsResponse } from 'graphql/types'
+import { useModalStore } from 'shared/store/modalStore'
 import { Colors } from 'shared/util/colors'
-import { useActions, useAppState } from 'store'
+import { useAppState } from 'store'
 import { v4 as uuidv4 } from 'uuid'
 const AnimatedBox = motion(Box)
 
 const NotEnoughTokensGenericModal = () => {
   const {
     wax: { selectedDacId },
-    modal: { secondaryModals },
   } = useAppState()
 
-  const {
-    modal: { setSecondaryModalActive },
-  } = useActions()
+  const secondaryModals = useModalStore((state) => state.secondaryModals)
+  const setSecondaryModalActive = useModalStore((state) => state.setSecondaryModalActive)
 
   const handleClose = () => {
     setSecondaryModalActive({ modalName: 'NotEnoughTokensGenericModal', value: false })

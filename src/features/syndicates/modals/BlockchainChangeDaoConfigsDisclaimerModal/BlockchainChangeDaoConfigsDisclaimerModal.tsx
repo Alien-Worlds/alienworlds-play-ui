@@ -13,18 +13,13 @@ import {
   Link,
   useBreakpointValue,
 } from '@chakra-ui/react'
+import { useModalStore } from 'shared/store/modalStore'
 import { Colors } from 'shared/util/colors'
 import { config } from 'shared/util/config'
-import { useAppState, useActions } from 'store'
 
 const BlockchainChangeDaoConfigsDisclaimerModal = () => {
-  const {
-    modal: { secondaryModals },
-  } = useAppState()
-
-  const {
-    modal: { setSecondaryModalActive },
-  } = useActions()
+  const secondaryModals = useModalStore((state) => state.secondaryModals)
+  const setSecondaryModalActive = useModalStore((state) => state.setSecondaryModalActive)
 
   const handleClose = () => {
     setSecondaryModalActive({

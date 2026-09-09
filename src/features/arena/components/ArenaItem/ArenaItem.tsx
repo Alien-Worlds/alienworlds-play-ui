@@ -1,12 +1,10 @@
 import { ArenaPortalItemType } from 'features/arena/pages/Arena'
 import { useNavigate } from 'react-router-dom'
+import { useModalStore } from 'shared/store/modalStore'
 import { openInNewTab } from 'shared/util/helpers'
-import { useActions } from 'store'
 
 export const ArenaItem = ({ data }: { data: ArenaPortalItemType }) => {
-  const {
-    modal: { setSecondaryModalActive },
-  } = useActions()
+  const setSecondaryModalActive = useModalStore((state) => state.setSecondaryModalActive)
   const navigate = useNavigate()
   return (
     <div>

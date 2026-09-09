@@ -34,6 +34,7 @@ import { useWalletDaoDetails } from 'graphql/hooks/useWalletDaoDetails'
 import { DaoWalletDetailsResponse } from 'graphql/types'
 import { get, head, lowerCase, map, startCase, times, toLower, toNumber } from 'lodash'
 import { useMatch } from 'react-router-dom'
+import { useModalStore } from 'shared/store/modalStore'
 import { Colors } from 'shared/util/colors'
 import { formatNumber } from 'shared/util/numbers'
 import { useActions, useAppState } from 'store'
@@ -124,8 +125,8 @@ export const ProposalDrawer = ({ proposal, isOpen, onClose }: ProposalDrawerType
   } = useAppState()
   const {
     wax: { setDacCustodianProposalPayload, tryApproveProposal, tryExecuteProposal },
-    modal: { setPrimaryModalActive },
   } = useActions()
+  const setPrimaryModalActive = useModalStore((state) => state.setPrimaryModalActive)
 
   const isCustodianDashboardPage = useMatch(PagePath.GovernanceCustodianDashboard)
   const {

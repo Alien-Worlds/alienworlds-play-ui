@@ -20,6 +20,7 @@ import {
 import { VoteButton } from 'features/syndicates/utils/GovernanceHelper'
 import { Candidate } from 'graphql/types'
 import { AutoSizer, CellMeasurer, CellMeasurerCache, List, WindowScroller } from 'react-virtualized'
+import { useModalStore } from 'shared/store/modalStore'
 import { Colors } from 'shared/util/colors'
 import {
   candidatesGradientColors,
@@ -30,7 +31,6 @@ import {
   pluralize,
 } from 'shared/util/helpers'
 import { formatNumber } from 'shared/util/numbers'
-import { useActions } from 'store'
 
 import { Constants } from '../../../../shared/util/constants'
 
@@ -77,9 +77,8 @@ export const CandidateListFull = ({
       fixedWidth: true,
     })
   )
-  const {
-    modal: { setSecondaryModalActive, setPrimaryModalActive },
-  } = useActions()
+  const setSecondaryModalActive = useModalStore((state) => state.setSecondaryModalActive)
+  const setPrimaryModalActive = useModalStore((state) => state.setPrimaryModalActive)
 
   const rowFullRenderer = ({ index, key, parent, style }) => {
     const candidate = candidateList[index]

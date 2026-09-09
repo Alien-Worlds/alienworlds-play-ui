@@ -17,9 +17,10 @@ import {
 } from '@chakra-ui/react'
 import { motion } from 'framer-motion'
 import { capitalize } from 'lodash'
+import { useModalStore } from 'shared/store/modalStore'
 import { Colors } from 'shared/util/colors'
 import { convertPlanetIdToName } from 'shared/util/helpers'
-import { useActions, useAppState } from 'store'
+import { useAppState } from 'store'
 
 import { Constants } from '../../../../shared/util/constants'
 
@@ -28,12 +29,10 @@ const AnimatedBox = motion(Box)
 const UnstakeCandidancyModal = () => {
   const {
     wax: { selectedDacId },
-    modal: { primaryModals },
   } = useAppState()
 
-  const {
-    modal: { setPrimaryModalActive },
-  } = useActions()
+  const primaryModals = useModalStore((state) => state.primaryModals)
+  const setPrimaryModalActive = useModalStore((state) => state.setPrimaryModalActive)
 
   const handleClose = () => {
     setPrimaryModalActive({ modalName: 'UnstakeCandidancyModal', value: false })

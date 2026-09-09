@@ -20,6 +20,7 @@ import { NewsletterSubscribe } from 'features/missions/components/NewsletterSubs
 import { motion } from 'framer-motion'
 import { useNavigate, useParams } from 'react-router-dom'
 import { AppModal } from 'shared/layouts'
+import { useModalStore } from 'shared/store/modalStore'
 import { Colors } from 'shared/util/colors'
 import { formatNumber } from 'shared/util/numbers'
 import { useActions, useAppState } from 'store'
@@ -30,13 +31,13 @@ import { MissionType } from 'store/missions/types'
 const MissionJoin: VFC = () => {
   const {
     main: { showMissionJoinPage },
-    modal: { setPrimaryModalActive },
     missions: { joinMission, storeNewsletterWasShown, setMissionShipsCount },
   } = useActions()
   const {
     web3: { bscTlmBalance },
     missions: { selectedMission, newsletterWasShown, subscribedEmail },
   } = useAppState()
+  const setPrimaryModalActive = useModalStore((state) => state.setPrimaryModalActive)
 
   const { id } = useParams()
   const navigate = useNavigate()

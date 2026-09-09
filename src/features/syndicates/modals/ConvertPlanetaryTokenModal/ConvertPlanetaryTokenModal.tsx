@@ -45,6 +45,7 @@ import {
   split,
   toNumber,
 } from 'lodash'
+import { useModalStore } from 'shared/store/modalStore'
 import { Colors } from 'shared/util/colors'
 import { validateAmount } from 'shared/util/formhelper'
 import { convertPlanetIdToName, getSyndicatesCurrentPage } from 'shared/util/helpers'
@@ -62,13 +63,13 @@ const iconStyle: any = {
 
 export const ConvertPlanetaryTokenModal = () => {
   const {
-    modal: { setPrimaryModalActive },
     wax: { tryStake, tryUnstake, collectEvent },
   } = useActions()
   const {
     wax: { walletId, isDemoUser, selectedDacId },
-    modal: { primaryModals },
   } = useAppState()
+  const primaryModals = useModalStore((state) => state.primaryModals)
+  const setPrimaryModalActive = useModalStore((state) => state.setPrimaryModalActive)
   const client = useApolloClient()
   const [stakingAmount, setStakingAmount] = useState(0)
 

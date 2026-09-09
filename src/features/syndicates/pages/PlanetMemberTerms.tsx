@@ -13,6 +13,7 @@ import { DaoDetailsResponse, DaoWalletDetailsResponse } from 'graphql/types'
 import ReactMarkdown from 'react-markdown'
 import { useParams } from 'react-router'
 import { useGetMemberTerms } from 'shared/hooks/queries/wax/useGetMemberTerms'
+import { useModalStore } from 'shared/store/modalStore'
 import { Colors } from 'shared/util/colors'
 import { useActions, useAppState } from 'store'
 import { SigningDACTermsState } from 'store/main/state'
@@ -26,13 +27,13 @@ const ReactMarkdownWrapper = styled(ReactMarkdown)(() => ({
 export const PlanetMemberTerms = ({ isModal = false }) => {
   const {
     wax: { signPlanetMemberTerms },
-    modal: { setPrimaryModalActive },
     main: { showGovernanceMemberTerms },
   } = useActions()
   const {
     main: { signingDACTermsState },
     wax: { selectedDacId, isDemoUser, walletId },
   } = useAppState()
+  const setPrimaryModalActive = useModalStore((state) => state.setPrimaryModalActive)
   const {
     walletDaoDetails,
     loading: walletDaoDetailsLoading,

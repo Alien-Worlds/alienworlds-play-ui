@@ -9,6 +9,7 @@ import { BalanceUserPointsTop } from 'shared/components/topbar/BalanceUserPoints
 import { MiningCounter } from 'shared/components/topbar/MiningCounter'
 import { PlayerAvatar } from 'shared/components/topbar/PlayerAvatar'
 import { Tag } from 'shared/components/topbar/Tag'
+import { useModalStore } from 'shared/store/modalStore'
 import { theme } from 'shared/styles/theme'
 import { Colors } from 'shared/util/colors'
 import { config } from 'shared/util/config'
@@ -89,9 +90,9 @@ const TopBar = () => {
       syndicatesProposalDrawer,
       isLandOwnerAddSlotDrawerOpen,
     },
-    modal: { isModalActive },
     atomic: { ownedLandsAssets },
   } = useAppState()
+  const isModalActive = useModalStore((state) => state.isModalActive)
   const [walletLogo, setWalletLogo] = useState(null)
   const { pathname } = useLocation()
   const [drawerTabs, setDrawerTabs] = useState([])

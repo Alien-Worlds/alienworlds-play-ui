@@ -14,17 +14,13 @@ import {
 } from '@chakra-ui/react'
 import alienWorldsLogo from 'assets/images/alienworlds-db-logo_full_color.svg'
 import { WalletsButtons } from 'features/onboarding/components/WalletButtons/WalletsButtons'
+import { useModalStore } from 'shared/store/modalStore'
 import { Colors } from 'shared/util/colors'
 import { config } from 'shared/util/config'
 import { socialButtonsProps } from 'shared/util/helpers'
-import { useActions, useAppState } from 'store'
 export const SignUpModal = () => {
-  const {
-    modal: { setPrimaryModalActive },
-  } = useActions()
-  const {
-    modal: { primaryModals },
-  } = useAppState()
+  const setPrimaryModalActive = useModalStore((state) => state.setPrimaryModalActive)
+  const primaryModals = useModalStore((state) => state.primaryModals)
 
   const handleClose = () => {
     setPrimaryModalActive({ modalName: 'SignUpModal', value: false })
