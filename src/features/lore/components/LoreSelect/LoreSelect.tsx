@@ -1,4 +1,3 @@
-import { Flex } from '@chakra-ui/react'
 import Select from 'react-select'
 import { useAppState } from 'store'
 
@@ -81,7 +80,7 @@ export function LoreSelect({ value, onChange }: Props) {
   } = useAppState()
 
   return (
-    <Flex width="100%" mt={{ base: 0, sm: isDemoUser ? 4 : 0 }}>
+    <div className={`flex w-full sm:max-w-sm ${isDemoUser ? 'mt-0 sm:mt-4' : 'mt-0'}`}>
       <Select
         options={LoreOptions}
         styles={darkStyles}
@@ -95,6 +94,6 @@ export function LoreSelect({ value, onChange }: Props) {
           IndicatorSeparator: () => null,
         }}
       />
-    </Flex>
+    </div>
   )
 }

@@ -1,4 +1,4 @@
-import { Flex, useBreakpointValue } from '@chakra-ui/react'
+import { useBreakpointValue } from '@alien-worlds/uikit'
 import { StakeActions } from 'features/lore/components/StakeLore/StakeActions'
 import { StakeMetrics } from 'features/lore/components/StakeLore/StakeMetrics'
 import { StakeRewardsLore } from 'features/lore/components/StakeLore/StakeRewardsLore'
@@ -30,15 +30,10 @@ const StakeLore = ({ currentNumber }: { currentNumber: number }) => {
   if (isLoading) return <LoadingSpinner />
 
   return (
-    <Flex direction="column" gap={4}>
-      <Flex
-        backgroundColor={Colors.BLACK_SOLID_90}
-        borderRadius="20px"
-        px={{ base: '16px', md: '24px', '2xl': '36px' }}
-        py={{ base: '20px', md: '30px' }}
-        width="100%"
-        flexDirection="column"
-        gap={8}
+    <div className="flex flex-col gap-4">
+      <div
+        className="flex w-full flex-col gap-8 rounded-[20px] px-4 py-5 md:px-6 md:py-[30px] 2xl:px-9"
+        style={{ backgroundColor: Colors.BLACK_SOLID_90 }}
       >
         <StakeMetrics
           walletId={walletId}
@@ -60,7 +55,7 @@ const StakeLore = ({ currentNumber }: { currentNumber: number }) => {
           walletBalance={walletBalance}
           newDailyReward={state.newDailyReward}
         />
-      </Flex>
+      </div>
 
       <StakeRewardsLore
         poolShare={poolShare}
@@ -68,7 +63,7 @@ const StakeLore = ({ currentNumber }: { currentNumber: number }) => {
         dailyReward={dailyReward}
         onClaimReward={handlers.onClaimReward}
       />
-    </Flex>
+    </div>
   )
 }
 export { StakeLore }

@@ -1,5 +1,4 @@
 import { InfoIcon, TotalVotePowerIcon } from '@alien-worlds/icons'
-import { Hide, Flex, Text } from '@chakra-ui/react'
 import { Colors } from 'shared/util/colors'
 
 type StakeDailyRewardBannerProps = {
@@ -9,58 +8,35 @@ type StakeDailyRewardBannerProps = {
 export function StakeDailyRewardBanner({ newDailyReward }: StakeDailyRewardBannerProps) {
   return (
     <>
-      <Hide below="md">
-        <Flex
-          bg={Colors.DODGE_BLUE}
-          width="100%"
-          height="48px"
-          borderRadius="8px"
-          justifyContent="center"
-          alignItems="center"
-          gap={2}
-          padding={4}
-        >
-          <InfoIcon boxSize="26px" />
+      <div
+        className="hidden h-12 w-full items-center justify-center gap-2 rounded-lg p-4 md:flex"
+        style={{ backgroundColor: Colors.DODGE_BLUE }}
+      >
+        <InfoIcon boxSize="26px" className="shrink-0" />
 
-          <Text fontSize="16px" fontWeight={400}>
-            New total
-          </Text>
-          <Text fontSize="16px" fontWeight={700}>
-            Daily VP Reward
-          </Text>
-          <TotalVotePowerIcon boxSize="24px" color={Colors.SNOW_WHITE} />
-          <Text fontSize="18px">{newDailyReward}</Text>
-        </Flex>
-      </Hide>
+        <p className="text-[16px] font-normal">New total</p>
+        <p className="text-[16px] font-bold">Daily VP Reward</p>
+        <TotalVotePowerIcon boxSize="24px" color={Colors.SNOW_WHITE} className="shrink-0" />
+        <p className="text-[18px]">{newDailyReward}</p>
+      </div>
 
-      <Hide above="md">
-        <Flex
-          bg={Colors.DODGE_BLUE}
-          width="100%"
-          borderRadius="8px"
-          justifyContent="center"
-          gap={2}
-          padding="12px"
-          direction="column"
-        >
-          <Flex width="100%" justifyContent="space-between">
-            <Flex gap={1}>
-              <Text fontSize="16px" fontWeight={400}>
-                New total
-              </Text>
-              <Text fontSize="16px" fontWeight={700}>
-                Daily VP Reward:
-              </Text>
-            </Flex>
-            <InfoIcon boxSize="20px" />
-          </Flex>
+      <div
+        className="flex w-full flex-col justify-center gap-2 rounded-lg p-3 md:hidden"
+        style={{ backgroundColor: Colors.DODGE_BLUE }}
+      >
+        <div className="flex w-full justify-between">
+          <div className="flex gap-1">
+            <p className="text-[16px] font-normal">New total</p>
+            <p className="text-[16px] font-bold">Daily VP Reward:</p>
+          </div>
+          <InfoIcon boxSize="20px" className="shrink-0" />
+        </div>
 
-          <Flex justifyItems="center" alignItems="center" gap="8px">
-            <TotalVotePowerIcon boxSize="24px" color={Colors.SNOW_WHITE} />
-            <Text fontSize="18px">{newDailyReward}</Text>
-          </Flex>
-        </Flex>
-      </Hide>
+        <div className="flex items-center justify-items-center gap-[8px]">
+          <TotalVotePowerIcon boxSize="24px" color={Colors.SNOW_WHITE} className="shrink-0" />
+          <p className="text-[18px]">{newDailyReward}</p>
+        </div>
+      </div>
     </>
   )
 }

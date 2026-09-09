@@ -5,7 +5,6 @@ import {
   TotalVotePowerPlusIcon,
   WaxIcon,
 } from '@alien-worlds/icons'
-import { Box, Flex, Grid, GridItem, Icon, Text } from '@chakra-ui/react'
 import { Colors } from 'shared/util/colors'
 import { formatNumber } from 'shared/util/numbers'
 
@@ -18,18 +17,8 @@ type StakeMetricsProps = {
   dailyReward: string
 }
 
-const metricLabelStyles = {
-  fontFamily: 'Titillium Web',
-  fontWeight: 'bold',
-  fontSize: 12,
-  letterSpacing: '0.1em',
-} as const
-
-const metricValueStyles = {
-  lineHeight: '0.8',
-  fontFamily: 'Orbitron',
-  fontSize: { base: '16px', md: '18px', '2xl': '20px' },
-} as const
+const metricLabelClass = 'font-tlm text-[12px] font-bold tracking-[0.1em]'
+const metricValueClass = 'font-orb text-[16px] leading-[0.8] md:text-[18px] 2xl:text-[20px]'
 
 export function StakeMetrics({
   walletId,
@@ -40,118 +29,99 @@ export function StakeMetrics({
   dailyReward,
 }: StakeMetricsProps) {
   return (
-    <Grid
-      gridTemplateColumns={{
-        base: 'repeat(1,1fr)',
-        md: 'repeat(2,1fr)',
-        lg: 'repeat(3,1fr)',
-        xl: 'repeat(6,1fr)',
-      }}
-      width="100%"
-      gap={{ base: '25px', md: 8 }}
-    >
-      <GridItem alignSelf="center">
-        <Flex
-          gap={{ base: '20px', xl: 12, '2xl': 24 }}
-          flexDirection={{ base: 'column', lg: 'row' }}
-        >
-          <Flex gap="4px" direction="column" alignSelf={{ base: 'flex-start', lg: 'center' }}>
-            <Text
-              fontSize={{ base: '22px', lg: '20px', '2xl': '30px' }}
-              fontWeight="600"
-              color={Colors.SNOW_WHITE}
+    <div className="grid w-full grid-cols-1 gap-[25px] md:grid-cols-2 md:gap-8 lg:grid-cols-3 xl:grid-cols-[160px_repeat(5,1fr)] 2xl:grid-cols-[180px_repeat(5,1fr)]">
+      <div className="self-center">
+        <div className="flex flex-col gap-5 lg:flex-row lg:gap-12 2xl:gap-24">
+          <div className="flex flex-col items-start gap-1 self-start lg:self-center">
+            <p
+              className="text-[22px] font-semibold lg:text-[20px] 2xl:text-[30px]"
+              style={{ color: Colors.SNOW_WHITE }}
             >
               Lore Balances
-            </Text>
-            <Text fontSize="16px" color={Colors.DI_SERRIA}>
+            </p>
+            <p className="text-[16px]" style={{ color: Colors.DI_SERRIA }}>
               {walletId}
-            </Text>
-          </Flex>
-          <Box
-            backgroundColor={Colors.JUMBO}
-            width={{ base: '100%', lg: '1px' }}
-            height={{ base: '1px', lg: '88px' }}
+            </p>
+          </div>
+          <div
+            className="h-px w-full lg:h-[88px] lg:w-px"
+            style={{ backgroundColor: Colors.JUMBO }}
           />
-        </Flex>
-      </GridItem>
+        </div>
+      </div>
 
-      <GridItem alignSelf="center">
-        <Flex gap={3}>
-          <WaxIcon color={Colors.DI_SERRIA} boxSize={40} style={{ position: 'relative' }} />
-          <Flex direction="column" justifyContent="end">
-            <Text {...metricValueStyles}>{formatNumber(walletBalance ?? 0, 4, 4)}</Text>
-            <Text {...metricLabelStyles} color={Colors.DI_SERRIA}>
+      <div className="self-center">
+        <div className="flex gap-3">
+          <WaxIcon color={Colors.DI_SERRIA} boxSize={40} className="relative shrink-0" />
+          <div className="flex flex-col justify-end">
+            <p className={metricValueClass}>{formatNumber(walletBalance ?? 0, 4, 4)}</p>
+            <p className={metricLabelClass} style={{ color: Colors.DI_SERRIA }}>
               WAX Trillium
-            </Text>
-          </Flex>
-        </Flex>
-      </GridItem>
+            </p>
+          </div>
+        </div>
+      </div>
 
-      <GridItem alignSelf="center">
-        <Flex color={Colors.RADICAL_RED} gap={3} minW={{ base: '200px', '2xl': '235px' }}>
-          <Box w={10} position="relative" fill={Colors.RADICAL_RED}>
-            <Icon
-              as={LockIcon}
-              boxSize={30}
-              height="auto"
-              position="absolute"
-              left={5}
-              bottom={4}
-              zIndex={2}
-            />
+      <div className="self-center">
+        <div
+          className="flex min-w-[200px] gap-3 2xl:min-w-[235px]"
+          style={{ color: Colors.RADICAL_RED }}
+        >
+          <div className="relative w-10 shrink-0" style={{ fill: Colors.RADICAL_RED }}>
+            <LockIcon boxSize={30} className="absolute bottom-4 left-5 z-[2]" />
             <WaxIcon boxSize={40} color={Colors.RADICAL_RED} />
-          </Box>
-          <Flex direction="column" justifyContent="end">
-            <Text {...metricValueStyles} color={Colors.SNOW_WHITE}>
+          </div>
+          <div className="flex flex-col justify-end">
+            <p className={metricValueClass} style={{ color: Colors.SNOW_WHITE }}>
               {formatNumber(stakedAmount ?? 0, 4, 4)}
-            </Text>
-            <Text {...metricLabelStyles} color={Colors.RADICAL_RED}>
+            </p>
+            <p className={metricLabelClass} style={{ color: Colors.RADICAL_RED }}>
               Staked WAX Trillium
-            </Text>
-          </Flex>
-        </Flex>
-      </GridItem>
+            </p>
+          </div>
+        </div>
+      </div>
 
-      <GridItem alignSelf="center">
-        <Flex gap={3}>
-          <TotalVotePowerIcon boxSize="42px" color={Colors.CARIBBEAN_GREEN} />
-          <Flex direction="column" justifyContent="end">
-            <Text {...metricValueStyles} color={Colors.SNOW_WHITE}>
+      <div className="self-center">
+        <div className="flex gap-3">
+          <TotalVotePowerIcon boxSize="42px" color={Colors.CARIBBEAN_GREEN} className="shrink-0" />
+          <div className="flex flex-col justify-end">
+            <p className={metricValueClass} style={{ color: Colors.SNOW_WHITE }}>
               {currentVotePower}
-            </Text>
-            <Text {...metricLabelStyles} color={Colors.CARIBBEAN_GREEN}>
+            </p>
+            <p className={metricLabelClass} style={{ color: Colors.CARIBBEAN_GREEN }}>
               Vote Power
-            </Text>
-          </Flex>
-        </Flex>
-      </GridItem>
+            </p>
+          </div>
+        </div>
+      </div>
 
-      <GridItem alignSelf="center">
-        <Flex gap={3}>
-          <TotalVotePowerPlusIcon boxSize="42px" color={Colors.DODGE_BLUE} />
-          <Flex direction="column" justifyContent="end">
-            <Text {...metricValueStyles} color={Colors.SNOW_WHITE}>
+      <div className="self-center">
+        <div className="flex gap-3">
+          <TotalVotePowerPlusIcon boxSize="42px" color={Colors.DODGE_BLUE} className="shrink-0" />
+          <div className="flex flex-col justify-end">
+            <p className={metricValueClass} style={{ color: Colors.SNOW_WHITE }}>
               {dailyReward}
-            </Text>
-            <Text {...metricLabelStyles} color={Colors.DODGE_BLUE}>
+            </p>
+            <p className={metricLabelClass} style={{ color: Colors.DODGE_BLUE }}>
               Daily VP Reward
-            </Text>
-          </Flex>
-        </Flex>
-      </GridItem>
-      <GridItem alignSelf="center">
-        <Flex gap={3}>
-          <TLMPoolSizeIcon boxSize="42px" color={Colors.SNOW_WHITE} />
-          <Flex direction="column" justifyContent="end">
-            <Text {...metricValueStyles} color={Colors.SNOW_WHITE}>
+            </p>
+          </div>
+        </div>
+      </div>
+      <div className="self-center">
+        <div className="flex gap-3">
+          <TLMPoolSizeIcon boxSize="42px" color={Colors.SNOW_WHITE} className="shrink-0" />
+          <div className="flex flex-col justify-end">
+            <p className={metricValueClass} style={{ color: Colors.SNOW_WHITE }}>
               {formatNumber(tlmPoolSize ?? 0, 4, 4)}
-            </Text>
-            <Text {...metricLabelStyles} color={Colors.SNOW_WHITE}>
+            </p>
+            <p className={metricLabelClass} style={{ color: Colors.SNOW_WHITE }}>
               TLM Pool Size
-            </Text>
-          </Flex>
-        </Flex>
-      </GridItem>
-    </Grid>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
   )
 }
