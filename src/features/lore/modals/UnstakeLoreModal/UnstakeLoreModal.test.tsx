@@ -12,13 +12,17 @@ const mockSetSecondaryModalActive = jest.fn()
 const mockTryUnStakeLore = jest.fn()
 
 jest.mock('store', () => ({
-  useAppState: () => ({
-    modal: { secondaryModals: mockSecondaryModals },
-  }),
   useActions: () => ({
-    modal: { setSecondaryModalActive: mockSetSecondaryModalActive },
     wax: { tryUnStakeLore: mockTryUnStakeLore },
   }),
+}))
+
+jest.mock('shared/store/modalStore', () => ({
+  useModalStore: (selector: (state: unknown) => unknown) =>
+    selector({
+      secondaryModals: mockSecondaryModals,
+      setSecondaryModalActive: mockSetSecondaryModalActive,
+    }),
 }))
 
 import { UnstakeLoreModal } from './UnstakeLoreModal'

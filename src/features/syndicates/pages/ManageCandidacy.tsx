@@ -13,6 +13,7 @@ import { useWalletDaoDetails } from 'graphql/hooks/useWalletDaoDetails'
 import { Candidate, DaoDetailsResponse, DaoWalletDetailsResponse } from 'graphql/types'
 import { find, get, startCase } from 'lodash'
 import { useParams } from 'react-router-dom'
+import { useModalStore } from 'shared/store/modalStore'
 import { Colors } from 'shared/util/colors'
 import { useScreenSize } from 'shared/util/hooks'
 import { getLevelVariant, maleHumanAvatar } from 'shared/util/nft'
@@ -39,9 +40,10 @@ export const ManageCandidacy = () => {
   })
   const {
     wax: { updateCandidate, activateNewCandidate, updateCandidancyProposal },
-    modal: { setPrimaryModalActive, setSecondaryModalActive },
     main: { showGovernanceManageCandidacyPage },
   } = useActions()
+  const setPrimaryModalActive = useModalStore((state) => state.setPrimaryModalActive)
+  const setSecondaryModalActive = useModalStore((state) => state.setSecondaryModalActive)
   const { currentLevelReward } = useLevelNftRewards()
   const [formReady, setFormReady] = useState(false)
 

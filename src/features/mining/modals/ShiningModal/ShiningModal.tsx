@@ -8,18 +8,19 @@ import {
   useBreakpointValue,
 } from '@chakra-ui/react'
 import ReactPlayer from 'react-player'
+import { useModalStore } from 'shared/store/modalStore'
 import { Colors } from 'shared/util/colors'
 import { useActions, useAppState } from 'store'
 
 export const ShiningModal = () => {
   const {
     main: { setShiningUrl },
-    modal: { setPrimaryModalActive },
   } = useActions()
   const {
     main: { shiningUrl },
-    modal: { primaryModals },
   } = useAppState()
+  const setPrimaryModalActive = useModalStore((state) => state.setPrimaryModalActive)
+  const primaryModals = useModalStore((state) => state.primaryModals)
 
   const videoPlayerWidth = useBreakpointValue({
     base: '100%',

@@ -48,6 +48,7 @@ import {
   RingPositionHelper,
   RingPositions,
 } from 'shared/components/RingPositionHelper/RingPositionHelper'
+import { useModalStore } from 'shared/store/modalStore'
 import { Colors } from 'shared/util/colors'
 import { dacIdToDacTreasuryAccountList } from 'shared/util/helpers'
 import { useActions, useAppState } from 'store'
@@ -66,7 +67,6 @@ const Land: VFC = () => {
   } = useAppState()
 
   const {
-    modal: { setPrimaryModalActive },
     wax: { setPlanetSelectedForMiningIntent },
     main: {
       showLandPage,
@@ -74,6 +74,7 @@ const Land: VFC = () => {
       mining: { openPlanetDetailsDrawer, closePlanetDetailsDrawer },
     },
   } = useActions()
+  const setPrimaryModalActive = useModalStore((state) => state.setPrimaryModalActive)
   const navigate = useNavigate()
 
   const { data: rarityPools, refetch } = useRarityPools(

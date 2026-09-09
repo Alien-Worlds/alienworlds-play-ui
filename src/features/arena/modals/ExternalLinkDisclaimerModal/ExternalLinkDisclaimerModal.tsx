@@ -3,16 +3,11 @@ import { Dialog, DialogPanel } from '@headlessui/react'
 import AlienWorldsLogo from 'assets/images/alienworlds-db-logo_full_color.svg'
 import ArenaPortalWarningBg from 'assets/images/arena-portal/disclaimer_bg.jpg'
 import ScrollContainer from 'react-indiana-drag-scroll'
-import { useAppState, useActions } from 'store'
+import { useModalStore } from 'shared/store/modalStore'
 
 const ExternalLinkDisclaimerModal = () => {
-  const {
-    modal: { secondaryModals },
-  } = useAppState()
-
-  const {
-    modal: { setSecondaryModalActive },
-  } = useActions()
+  const secondaryModals = useModalStore((state) => state.secondaryModals)
+  const setSecondaryModalActive = useModalStore((state) => state.setSecondaryModalActive)
 
   const handleClose = () => {
     setSecondaryModalActive({ modalName: 'ExternalLinkDisclaimerModal', value: false })

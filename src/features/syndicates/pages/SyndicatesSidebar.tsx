@@ -52,6 +52,7 @@ import { capitalize, get, map, some, startCase } from 'lodash'
 import { DateTime } from 'luxon'
 import { useNavigate } from 'react-router-dom'
 import { useActivePath } from 'shared/hooks/useRouter'
+import { useModalStore } from 'shared/store/modalStore'
 import { Colors } from 'shared/util/colors'
 import { convertPlanetIdToName, getSyndicatesCurrentPage, isUnionDAO } from 'shared/util/helpers'
 import { useScreenSize } from 'shared/util/hooks'
@@ -173,8 +174,9 @@ export const SyndicatesSidebar = memo(() => {
       tryCancelUnstake,
       setIsSyndicatesSidebarOpen,
     },
-    modal: { setPrimaryModalActive, setSecondaryModalActive },
   } = useActions()
+  const setPrimaryModalActive = useModalStore((state) => state.setPrimaryModalActive)
+  const setSecondaryModalActive = useModalStore((state) => state.setSecondaryModalActive)
   const navigate = useNavigate()
   const currentBreakPoint = useBreakpoint()
   const { isNotDesktop } = useScreenSize()

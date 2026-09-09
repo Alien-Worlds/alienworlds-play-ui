@@ -10,6 +10,7 @@ import { useLiveVotePower } from 'features/lore/hooks/useLiveVotePower'
 import { LoadingSpinner } from 'features/syndicates/components/LoadingSpinner/LoadingSpinner'
 import { map } from 'lodash'
 import ScrollContainer from 'react-indiana-drag-scroll'
+import { useModalStore } from 'shared/store/modalStore'
 import { Colors } from 'shared/util/colors'
 import { sanitizedHtmlString } from 'shared/util/helpers'
 import { useScreenSize } from 'shared/util/hooks'
@@ -26,13 +27,14 @@ const LoreContent = () => {
       md: 'horizontal',
     }) ?? 'vertical'
   const {
-    modal: { setSecondaryModalActive, setPrimaryModalActive },
     main: { getLorePullRequests },
   } = useActions()
   const {
     main: { loreReadMe, currentWallet },
     wax: { isDemoUser },
   } = useAppState()
+  const setSecondaryModalActive = useModalStore((state) => state.setSecondaryModalActive)
+  const setPrimaryModalActive = useModalStore((state) => state.setPrimaryModalActive)
   const [loreContent, setLoreContent] = useState('')
   const { isDesktop, isTablet } = screenSize
   const { loadingLores, walletDetailsLoading } = useLoreLoadingState()

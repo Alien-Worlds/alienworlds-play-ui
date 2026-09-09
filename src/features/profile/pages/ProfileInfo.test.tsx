@@ -11,12 +11,16 @@ const mockUseAppState = jest.fn()
 jest.mock('store', () => ({
   useAppState: () => mockUseAppState(),
   useActions: () => ({
-    modal: { setPrimaryModalActive: mockSetPrimaryModalActive },
     main: {
       setOutPostModalsActive: mockSetOutPostModalsActive,
       showProfileInfoPage: mockShowProfileInfoPage,
     },
   }),
+}))
+
+jest.mock('shared/store/modalStore', () => ({
+  useModalStore: (selector: (state: unknown) => unknown) =>
+    selector({ setPrimaryModalActive: mockSetPrimaryModalActive }),
 }))
 
 const mockUseWalletDetails = jest.fn()

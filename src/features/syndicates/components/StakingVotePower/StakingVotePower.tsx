@@ -34,6 +34,7 @@ import { DAO_WALLET_DETAILS_QUERY } from 'graphql/queries/daoWalletDetails'
 import { USER_DAO_BALANCES } from 'graphql/queries/userDaoBalances'
 import { DaoDetailsResponse, DaoWalletDetailsResponse } from 'graphql/types'
 import { capitalize, get, isEmpty, isNull, isUndefined, replace, round, toNumber } from 'lodash'
+import { useModalStore } from 'shared/store/modalStore'
 import { Colors } from 'shared/util/colors'
 import { validateAmount } from 'shared/util/formhelper'
 import { convertPlanetIdToName, getDacSymbol } from 'shared/util/helpers'
@@ -73,7 +74,6 @@ const StakingVotePower = () => {
 
       actionProgressState,
     },
-    modal: { primaryModals },
   } = useAppState()
   const {
     wax: {
@@ -81,8 +81,9 @@ const StakingVotePower = () => {
 
       resetActionProgressState,
     },
-    modal: { setPrimaryModalActive },
   } = useActions()
+  const primaryModals = useModalStore((state) => state.primaryModals)
+  const setPrimaryModalActive = useModalStore((state) => state.setPrimaryModalActive)
 
   const [fontSize, setFontSize] = useState(49)
   const [step, setStep] = useState(1)

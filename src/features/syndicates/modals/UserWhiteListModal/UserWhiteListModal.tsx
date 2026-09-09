@@ -14,19 +14,14 @@ import {
 } from '@chakra-ui/react'
 import AlienWorldsLogo from 'assets/images/alienworlds-db-logo_full_color.svg'
 import { motion } from 'framer-motion'
+import { useModalStore } from 'shared/store/modalStore'
 import { Colors } from 'shared/util/colors'
 import { openInNewTab } from 'shared/util/helpers'
-import { useAppState, useActions } from 'store'
 const AnimatedBox = motion(Box)
 
 const UserWhiteListModal = () => {
-  const {
-    modal: { secondaryModals },
-  } = useAppState()
-
-  const {
-    modal: { setSecondaryModalActive },
-  } = useActions()
+  const secondaryModals = useModalStore((state) => state.secondaryModals)
+  const setSecondaryModalActive = useModalStore((state) => state.setSecondaryModalActive)
 
   const handleClose = () => {
     setSecondaryModalActive({ modalName: 'UserWhiteListModal', value: false })
