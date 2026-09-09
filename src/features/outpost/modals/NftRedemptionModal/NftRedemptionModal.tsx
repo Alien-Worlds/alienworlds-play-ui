@@ -17,9 +17,10 @@ import { LoadingSpinner } from 'features/syndicates/components/LoadingSpinner/Lo
 import { useWalletDetails } from 'graphql/hooks/useWalletDetails'
 import { WalletDetailsResponse } from 'graphql/types'
 import { get } from 'lodash'
+import { useModalStore } from 'shared/store/modalStore'
 import { Colors } from 'shared/util/colors'
 import { formatUserPointsWithDecimal } from 'shared/util/helpers'
-import { useActions, useAppState } from 'store'
+import { useAppState } from 'store'
 
 const NftRedemptionModal: FC<NftRedemptionModalProps> = ({
   isOpen,
@@ -28,9 +29,7 @@ const NftRedemptionModal: FC<NftRedemptionModalProps> = ({
   onClose,
   redeemAction,
 }) => {
-  const {
-    modal: { setPrimaryModalActive },
-  } = useActions()
+  const setPrimaryModalActive = useModalStore((state) => state.setPrimaryModalActive)
   const {
     wax: { isDemoUser, walletId },
   } = useAppState()

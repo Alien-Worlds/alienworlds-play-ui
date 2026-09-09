@@ -62,6 +62,7 @@ import {
 } from 'lodash'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { useNavigate } from 'react-router-dom'
+import { useModalStore } from 'shared/store/modalStore'
 import { Colors } from 'shared/util/colors'
 import { config } from 'shared/util/config'
 import { isShinableNFT } from 'shared/util/helpers'
@@ -82,9 +83,9 @@ const Shining = () => {
   } = useEffects()
   const {
     wax: { tryShine },
-    modal: { setPrimaryModalActive },
     main: { showShiningPage, setShiningUrl, setOutPostModalsActive },
   } = useActions()
+  const setPrimaryModalActive = useModalStore((state) => state.setPrimaryModalActive)
   const {
     wax: { isDemoUser, walletId },
   } = useAppState()

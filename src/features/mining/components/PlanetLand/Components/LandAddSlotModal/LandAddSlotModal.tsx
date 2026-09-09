@@ -8,6 +8,7 @@ import { LandBoostLevel } from 'features/mining/types/LandownerTypes'
 import { MainBoostLevels } from 'features/mining/utils/constants'
 import { filter, find } from 'lodash'
 import { useInterval } from 'react-use'
+import { useModalStore } from 'shared/store/modalStore'
 import { Colors } from 'shared/util/colors'
 import { getDiffToStartOfNext25hDay } from 'shared/util/helpers'
 import { useActions, useAppState } from 'store'
@@ -20,7 +21,6 @@ type SlotModalType = {
 
 export const LandAddSlotModal = ({ selectedBoost, onClose, selectedImg }: SlotModalType) => {
   const {
-    modal: { setPrimaryModalActive },
     wax: { boostSlot, applyMainBoost, loadManagingLandDetailsAndBoostsWithDelay },
   } = useActions()
   const {
@@ -28,6 +28,7 @@ export const LandAddSlotModal = ({ selectedBoost, onClose, selectedImg }: SlotMo
     wax: { managingLandId, isDemoUser },
     main: { landOwnerDrawerPayload },
   } = useAppState()
+  const setPrimaryModalActive = useModalStore((state) => state.setPrimaryModalActive)
 
   const [isMainBoost, setIsMainBoost] = useState<boolean>(false)
   const [timer, setTimer] = useState(getDiffToStartOfNext25hDay())

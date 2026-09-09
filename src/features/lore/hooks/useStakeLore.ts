@@ -3,6 +3,7 @@ import { useCallback, useMemo } from 'react'
 import { useApolloClient } from '@apollo/client'
 import { WALLET_DETAILS_QUERY_ALL } from 'graphql/queries/walletDetails'
 import { get } from 'lodash'
+import { useModalStore } from 'shared/store/modalStore'
 import { useAppState, useActions } from 'store'
 
 import { useLoreData } from '../data/LoreDataProvider'
@@ -43,9 +44,10 @@ export function useStakeLore(): {
     useLoreData()
   const {
     wax: { tryStakeVotePowerLore, tryClaimLoreReward },
-    modal: { setSecondaryModalActive, setPrimaryModalActive },
     main: { getLorePullRequests },
   } = useActions()
+  const setSecondaryModalActive = useModalStore((state) => state.setSecondaryModalActive)
+  const setPrimaryModalActive = useModalStore((state) => state.setPrimaryModalActive)
 
   const walletBalance = useMemo(
     () => parseTokenAmount(get(walletDetails, 'tlm_balance')),

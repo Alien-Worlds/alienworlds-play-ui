@@ -19,6 +19,7 @@ import {
 import { ProposalStateButton } from 'features/syndicates/utils/GovernanceHelper'
 import { motion } from 'framer-motion'
 import { MSIGS_QUERY } from 'graphql/queries/msigs'
+import { useModalStore } from 'shared/store/modalStore'
 import { Colors } from 'shared/util/colors'
 import { useActions, useAppState } from 'store'
 
@@ -27,12 +28,12 @@ const AnimatedBox = motion(Box)
 const CancelProposalModal = () => {
   const {
     wax: { selectedDacId, dacCustodianProposalPayload, walletId },
-    modal: { primaryModals },
   } = useAppState()
   const {
     wax: { tryCancelProposal },
-    modal: { setPrimaryModalActive },
   } = useActions()
+  const primaryModals = useModalStore((state) => state.primaryModals)
+  const setPrimaryModalActive = useModalStore((state) => state.setPrimaryModalActive)
   const client = useApolloClient()
   const handleClose = () => {
     setPrimaryModalActive({ modalName: 'CancelProposalModal', value: false })

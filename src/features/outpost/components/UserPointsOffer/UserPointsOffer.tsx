@@ -26,6 +26,7 @@ import {
 import { NftZoomModal } from 'features/outpost/modals/NftZoomModal/NftZoomModal'
 import { ShowRedeemModal } from 'features/outpost/types/nftOutpostTypes'
 import { motion } from 'framer-motion'
+import { useModalStore } from 'shared/store/modalStore'
 import { Colors } from 'shared/util/colors'
 import {
   formatUserPointsWithDecimal,
@@ -163,11 +164,9 @@ const UserPointsOffer = ({
     main: { setOutPostModalsActive },
   } = useActions()
   const {
-    modal: { setPrimaryModalActive },
-  } = useActions()
-  const {
     wax: { isDemoUser },
   } = useAppState()
+  const setPrimaryModalActive = useModalStore((state) => state.setPrimaryModalActive)
   const [showZoomModal, setShowZoomModal] = useState(false)
 
   return (

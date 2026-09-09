@@ -32,6 +32,7 @@ import {
 import { capitalize, get, replace, toNumber, trim } from 'lodash'
 import { useParams } from 'react-router'
 import { PlayerAvatar } from 'shared/components/topbar/PlayerAvatar'
+import { useModalStore } from 'shared/store/modalStore'
 import { Colors } from 'shared/util/colors'
 import { convertPlanetIdToName, isUnionDAO } from 'shared/util/helpers'
 import { PlanetIcon } from 'shared/util/icons'
@@ -65,13 +66,14 @@ const FormGroupWrapper = styled(Flex)(() => ({
 export const BecomeCandidate = () => {
   const {
     main: { showGovernanceBecomeCandidatePage },
-    modal: { setPrimaryModalActive, setSecondaryModalActive },
     wax: { setDacCandidacyProposalPayload, checkWhitelist },
   } = useActions()
   const {
     wax: { walletId, isDemoUser, currentTag, selectedDacId },
     atomic: { avatarAsset },
   } = useAppState()
+  const setPrimaryModalActive = useModalStore((state) => state.setPrimaryModalActive)
+  const setSecondaryModalActive = useModalStore((state) => state.setSecondaryModalActive)
   const { planetId } = useParams()
   const [formReady, setFormReady] = useState(false)
   const [candidateName, setCandidateName] = useState<string>('')

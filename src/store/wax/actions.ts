@@ -30,6 +30,7 @@ import { generatePath } from 'react-router'
 import { matchPath } from 'react-router-dom'
 import { router } from 'routes'
 import { LOAD_USER_POINTS_QUERY_KEY } from 'shared/hooks/queries/wax/useLoadUserPoints'
+import { useModalStore } from 'shared/store/modalStore'
 import { collectGAEvent } from 'shared/util/analytics'
 import { config } from 'shared/util/config'
 import {
@@ -470,7 +471,7 @@ export const tryStakeVotePowerLore = pipe(
 )
 export const trySubmitLore = pipe(
   async (
-    { state, effects, actions }: Context,
+    { state, effects }: Context,
     input: { title: string; url: string; description: string; type: string; fee: string }
   ) => {
     state.wax.actionProgressState = RequestState.InProgress
@@ -489,8 +490,8 @@ export const trySubmitLore = pipe(
       return false
     }
 
-    actions.modal.resetAllSecondaryModals()
-    actions.modal.resetAllPrimaryModals()
+    useModalStore.getState().resetAllSecondaryModals()
+    useModalStore.getState().resetAllPrimaryModals()
 
     toastMessage(`Lore Proposal Submitted.`)
     state.wax.actionProgressState = RequestState.Succeeded
@@ -506,7 +507,7 @@ export const trySubmitLore = pipe(
   })
 )
 export const tryUnStakeLore = pipe(
-  async ({ state, effects, actions }: Context) => {
+  async ({ state, effects }: Context) => {
     state.wax.actionProgressState = RequestState.InProgress
     await effects.wax.api.unStakeLore()
 
@@ -516,8 +517,8 @@ export const tryUnStakeLore = pipe(
       return false
     }
 
-    actions.modal.resetAllSecondaryModals()
-    actions.modal.resetAllPrimaryModals()
+    useModalStore.getState().resetAllSecondaryModals()
+    useModalStore.getState().resetAllPrimaryModals()
     // actions.wax.getAdjustedVotePower(input.planet.dac_id)
     // actions.wax.getDAOUnstakes(input.planet.dac_id)
     // actions.wax.getUserDAOStakes(input.planet.dac_id)

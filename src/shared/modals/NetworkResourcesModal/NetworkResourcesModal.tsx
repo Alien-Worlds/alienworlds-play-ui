@@ -18,18 +18,16 @@ import {
   CircularProgressLabel,
 } from '@chakra-ui/react'
 import { css, Global } from '@emotion/react'
+import { useModalStore } from 'shared/store/modalStore'
 import { Colors } from 'shared/util/colors'
-import { useAppState, useActions } from 'store'
+import { useAppState } from 'store'
 
 const NetworkResourcesModal = () => {
   const {
-    modal: { secondaryModals },
     wax: { resources },
   } = useAppState()
-
-  const {
-    modal: { setSecondaryModalActive },
-  } = useActions()
+  const secondaryModals = useModalStore((state) => state.secondaryModals)
+  const setSecondaryModalActive = useModalStore((state) => state.setSecondaryModalActive)
 
   const handleClose = () => {
     setSecondaryModalActive({ modalName: 'NetworkResourcesModal', value: false })

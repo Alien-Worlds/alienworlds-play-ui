@@ -2,15 +2,14 @@ import { Button } from '@alien-worlds/uikit'
 import { useApolloClient } from '@apollo/client'
 import { Dialog, DialogPanel } from '@headlessui/react'
 import { WALLET_DETAILS_QUERY_ALL } from 'graphql/queries/walletDetails'
+import { useModalStore } from 'shared/store/modalStore'
 import { Colors } from 'shared/util/colors'
-import { useActions, useAppState } from 'store'
+import { useActions } from 'store'
 const UnstakeLoreModal = () => {
-  const {
-    modal: { secondaryModals },
-  } = useAppState()
+  const secondaryModals = useModalStore((state) => state.secondaryModals)
+  const setSecondaryModalActive = useModalStore((state) => state.setSecondaryModalActive)
   const client = useApolloClient()
   const {
-    modal: { setSecondaryModalActive },
     wax: { tryUnStakeLore },
   } = useActions()
 

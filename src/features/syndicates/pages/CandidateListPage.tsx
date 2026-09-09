@@ -16,6 +16,7 @@ import { Candidate, DaoWalletDetailsResponse } from 'graphql/types'
 import { cloneDeep, filter, find, get, isEmpty, map } from 'lodash'
 import { generatePath, useNavigate, useParams } from 'react-router'
 import { useClickAway } from 'react-use'
+import { useModalStore } from 'shared/store/modalStore'
 import { useScreenSize } from 'shared/util/hooks'
 import { useActions, useAppState } from 'store'
 import { toastErrorMessage } from 'store/main/actions'
@@ -25,8 +26,9 @@ export const CandidateListPage = () => {
   const {
     wax: { updateVotedCandidates },
     main: { showGovernanceSignCandidateVotePage },
-    modal: { setPrimaryModalActive, setSecondaryModalActive },
   } = useActions()
+  const setPrimaryModalActive = useModalStore((state) => state.setPrimaryModalActive)
+  const setSecondaryModalActive = useModalStore((state) => state.setSecondaryModalActive)
   const {
     wax: {
       walletId,

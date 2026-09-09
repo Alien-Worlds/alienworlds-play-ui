@@ -11,6 +11,7 @@ import { LORES_QUERY } from 'graphql/queries/loreProposals'
 import { loresResponse } from 'graphql/types'
 import { get } from 'lodash'
 import { FormCheckbox } from 'shared/components/FormCheckbox'
+import { useModalStore } from 'shared/store/modalStore'
 import { Colors } from 'shared/util/colors'
 import { validateEmpty } from 'shared/util/formhelper'
 import { useActions, useAppState } from 'store'
@@ -55,15 +56,15 @@ const checkboxStyles: SerializedStyles = css`
 
 const SubmitLoreModal = () => {
   const {
-    modal: { secondaryModals },
     main: { lorePullRequests },
   } = useAppState()
   const client = useApolloClient()
   const {
-    modal: { setSecondaryModalActive },
     main: { getLorePullRequestCommit },
     wax: { trySubmitLore },
   } = useActions()
+  const secondaryModals = useModalStore((state) => state.secondaryModals)
+  const setSecondaryModalActive = useModalStore((state) => state.setSecondaryModalActive)
   const { lores, loading: loadingLores }: { lores: loresResponse; loading: boolean } = useLores()
   const globals = lores?.globals
   const handleClose = () => {

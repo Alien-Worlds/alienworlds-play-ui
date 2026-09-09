@@ -26,9 +26,13 @@ jest.mock('store', () => ({
     wax: { isDemoUser: mockIsDemoUser },
   }),
   useActions: () => ({
-    modal: { setPrimaryModalActive: mockSetPrimaryModalActive },
     wax: { tryLoreVoting: mockTryLoreVoting },
   }),
+}))
+
+jest.mock('shared/store/modalStore', () => ({
+  useModalStore: (selector: (state: unknown) => unknown) =>
+    selector({ setPrimaryModalActive: mockSetPrimaryModalActive }),
 }))
 
 import { LoreDrawer, isAllowedStatus } from './LoreDrawer'

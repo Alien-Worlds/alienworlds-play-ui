@@ -11,6 +11,7 @@ import { LoreProposal } from 'graphql/types'
 import { map } from 'lodash'
 import { find } from 'lodash'
 import { useCopyToClipboard } from 'react-use'
+import { useModalStore } from 'shared/store/modalStore'
 import { Colors } from 'shared/util/colors'
 import { validateAmount } from 'shared/util/formhelper'
 import { useActions, useAppState } from 'store'
@@ -40,9 +41,9 @@ const LoreDrawer = ({ isOpen, onClose, lore, currentNumber }: ILoreDrawerProps) 
     wax: { isDemoUser },
   } = useAppState()
   const {
-    modal: { setPrimaryModalActive },
     wax: { tryLoreVoting },
   } = useActions()
+  const setPrimaryModalActive = useModalStore((state) => state.setPrimaryModalActive)
   const client = useApolloClient()
   const demoTopbarHeightMobile = `${Constants.DEMO_TOPBAR_HEIGHT_MOBILE - 60}px`
   const currentFontValue = useBreakpointValue({ base: 12, md: 14, '2xl': 16 })

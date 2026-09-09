@@ -9,16 +9,12 @@ import {
   ModalOverlay,
   ModalCloseButton,
 } from '@chakra-ui/react'
+import { useModalStore } from 'shared/store/modalStore'
 import { Colors } from 'shared/util/colors'
-import { useActions, useAppState } from 'store'
 
 export const LoadingModal = () => {
-  const {
-    modal: { setPrimaryModalActive },
-  } = useActions()
-  const {
-    modal: { primaryModals },
-  } = useAppState()
+  const setPrimaryModalActive = useModalStore((state) => state.setPrimaryModalActive)
+  const primaryModals = useModalStore((state) => state.primaryModals)
 
   const [showCloseButton, setShowCloseButton] = useState(false)
 

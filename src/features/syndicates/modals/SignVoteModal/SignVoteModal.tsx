@@ -23,6 +23,7 @@ import { DAO_DETAILS_QUERY } from 'graphql/queries'
 import { DAO_WALLET_DETAILS_QUERY } from 'graphql/queries/daoWalletDetails'
 import { Candidate } from 'graphql/types'
 import { filter, map } from 'lodash'
+import { useModalStore } from 'shared/store/modalStore'
 import { Colors } from 'shared/util/colors'
 import { fallbackAvatarSrc, getDacPlaceRingVariantByPlace, pluralize } from 'shared/util/helpers'
 import { useScreenSize } from 'shared/util/hooks'
@@ -38,14 +39,14 @@ interface CandidateCardProps {
 
 const SignVoteModal = () => {
   const {
-    modal: { setPrimaryModalActive },
     wax: { resetActionProgressState, tryVotingCandidates },
   } = useActions()
   const client = useApolloClient()
   const {
-    modal: { primaryModals },
     wax: { selectedDacId, votedCandidatesList, actionProgressState, isDemoUser },
   } = useAppState()
+  const setPrimaryModalActive = useModalStore((state) => state.setPrimaryModalActive)
+  const primaryModals = useModalStore((state) => state.primaryModals)
 
   const handleSubmit = async () => {
     const candidatesToSubmit = filter(votedCandidatesList, (candidate) => {

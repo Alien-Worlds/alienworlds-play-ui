@@ -30,6 +30,7 @@ import { DaoDetailsResponse, MsigsResponse } from 'graphql/types'
 import { every, filter, map, slice, some, trim } from 'lodash'
 import { useParams } from 'react-router-dom'
 import Select from 'react-select'
+import { useModalStore } from 'shared/store/modalStore'
 import { Colors } from 'shared/util/colors'
 import { dacUnionIdToPlanet, isUnionDAO, unionDAOFinder } from 'shared/util/helpers'
 import { useActions, useAppState } from 'store'
@@ -130,9 +131,9 @@ export const CustodianDashboard = () => {
       trySetDtapConfigs,
       tryChangeElectionDuration,
     },
-    modal: { setSecondaryModalActive },
     main: { showGovernanceCustodianDashboard },
   } = useActions()
+  const setSecondaryModalActive = useModalStore((state) => state.setSecondaryModalActive)
 
   const { msigsProposals, loading }: { msigsProposals: MsigsResponse[]; loading: boolean } =
     useMsigsProposals(isUnionDAO(selectedDacId) ? unionDAOFinder(selectedDacId) : selectedDacId)
