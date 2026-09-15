@@ -7,7 +7,10 @@ import { ArenaItem } from 'features/arena/components/ArenaItem'
 import { ArenaSelect } from 'features/arena/components/ArenaSelect'
 import { useArenaPortal, useArenaCategories } from 'features/arena/hooks/useArenaPortal'
 import { filter, get, includes, map, some, toLower } from 'lodash'
+import { useModalStore } from 'shared/store/modalStore'
+import { Constants } from 'shared/util/constants'
 import { useActions } from 'store'
+import { PagePath } from 'store/main/types'
 import { v4 as uuidv4 } from 'uuid'
 
 export type ArenaPortalItemResponseType = {
@@ -123,8 +126,9 @@ export const Arena = () => {
   selectOptions.unshift(allOption)
 
   const {
-    arena: { showArenaPortalPage },
+    wax: { collectEvent },
   } = useActions()
+  const toggleMainDrawer = useModalStore((state) => state.toggleMainDrawer)
 
   useEffect(() => {
     if (!arenaItems) return
@@ -138,7 +142,11 @@ export const Arena = () => {
   }, [selectedOption, arenaItems])
 
   useEffect(() => {
-    showArenaPortalPage()
+    toggleMainDrawer(false)
+    collectEvent({
+      name: Constants.GA_PAGE_VISIT,
+      fields: { location: PagePath.ArenaPortal },
+    })
   }, [])
 
   return (
