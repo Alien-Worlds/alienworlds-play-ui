@@ -4,10 +4,12 @@ import { MemoryRouter } from 'react-router-dom'
 
 import { Arena } from './Arena'
 
-const mockShowArenaPortalPage = jest.fn()
+const mockToggleMainDrawer = jest.fn()
+const mockCollectEvent = jest.fn()
 jest.mock('store', () => ({
   useActions: () => ({
-    arena: { showArenaPortalPage: mockShowArenaPortalPage },
+    main: { toggleMainDrawer: mockToggleMainDrawer },
+    wax: { collectEvent: mockCollectEvent },
   }),
 }))
 
@@ -54,7 +56,11 @@ describe('Arena page', () => {
   it('tracks the page visit on mount', () => {
     render(<Arena />, { wrapper: MemoryRouter })
 
-    expect(mockShowArenaPortalPage).toHaveBeenCalled()
+    expect(mockToggleMainDrawer).toHaveBeenCalledWith(false)
+    expect(mockCollectEvent).toHaveBeenCalledWith({
+      name: 'page_visit',
+      fields: { location: '/arena' },
+    })
   })
 
   it('renders a tab per category plus "All"', () => {
