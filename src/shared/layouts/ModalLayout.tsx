@@ -32,12 +32,11 @@ import { WithDrawCandidancyModal } from 'features/syndicates/modals/WithDrawCand
 import { LoadingModal } from 'shared/modals/LoadingModal'
 import { NetworkResourcesModal } from 'shared/modals/NetworkResourcesModal'
 import { OutpostDisclaimerModal } from 'shared/modals/OutpostDisclaimerModal'
-import { useAppState } from 'store'
+import { useModalStore } from 'shared/store/modalStore'
 
 const ModalLayout = () => {
-  const {
-    modal: { primaryModals, secondaryModals },
-  } = useAppState()
+  const primaryModals = useModalStore((state) => state.primaryModals)
+  const secondaryModals = useModalStore((state) => state.secondaryModals)
   return (
     <>
       {/* PRIMARY MODALS */}

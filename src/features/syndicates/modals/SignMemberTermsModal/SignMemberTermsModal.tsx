@@ -2,18 +2,17 @@ import React from 'react'
 
 import { Container, Modal, ModalContent, ModalBody, ModalCloseButton, Box } from '@chakra-ui/react'
 import { PlanetMemberTerms } from 'features/syndicates/pages/PlanetMemberTerms'
+import { useModalStore } from 'shared/store/modalStore'
 import { Colors } from 'shared/util/colors'
-import { useActions, useAppState } from 'store'
+import { useAppState } from 'store'
 
 const SignMemberTermsModal = () => {
   const {
     wax: { selectedDacId },
-    modal: { secondaryModals },
   } = useAppState()
 
-  const {
-    modal: { setSecondaryModalActive },
-  } = useActions()
+  const secondaryModals = useModalStore((state) => state.secondaryModals)
+  const setSecondaryModalActive = useModalStore((state) => state.setSecondaryModalActive)
 
   const handleClose = () => {
     setSecondaryModalActive({ modalName: 'SignMemberTermsModal', value: false })

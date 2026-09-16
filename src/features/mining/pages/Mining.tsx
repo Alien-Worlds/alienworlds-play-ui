@@ -25,6 +25,7 @@ import { MiningToolsActiveSlotNumber } from 'features/mining/types/MiningTypes'
 import { LoadingSpinner } from 'features/syndicates/components/LoadingSpinner/LoadingSpinner'
 import { usePlanetDetail } from 'graphql/hooks/usePlanetDetail'
 import { RingPositionHelper } from 'shared/components/RingPositionHelper/RingPositionHelper'
+import { useModalStore } from 'shared/store/modalStore'
 import { Colors } from 'shared/util/colors'
 import { config } from 'shared/util/config'
 import { useActions, useAppState } from 'store'
@@ -158,12 +159,12 @@ const Mining: VFC = () => {
   } = useAppState()
 
   const {
-    modal: { setPrimaryModalActive },
     main: {
       showMiningPage,
       mining: { openPlanetDetailsDrawer, closePlanetDetailsDrawer },
     },
   } = useActions()
+  const setPrimaryModalActive = useModalStore((state) => state.setPrimaryModalActive)
 
   const [land, setLand] = useState<IAsset>(null)
   const { planetDetails, loading } = usePlanetDetail(planetSelectedForMining)

@@ -15,6 +15,7 @@ import {
 } from '@chakra-ui/react'
 import { motion } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
+import { useModalStore } from 'shared/store/modalStore'
 import { Colors } from 'shared/util/colors'
 import { useActions, useAppState } from 'store'
 import { PagePath } from 'store/main/types'
@@ -26,12 +27,12 @@ const AnimatedBox = motion(Box)
 export const JoinMissionModal = () => {
   const {
     missions: { setJoinMissionStep },
-    modal: { setPrimaryModalActive },
   } = useActions()
   const {
-    modal: { primaryModals },
     missions: { joinMissionStep, selectedMission, missionShipsCount },
   } = useAppState()
+  const setPrimaryModalActive = useModalStore((state) => state.setPrimaryModalActive)
+  const primaryModals = useModalStore((state) => state.primaryModals)
 
   const navigate = useNavigate()
 

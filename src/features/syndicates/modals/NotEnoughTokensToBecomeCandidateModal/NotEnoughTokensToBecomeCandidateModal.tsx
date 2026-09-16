@@ -17,10 +17,11 @@ import { motion } from 'framer-motion'
 import { useWalletDaoDetails } from 'graphql/hooks/useWalletDaoDetails'
 import { DaoWalletDetailsResponse } from 'graphql/types'
 import { capitalize, get, head, replace, split, toNumber } from 'lodash'
+import { useModalStore } from 'shared/store/modalStore'
 import { Colors } from 'shared/util/colors'
 import { convertPlanetIdToName } from 'shared/util/helpers'
 import { formatNumber } from 'shared/util/numbers'
-import { useAppState, useActions } from 'store'
+import { useAppState } from 'store'
 
 import { Constants } from '../../../../shared/util/constants'
 
@@ -29,12 +30,11 @@ const AnimatedBox = motion(Box)
 const NotEnoughTokensToBecomeCandidateModal = () => {
   const {
     wax: { selectedDacId, currentDAOInfo, walletId },
-    modal: { secondaryModals },
   } = useAppState()
 
-  const {
-    modal: { setSecondaryModalActive, setPrimaryModalActive },
-  } = useActions()
+  const secondaryModals = useModalStore((state) => state.secondaryModals)
+  const setSecondaryModalActive = useModalStore((state) => state.setSecondaryModalActive)
+  const setPrimaryModalActive = useModalStore((state) => state.setPrimaryModalActive)
 
   const handleClose = () => {
     setSecondaryModalActive({ modalName: 'NotEnoughTokensToBecomeCandidateModal', value: false })

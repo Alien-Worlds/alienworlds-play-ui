@@ -13,8 +13,8 @@ import {
   Flex,
 } from '@chakra-ui/react'
 import { motion } from 'framer-motion'
+import { useModalStore } from 'shared/store/modalStore'
 import { Colors } from 'shared/util/colors'
-import { useActions, useAppState } from 'store'
 
 const AnimatedBox = motion(Box)
 
@@ -28,13 +28,8 @@ const ResigningCandidancyModal = () => {
     '2xl': '133px',
   })
 
-  const {
-    modal: { primaryModals },
-  } = useAppState()
-
-  const {
-    modal: { setPrimaryModalActive },
-  } = useActions()
+  const primaryModals = useModalStore((state) => state.primaryModals)
+  const setPrimaryModalActive = useModalStore((state) => state.setPrimaryModalActive)
 
   const handleClose = () => {
     setPrimaryModalActive({ modalName: 'ResigningCustodianModal', value: false })

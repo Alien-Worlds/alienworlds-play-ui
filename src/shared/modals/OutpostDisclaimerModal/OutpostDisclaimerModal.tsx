@@ -1,19 +1,15 @@
 import { ExperienceIcon, ShardsIcon, NFTPointsIcon } from '@alien-worlds/icons'
 import { Button } from '@alien-worlds/uikit'
 import { Flex, Modal, ModalBody, ModalContent, ModalCloseButton, Text, Box } from '@chakra-ui/react'
+import { useModalStore } from 'shared/store/modalStore'
 import { Colors } from 'shared/util/colors'
-import { useAppState, useActions } from 'store'
 
 const RELEASE_NOTES_URL =
   'http://alienworlds.io/blogs/embracing-the-power-of-shards-introducing-the-new-nft-outpost'
 
 const OutpostDisclaimerModal = () => {
-  const {
-    modal: { setPrimaryModalActive },
-  } = useActions()
-  const {
-    modal: { primaryModals },
-  } = useAppState()
+  const setPrimaryModalActive = useModalStore((state) => state.setPrimaryModalActive)
+  const primaryModals = useModalStore((state) => state.primaryModals)
 
   const handleClose = () => {
     setPrimaryModalActive({ modalName: 'OutpostDisclaimerModal', value: false })

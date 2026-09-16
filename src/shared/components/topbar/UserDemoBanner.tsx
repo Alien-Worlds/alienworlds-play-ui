@@ -1,20 +1,19 @@
 import { InfoIcon } from '@alien-worlds/icons'
 import { Button, Grid, GridItem, Text, Hide } from '@chakra-ui/react'
+import { useModalStore } from 'shared/store/modalStore'
 import { theme } from 'shared/styles/theme'
 import { Colors } from 'shared/util/colors'
 import { config } from 'shared/util/config'
 import { useScreenSize } from 'shared/util/hooks'
-import { useAppState, useActions } from 'store'
+import { useAppState } from 'store'
 
 import { Constants } from '../../util/constants'
 
 const UserDemoBanner = () => {
-  const {
-    modal: { setPrimaryModalActive },
-  } = useActions()
+  const setPrimaryModalActive = useModalStore((state) => state.setPrimaryModalActive)
+  const isModalActive = useModalStore((state) => state.isModalActive)
   const { isMobile } = useScreenSize()
   const {
-    modal: { isModalActive },
     main: {
       glossaryDrawer,
       miningToolsDrawer,

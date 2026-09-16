@@ -2,16 +2,11 @@ import { useEffect, useState } from 'react'
 
 import { Dialog, DialogPanel } from '@headlessui/react'
 import ReactPlayer from 'react-player'
-import { useAppState, useActions } from 'store'
+import { useModalStore } from 'shared/store/modalStore'
 
 const VideoPlayerModal = () => {
-  const {
-    modal: { secondaryModals },
-  } = useAppState()
-
-  const {
-    modal: { setSecondaryModalActive },
-  } = useActions()
+  const secondaryModals = useModalStore((state) => state.secondaryModals)
+  const setSecondaryModalActive = useModalStore((state) => state.setSecondaryModalActive)
 
   const [videoEmbedUrl, setVideoEmbedUrl] = useState<string>('')
 
