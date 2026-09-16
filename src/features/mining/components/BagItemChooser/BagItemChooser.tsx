@@ -25,8 +25,9 @@ import {
 } from 'features/mining/utils/constants'
 import { motion } from 'framer-motion'
 import { get } from 'lodash'
+import { useModalStore } from 'shared/store/modalStore'
 import { Colors } from 'shared/util/colors'
-import { useActions, useAppState } from 'store'
+import { useAppState } from 'store'
 
 const AnimatedFlex = motion(Flex)
 
@@ -36,11 +37,7 @@ const BagItemChooserComponent = ({ index }: { index: MiningToolsActiveSlotNumber
     atomic: { bagAssets },
   } = useAppState()
 
-  const {
-    main: {
-      mining: { openMiningToolsDrawer },
-    },
-  } = useActions()
+  const openMiningToolsDrawer = useModalStore((state) => state.openMiningToolsDrawer)
 
   const [asset, setAsset] = useState<NFTCardTypes>()
 

@@ -26,9 +26,9 @@ export const LandAddSlotModal = ({ selectedBoost, onClose, selectedImg }: SlotMo
   const {
     atomic: { ownedLandBoostsAssets },
     wax: { managingLandId, isDemoUser },
-    main: { landOwnerDrawerPayload },
   } = useAppState()
   const setPrimaryModalActive = useModalStore((state) => state.setPrimaryModalActive)
+  const landOwnerDrawerPayload = useModalStore((state) => state.landOwnerDrawerPayload)
 
   const [isMainBoost, setIsMainBoost] = useState<boolean>(false)
   const [timer, setTimer] = useState(getDiffToStartOfNext25hDay())

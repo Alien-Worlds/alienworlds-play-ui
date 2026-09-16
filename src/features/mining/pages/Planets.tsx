@@ -20,6 +20,7 @@ import {
   RingPositionHelper,
   RingPositions,
 } from 'shared/components/RingPositionHelper/RingPositionHelper'
+import { useModalStore } from 'shared/store/modalStore'
 import { Colors } from 'shared/util/colors'
 import { useActions, useAppState } from 'store'
 import { PagePath } from 'store/main/types'
@@ -27,14 +28,13 @@ import { PagePath } from 'store/main/types'
 const Planets = () => {
   const {
     wax: { setPlanetSelectedForMiningIntent, setPlanetNameForMiningIntent },
-    main: {
-      showPlanetPage,
-      mining: { openPlanetDetailsDrawer, closePlanetDetailsDrawer },
-    },
+    main: { showPlanetPage },
   } = useActions()
+  const openPlanetDetailsDrawer = useModalStore((state) => state.openPlanetDetailsDrawer)
+  const closePlanetDetailsDrawer = useModalStore((state) => state.closePlanetDetailsDrawer)
+  const planetDetailsDrawer = useModalStore((state) => state.planetDetailsDrawer)
   const {
     atomic: { landAsset },
-    main: { planetDetailsDrawer },
     wax: { planetSelectedForMining, isOnboarded },
   } = useAppState()
 

@@ -1,18 +1,15 @@
 import { Button, Flex, Text } from '@chakra-ui/react'
+import { useGlossaryStore } from 'features/glossary/store/glossaryStore'
 import { GlossaryCategoriesOptions } from 'features/glossary/utils/glossaryConst'
 import { map } from 'lodash'
 import { Colors } from 'shared/util/colors'
 import { sanitizedHtmlString } from 'shared/util/helpers'
-import { useActions, useAppState } from 'store'
 
 const GlossaryList = () => {
-  const {
-    main: { glossaryDrawer },
-  } = useAppState()
-
-  const {
-    main: { glossary: glossaryActions },
-  } = useActions()
+  const glossaryDrawer = useGlossaryStore((state) => state.glossaryDrawer)
+  const openGlossaryDrawerContentDetails = useGlossaryStore(
+    (state) => state.openGlossaryDrawerContentDetails
+  )
   return (
     <Flex gap={10} flexDirection="column" width="full">
       {!glossaryDrawer.list?.length && <Text>No result...</Text>}
@@ -47,9 +44,7 @@ const GlossaryList = () => {
                   _hover={{ bg: Colors.SNOW_WHITE, color: Colors.BLACK_SOLID_90 }}
                   width="fit-content"
                   disabled={glossaryDrawer.isLoading}
-                  onClick={() =>
-                    glossaryActions.openGlossaryDrawerContentDetails(article.zendeskId)
-                  }
+                  onClick={() => openGlossaryDrawerContentDetails(article.zendeskId)}
                 >
                   Show me how
                 </Button>

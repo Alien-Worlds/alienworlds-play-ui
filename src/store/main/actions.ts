@@ -51,7 +51,7 @@ import {
   mapLandToMiningParams,
   showOnboardingNewsletter,
 } from './helpers'
-import { LandOwnerDrawerType, PagePath, PullRequest, WalletType } from './types'
+import { PagePath, PullRequest, WalletType } from './types'
 import { Context } from '..'
 import { Constants } from '../../shared/util/constants'
 
@@ -1359,14 +1359,6 @@ export const claimMine = pipe(
   })
 )
 
-export const setLandOwnerDrawerPayload = pipe(({ state }, payload: LandOwnerDrawerType) => {
-  state.main.landOwnerDrawerPayload = payload
-})
-
-export const setIsLandOwnerAddSlotDrawerOpen = pipe(({ state }: Context, isOpen: boolean) => {
-  state.main.isLandOwnerAddSlotDrawerOpen = isOpen
-})
-
 export const toggleCompactSidebar = pipe(
   ({ state }: Context, forceState: boolean | null = null) => {
     const newState = forceState !== null ? forceState : !state.main.isCompactSidebar
@@ -1385,6 +1377,3 @@ export const storeOnboardingNewsletterWasShown = pipe(
 export const setOutPostModalsActive = pipe(({ state }: Context, shown: boolean = false) => {
   state.main.isOutPostModalsActive = shown
 })
-
-export * as glossary from './actions/glossary'
-export * as mining from './actions/mining'

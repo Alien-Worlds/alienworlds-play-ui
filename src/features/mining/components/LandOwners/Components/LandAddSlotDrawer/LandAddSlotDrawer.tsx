@@ -29,8 +29,9 @@ import { BoostLevels } from 'features/mining/utils/constants'
 import { find, map } from 'lodash'
 import { useMatch } from 'react-router-dom'
 import { AppModal } from 'shared/layouts'
+import { useModalStore } from 'shared/store/modalStore'
 import { Colors } from 'shared/util/colors'
-import { useActions, useAppState } from 'store'
+import { useAppState } from 'store'
 import { PagePath } from 'store/main/types'
 
 import { Constants } from '../../../../../../shared/util/constants'
@@ -40,13 +41,15 @@ export const LandAddSlotDrawer = () => {
 
   const [showAddModal, setShowAddModal] = useState(false)
 
-  const {
-    main: { setIsLandOwnerAddSlotDrawerOpen, setLandOwnerDrawerPayload },
-  } = useActions()
+  const setIsLandOwnerAddSlotDrawerOpen = useModalStore(
+    (state) => state.setIsLandOwnerAddSlotDrawerOpen
+  )
+  const setLandOwnerDrawerPayload = useModalStore((state) => state.setLandOwnerDrawerPayload)
+  const isLandOwnerAddSlotDrawerOpen = useModalStore((state) => state.isLandOwnerAddSlotDrawerOpen)
+  const landOwnerDrawerPayload = useModalStore((state) => state.landOwnerDrawerPayload)
 
   const {
     wax: { managingLandDetails },
-    main: { isLandOwnerAddSlotDrawerOpen, landOwnerDrawerPayload },
   } = useAppState()
 
   const isLandMgtSubPage = useMatch(PagePath.LandMgtSubpage)

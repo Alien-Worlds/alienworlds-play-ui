@@ -1,17 +1,10 @@
 import SessionKit, { Session } from '@wharfkit/session'
 import { IAsset } from 'atomicassets/build/API/Explorer/Objects'
-import { GlossaryDrawerState } from 'features/glossary/types/GlossaryTypes'
-import { GlossaryCategoriesOptions } from 'features/glossary/utils/glossaryConst'
-import {
-  MiningToolsDrawerState,
-  PlanetDetailsDrawerState,
-  SyndicatesProposalDrawerState,
-} from 'features/mining/types/MiningTypes'
 import { ErrorTypes } from 'features/syndicates/types/governanceTypes'
 import { DateTime, Duration } from 'luxon'
 import { derived } from 'overmind'
 import { getDefaultSyncAi } from 'store/main/helpers'
-import { LandOwnerDrawerType, PullRequest } from 'store/main/types'
+import { PullRequest } from 'store/main/types'
 
 export type SyncInfo = {
   isInProgress: boolean
@@ -58,17 +51,11 @@ type MainState = {
   modalErrorState: ErrorTypes
   shiningUrl: string
   isCompactSidebar: boolean
-  isLandOwnerAddSlotDrawerOpen: boolean
-  landOwnerDrawerPayload: LandOwnerDrawerType
   isVotingDACCandidates: boolean
   autoExpireVoteDACCandidates: number
   lastMineBounty: string
   lastMineCountdown: string
-  glossaryDrawer: GlossaryDrawerState
-  miningToolsDrawer: MiningToolsDrawerState
   isOutPostModalsActive: boolean
-  syndicatesProposalDrawer: SyndicatesProposalDrawerState
-  planetDetailsDrawer: PlanetDetailsDrawerState
   sessionKit: SessionKit
   currentSession: Session
   currentWallet: string
@@ -111,8 +98,6 @@ export const defaultState: MainState = {
   isWorkInProgress: false,
   modalErrorState: null,
   shiningUrl: null,
-  landOwnerDrawerPayload: null,
-  isLandOwnerAddSlotDrawerOpen: false,
   miningGameState: derived((state: MainState) => {
     if (state.isClaiming) return MiningGameState.Claiming
 
@@ -144,25 +129,7 @@ export const defaultState: MainState = {
   autoExpireVoteDACCandidates: null,
   lastMineBounty: null,
   lastMineCountdown: null,
-  glossaryDrawer: {
-    isOpen: false,
-    isLoading: false,
-    searchKeyword: null,
-    contentDetails: null,
-    list: null,
-    selectedCategory: GlossaryCategoriesOptions[0].value,
-  },
-  miningToolsDrawer: {
-    isOpen: false,
-    activeSlotIndex: 0,
-  },
   isOutPostModalsActive: false,
-  syndicatesProposalDrawer: {
-    isOpen: false,
-  },
-  planetDetailsDrawer: {
-    isOpen: false,
-  },
   sessionKit: null,
   currentSession: null,
   currentWallet: null,

@@ -23,6 +23,7 @@ import { ELEMENTTYPES, LooseObject } from 'features/inventory/utils/NFTCardHelpe
 import { LandBoostsDay } from 'features/mining/types/LandownerTypes'
 import _, { find, map, toLower, toUpper } from 'lodash'
 import { useMatch, useNavigate } from 'react-router-dom'
+import { useModalStore } from 'shared/store/modalStore'
 import { Colors } from 'shared/util/colors'
 import { useActions, useAppState } from 'store'
 import { PagePath } from 'store/main/types'
@@ -656,8 +657,10 @@ const NFTCardLandActions = ({ asset }: LooseObject) => {
       collectEvent,
       loadManagingLandDetailsAndBoosts,
     },
-    main: { setIsLandOwnerAddSlotDrawerOpen },
   } = useActions()
+  const setIsLandOwnerAddSlotDrawerOpen = useModalStore(
+    (state) => state.setIsLandOwnerAddSlotDrawerOpen
+  )
   const {
     atomic: { ownedLandsAssets, landAsset, ownedLandsAssetsDayBoosts },
     wax: { isOnboarded, onboarding },

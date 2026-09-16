@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 
 import { AlienWorldsIcon, CrossIcon, MainMenuIcon2 } from '@alien-worlds/icons'
 import { Box, Flex, IconButton, HStack, Spacer, Text, VStack, Image } from '@chakra-ui/react'
+import { useGlossaryStore } from 'features/glossary/store/glossaryStore'
 import { map } from 'lodash'
 import { useLocation } from 'react-router-dom'
 import { BalanceTlmTop } from 'shared/components/topbar/BalanceTlmTop'
@@ -80,20 +81,17 @@ const TopBar = () => {
       selectedDrawerView,
       isSyndicatesSidebarOpen,
     },
-    main: {
-      currentWallet,
-      glossaryDrawer,
-      miningToolsDrawer,
-      planetDetailsDrawer,
-      isOutPostModalsActive,
-      syndicatesProposalDrawer,
-      isLandOwnerAddSlotDrawerOpen,
-    },
+    main: { currentWallet, isOutPostModalsActive },
     atomic: { ownedLandsAssets },
   } = useAppState()
   const isModalActive = useModalStore((state) => state.isModalActive)
   const isMainDrawerOpen = useModalStore((state) => state.isMainDrawerOpen)
   const toggleMainDrawer = useModalStore((state) => state.toggleMainDrawer)
+  const miningToolsDrawer = useModalStore((state) => state.miningToolsDrawer)
+  const planetDetailsDrawer = useModalStore((state) => state.planetDetailsDrawer)
+  const syndicatesProposalDrawer = useModalStore((state) => state.syndicatesProposalDrawer)
+  const isLandOwnerAddSlotDrawerOpen = useModalStore((state) => state.isLandOwnerAddSlotDrawerOpen)
+  const glossaryDrawer = useGlossaryStore((state) => state.glossaryDrawer)
   const [walletLogo, setWalletLogo] = useState(null)
   const { pathname } = useLocation()
   const [drawerTabs, setDrawerTabs] = useState([])

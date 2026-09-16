@@ -1,4 +1,11 @@
+import {
+  MiningToolsActiveSlotNumber,
+  MiningToolsDrawerState,
+  PlanetDetailsDrawerState,
+  SyndicatesProposalDrawerState,
+} from 'features/mining/types/MiningTypes'
 import { ErrorTypes } from 'features/syndicates/types/governanceTypes'
+import { LandOwnerDrawerType } from 'store/main/types'
 import { create } from 'zustand'
 
 export type SecondaryModals = {
@@ -122,11 +129,24 @@ export interface ModalStore {
   errorType: ErrorTypes | null
   isModalActive: boolean
   isMainDrawerOpen: boolean
+  isLandOwnerAddSlotDrawerOpen: boolean
+  landOwnerDrawerPayload: LandOwnerDrawerType | null
+  planetDetailsDrawer: PlanetDetailsDrawerState
+  syndicatesProposalDrawer: SyndicatesProposalDrawerState
+  miningToolsDrawer: MiningToolsDrawerState
   setSecondaryModalActive: (input: SetSecondaryModalActiveInput) => void
   resetAllSecondaryModals: () => void
   setPrimaryModalActive: (input: SetPrimaryModalActiveInput) => void
   resetAllPrimaryModals: () => void
   toggleMainDrawer: (forceState?: boolean | null) => void
+  setIsLandOwnerAddSlotDrawerOpen: (isOpen: boolean) => void
+  setLandOwnerDrawerPayload: (payload: LandOwnerDrawerType) => void
+  openPlanetDetailsDrawer: () => void
+  closePlanetDetailsDrawer: () => void
+  openSyndicatesProposalDrawer: () => void
+  closeSyndicatesProposalDrawer: () => void
+  openMiningToolsDrawer: (activeSlotIndex: MiningToolsActiveSlotNumber) => void
+  closeMiningToolsDrawer: () => void
 }
 
 export const useModalStore = create<ModalStore>((set, get) => ({
@@ -135,6 +155,11 @@ export const useModalStore = create<ModalStore>((set, get) => ({
   errorType: null,
   isModalActive: false,
   isMainDrawerOpen: false,
+  isLandOwnerAddSlotDrawerOpen: false,
+  landOwnerDrawerPayload: null,
+  planetDetailsDrawer: { isOpen: false },
+  syndicatesProposalDrawer: { isOpen: false },
+  miningToolsDrawer: { isOpen: false, activeSlotIndex: MiningToolsActiveSlotNumber.SLOT_ONE },
 
   resetAllSecondaryModals: () => {
     const secondaryModals: SecondaryModalState = {
@@ -199,5 +224,37 @@ export const useModalStore = create<ModalStore>((set, get) => ({
     set({
       isMainDrawerOpen: forceState !== null ? forceState : !get().isMainDrawerOpen,
     })
+  },
+
+  setIsLandOwnerAddSlotDrawerOpen: (isOpen) => {
+    set({ isLandOwnerAddSlotDrawerOpen: isOpen })
+  },
+
+  setLandOwnerDrawerPayload: (payload) => {
+    set({ landOwnerDrawerPayload: payload })
+  },
+
+  openPlanetDetailsDrawer: () => {
+    set({ planetDetailsDrawer: { isOpen: true } })
+  },
+
+  closePlanetDetailsDrawer: () => {
+    set({ planetDetailsDrawer: { isOpen: false } })
+  },
+
+  openSyndicatesProposalDrawer: () => {
+    set({ syndicatesProposalDrawer: { isOpen: true } })
+  },
+
+  closeSyndicatesProposalDrawer: () => {
+    set({ syndicatesProposalDrawer: { isOpen: false } })
+  },
+
+  openMiningToolsDrawer: (activeSlotIndex) => {
+    set({ miningToolsDrawer: { isOpen: true, activeSlotIndex } })
+  },
+
+  closeMiningToolsDrawer: () => {
+    set({ miningToolsDrawer: { ...get().miningToolsDrawer, isOpen: false } })
   },
 }))

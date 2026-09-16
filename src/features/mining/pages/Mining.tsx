@@ -155,16 +155,16 @@ const Mining: VFC = () => {
   const {
     atomic: { landAsset },
     wax: { planetSelectedForMining },
-    main: { miningToolsDrawer, planetDetailsDrawer },
   } = useAppState()
 
   const {
-    main: {
-      showMiningPage,
-      mining: { openPlanetDetailsDrawer, closePlanetDetailsDrawer },
-    },
+    main: { showMiningPage },
   } = useActions()
   const setPrimaryModalActive = useModalStore((state) => state.setPrimaryModalActive)
+  const miningToolsDrawer = useModalStore((state) => state.miningToolsDrawer)
+  const planetDetailsDrawer = useModalStore((state) => state.planetDetailsDrawer)
+  const openPlanetDetailsDrawer = useModalStore((state) => state.openPlanetDetailsDrawer)
+  const closePlanetDetailsDrawer = useModalStore((state) => state.closePlanetDetailsDrawer)
 
   const [land, setLand] = useState<IAsset>(null)
   const { planetDetails, loading } = usePlanetDetail(planetSelectedForMining)
