@@ -121,10 +121,12 @@ export interface ModalStore {
   primaryModals: PrimaryModalState
   errorType: ErrorTypes | null
   isModalActive: boolean
+  isMainDrawerOpen: boolean
   setSecondaryModalActive: (input: SetSecondaryModalActiveInput) => void
   resetAllSecondaryModals: () => void
   setPrimaryModalActive: (input: SetPrimaryModalActiveInput) => void
   resetAllPrimaryModals: () => void
+  toggleMainDrawer: (forceState?: boolean | null) => void
 }
 
 export const useModalStore = create<ModalStore>((set, get) => ({
@@ -132,6 +134,7 @@ export const useModalStore = create<ModalStore>((set, get) => ({
   primaryModals: getDefaultPrimaryModalState(),
   errorType: null,
   isModalActive: false,
+  isMainDrawerOpen: false,
 
   resetAllSecondaryModals: () => {
     const secondaryModals: SecondaryModalState = {
@@ -189,6 +192,12 @@ export const useModalStore = create<ModalStore>((set, get) => ({
       primaryModals,
       errorType: errorType ?? null,
       isModalActive: computeIsModalActive(primaryModals, get().secondaryModals),
+    })
+  },
+
+  toggleMainDrawer: (forceState = null) => {
+    set({
+      isMainDrawerOpen: forceState !== null ? forceState : !get().isMainDrawerOpen,
     })
   },
 }))

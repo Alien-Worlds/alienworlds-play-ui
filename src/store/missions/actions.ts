@@ -4,6 +4,7 @@ import { DateTime } from 'luxon'
 import { catchError, debounce, pipe, wait, waitUntil } from 'overmind'
 import { matchPath, matchRoutes } from 'react-router'
 import { router } from 'routes'
+import { useModalStore } from 'shared/store/modalStore'
 import { config } from 'shared/util/config'
 import { isMissionsRelatedPage } from 'shared/util/router'
 import { executeAfter, shouldExecute } from 'store/main/helpers'
@@ -94,7 +95,7 @@ export const initializeOrReloadRecentMissions = pipe(
 
     const isMissionsPage = isMissionsRelatedPage(pathname)
 
-    if (!isMissionsPage && !state.main.isMainDrawerOpen) return
+    if (!isMissionsPage && !useModalStore.getState().isMainDrawerOpen) return
 
     if (state.main.syncAi.recentMissions.isInProgress) return
 
@@ -143,7 +144,7 @@ export const initializeOrReloadExplorerMissions = pipe(
     if (
       !isMissionsPage &&
       matchPath(PagePath.ProfileBalances, router.state.location.pathname) &&
-      !state.main.isMainDrawerOpen
+      !useModalStore.getState().isMainDrawerOpen
     )
       return
 

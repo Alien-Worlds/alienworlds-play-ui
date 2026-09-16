@@ -11,6 +11,7 @@ import { catchError, parallel, pipe, wait, filter as overmindFilter, waitUntil }
 import { toast } from 'react-hot-toast'
 import { matchPath } from 'react-router'
 import { router } from 'routes'
+import { useModalStore } from 'shared/store/modalStore'
 import { config } from 'shared/util/config'
 import { padZero, isValidDacId, getUserRankInfo, sessionKitWallets } from 'shared/util/helpers'
 import { isMissionsRelatedPage } from 'shared/util/router'
@@ -592,10 +593,8 @@ export const presetAssetsFilter = ({ state, actions }: Context) => {
   })
 }
 
-export const toggleMainDrawer = pipe(({ state }: Context, forceState: boolean | null = null) => {
-  const newState = forceState !== null ? forceState : !state.main.isMainDrawerOpen
-
-  state.main.isMainDrawerOpen = newState
+export const toggleMainDrawer = pipe((_: Context, forceState: boolean | null = null) => {
+  useModalStore.getState().toggleMainDrawer(forceState)
 })
 
 export const setShiningUrl = pipe(({ state }: Context, url: string) => {

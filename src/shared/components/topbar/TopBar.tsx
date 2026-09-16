@@ -67,7 +67,7 @@ const MenuToggler = ({ controls, tabs }) => {
 
 const TopBar = () => {
   const {
-    main: { toggleMainDrawer, toggleCompactSidebar },
+    main: { toggleCompactSidebar },
     wax: { setIsSyndicatesSidebarOpen, setSelectedDrawerView },
   } = useActions()
   const {
@@ -83,7 +83,6 @@ const TopBar = () => {
     main: {
       currentWallet,
       glossaryDrawer,
-      isMainDrawerOpen,
       miningToolsDrawer,
       planetDetailsDrawer,
       isOutPostModalsActive,
@@ -93,6 +92,8 @@ const TopBar = () => {
     atomic: { ownedLandsAssets },
   } = useAppState()
   const isModalActive = useModalStore((state) => state.isModalActive)
+  const isMainDrawerOpen = useModalStore((state) => state.isMainDrawerOpen)
+  const toggleMainDrawer = useModalStore((state) => state.toggleMainDrawer)
   const [walletLogo, setWalletLogo] = useState(null)
   const { pathname } = useLocation()
   const [drawerTabs, setDrawerTabs] = useState([])

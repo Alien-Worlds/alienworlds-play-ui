@@ -57,7 +57,6 @@ type MainState = {
   signingDACTermsState: SigningDACTermsState
   modalErrorState: ErrorTypes
   shiningUrl: string
-  isMainDrawerOpen: boolean
   isCompactSidebar: boolean
   isLandOwnerAddSlotDrawerOpen: boolean
   landOwnerDrawerPayload: LandOwnerDrawerType
@@ -140,7 +139,6 @@ export const defaultState: MainState = {
     if (state.isSigningDACTerms) return SigningDACTermsState.Signing
     return SigningDACTermsState.Unknown
   }),
-  isMainDrawerOpen: false,
   isCompactSidebar: false,
   isVotingDACCandidates: false,
   autoExpireVoteDACCandidates: null,
