@@ -21,6 +21,7 @@ import { useWalletDaoDetails } from 'graphql/hooks/useWalletDaoDetails'
 import { DAO_DETAILS_QUERY } from 'graphql/queries'
 import { DaoDetailsResponse, DaoGlobalsResponse, DaoWalletDetailsResponse } from 'graphql/types'
 import { capitalize } from 'lodash'
+import { useModalStore } from 'shared/store/modalStore'
 import { Colors } from 'shared/util/colors'
 import { config } from 'shared/util/config'
 import { convertPlanetIdToName } from 'shared/util/helpers'
@@ -31,8 +32,8 @@ const AnimatedBox = motion(Box)
 const LockCandidancyModal = () => {
   const {
     wax: { selectedDacId, dacCandidacyProposalPayload, walletId },
-    modal: { primaryModals },
   } = useAppState()
+  const primaryModals = useModalStore((state) => state.primaryModals)
   const {
     daoDetails,
     loading: loadingDaoDetails,
@@ -50,8 +51,8 @@ const LockCandidancyModal = () => {
 
   const {
     wax: { registerNewCandidate },
-    modal: { setPrimaryModalActive },
   } = useActions()
+  const setPrimaryModalActive = useModalStore((state) => state.setPrimaryModalActive)
 
   const handleClose = () => {
     setPrimaryModalActive({ modalName: 'LockCandidancyModal', value: false })

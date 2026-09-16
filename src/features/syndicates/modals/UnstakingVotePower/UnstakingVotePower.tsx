@@ -22,6 +22,7 @@ import { useDaoDetails } from 'graphql/hooks/useDaoDetails'
 import { useWalletDaoDetails } from 'graphql/hooks/useWalletDaoDetails'
 import { DaoDetailsResponse, DaoWalletDetailsResponse } from 'graphql/types'
 import { capitalize, get, replace, startCase, toNumber } from 'lodash'
+import { useModalStore } from 'shared/store/modalStore'
 import { Colors } from 'shared/util/colors'
 import {
   convertPlanetIdToName,
@@ -61,13 +62,14 @@ const UnstakingVotePower = () => {
 
   const {
     wax: { selectedDacId, walletId, actionProgressState },
-    modal: { primaryModals },
   } = useAppState()
 
   const {
     wax: { tryUnstakeVotePower, resetActionProgressState },
-    modal: { setPrimaryModalActive, setSecondaryModalActive },
   } = useActions()
+  const primaryModals = useModalStore((state) => state.primaryModals)
+  const setPrimaryModalActive = useModalStore((state) => state.setPrimaryModalActive)
+  const setSecondaryModalActive = useModalStore((state) => state.setSecondaryModalActive)
 
   const {
     daoDetails,

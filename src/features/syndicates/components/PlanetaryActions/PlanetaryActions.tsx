@@ -19,6 +19,7 @@ import { useWalletDetails } from 'graphql/hooks/useWalletDetails'
 import { DaoDetailsResponse, WalletDetailsResponse } from 'graphql/types'
 import { capitalize, get, lowerCase } from 'lodash'
 import { useNavigate } from 'react-router-dom'
+import { useModalStore } from 'shared/store/modalStore'
 import { Colors } from 'shared/util/colors'
 import { convertPlanetIdToName, getMiningRewardsTimeInHours } from 'shared/util/helpers'
 import { useScreenSize } from 'shared/util/hooks'
@@ -57,11 +58,9 @@ export const VisitPlanetBtn = ({ selectedDac }: { selectedDac: DaoDetailsRespons
 
 export const AddVotePowerBtn = () => {
   const {
-    modal: { setPrimaryModalActive },
-  } = useActions()
-  const {
     wax: { isDemoUser },
   } = useAppState()
+  const setPrimaryModalActive = useModalStore((state) => state.setPrimaryModalActive)
 
   const { isNotDesktop } = useScreenSize()
   return (
@@ -93,11 +92,9 @@ export const AddVotePowerBtn = () => {
 
 export const ConvertTokenBtn = ({ selectedDac }: { selectedDac: DaoDetailsResponse }) => {
   const {
-    modal: { setPrimaryModalActive },
-  } = useActions()
-  const {
     wax: { isDemoUser },
   } = useAppState()
+  const setPrimaryModalActive = useModalStore((state) => state.setPrimaryModalActive)
 
   const { isNotDesktop } = useScreenSize()
   return (
@@ -129,11 +126,11 @@ export const ConvertTokenBtn = ({ selectedDac }: { selectedDac: DaoDetailsRespon
 export const SignMemberTermsBtn = ({ selectedDacId }: { selectedDacId: string }) => {
   const {
     wax: { signPlanetMemberTerms },
-    modal: { setPrimaryModalActive },
   } = useActions()
   const {
     wax: { isDemoUser },
   } = useAppState()
+  const setPrimaryModalActive = useModalStore((state) => state.setPrimaryModalActive)
   const { isNotDesktop } = useScreenSize()
 
   return (

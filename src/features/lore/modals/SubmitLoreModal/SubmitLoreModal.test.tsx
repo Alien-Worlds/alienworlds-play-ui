@@ -33,14 +33,20 @@ const mockTrySubmitLore = jest.fn()
 
 jest.mock('store', () => ({
   useAppState: () => ({
-    modal: { secondaryModals: mockSecondaryModals },
     main: { lorePullRequests: mockLorePullRequests },
   }),
   useActions: () => ({
-    modal: { setSecondaryModalActive: mockSetSecondaryModalActive },
     main: { getLorePullRequestCommit: mockGetLorePullRequestCommit },
     wax: { trySubmitLore: mockTrySubmitLore },
   }),
+}))
+
+jest.mock('shared/store/modalStore', () => ({
+  useModalStore: (selector: (state: unknown) => unknown) =>
+    selector({
+      secondaryModals: mockSecondaryModals,
+      setSecondaryModalActive: mockSetSecondaryModalActive,
+    }),
 }))
 
 import { SubmitLoreModal } from './SubmitLoreModal'

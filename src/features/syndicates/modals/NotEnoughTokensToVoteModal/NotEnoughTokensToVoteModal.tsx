@@ -17,20 +17,20 @@ import { LoadingSpinner } from 'features/syndicates/components/LoadingSpinner/Lo
 import { motion } from 'framer-motion'
 import { useDaoDetails } from 'graphql/hooks/useDaoDetails'
 import { DaoDetailsResponse } from 'graphql/types'
+import { useModalStore } from 'shared/store/modalStore'
 import { Colors } from 'shared/util/colors'
 import { PlanetIcon } from 'shared/util/icons'
-import { useActions, useAppState } from 'store'
+import { useAppState } from 'store'
 
 const AnimatedBox = motion(Box)
 
 const NotEnoughTokensToVoteModal = () => {
   const {
     wax: { selectedDacId },
-    modal: { secondaryModals },
   } = useAppState()
-  const {
-    modal: { setSecondaryModalActive, setPrimaryModalActive },
-  } = useActions()
+  const secondaryModals = useModalStore((state) => state.secondaryModals)
+  const setSecondaryModalActive = useModalStore((state) => state.setSecondaryModalActive)
+  const setPrimaryModalActive = useModalStore((state) => state.setPrimaryModalActive)
 
   const handleClose = () => {
     setSecondaryModalActive({ modalName: 'NotEnoughTokensToVoteModal', value: false })

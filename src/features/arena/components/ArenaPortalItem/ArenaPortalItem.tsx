@@ -11,8 +11,8 @@ import {
 import { Button } from '@alien-worlds/uikit'
 import { ArenaPortalItemType } from 'features/arena/pages/Arena'
 import { get, isEmpty, map, replace } from 'lodash'
+import { useModalStore } from 'shared/store/modalStore'
 import { hasUTCDateAlreadyOccurred, openInNewTab } from 'shared/util/helpers'
-import { useActions } from 'store'
 
 type ArenaPortalItemProps = {
   data: ArenaPortalItemType
@@ -47,9 +47,7 @@ const CreatorLink = ({
 }
 
 export const ArenaPortalItem = ({ data }: ArenaPortalItemProps) => {
-  const {
-    modal: { setSecondaryModalActive },
-  } = useActions()
+  const setSecondaryModalActive = useModalStore((state) => state.setSecondaryModalActive)
 
   const isItemReleased = useMemo(() => {
     if (!data.releaseDate) {

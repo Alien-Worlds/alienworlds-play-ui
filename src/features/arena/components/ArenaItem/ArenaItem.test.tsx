@@ -12,10 +12,9 @@ jest.mock('react-router-dom', () => ({
 }))
 
 const mockSetSecondaryModalActive = jest.fn()
-jest.mock('store', () => ({
-  useActions: () => ({
-    modal: { setSecondaryModalActive: mockSetSecondaryModalActive },
-  }),
+jest.mock('shared/store/modalStore', () => ({
+  useModalStore: (selector: (state: unknown) => unknown) =>
+    selector({ setSecondaryModalActive: mockSetSecondaryModalActive }),
 }))
 
 const baseItem = {

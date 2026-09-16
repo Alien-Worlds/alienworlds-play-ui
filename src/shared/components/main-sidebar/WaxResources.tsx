@@ -4,6 +4,7 @@ import { FC } from 'react'
 
 import { DetailsOldIcon } from '@alien-worlds/icons'
 import { Box, Flex, Text } from '@chakra-ui/react'
+import { useModalStore } from 'shared/store/modalStore'
 import { Colors } from 'shared/util/colors'
 import { useActions, useAppState } from 'store'
 
@@ -61,8 +62,8 @@ const WaxResources: FC = () => {
   } = useAppState()
   const {
     main: { toggleMainDrawer },
-    modal: { setSecondaryModalActive },
   } = useActions()
+  const setSecondaryModalActive = useModalStore((state) => state.setSecondaryModalActive)
 
   if (resources === null) {
     return <></>

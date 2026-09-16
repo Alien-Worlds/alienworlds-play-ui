@@ -12,8 +12,8 @@ import {
   ModalCloseButton,
   HStack,
 } from '@chakra-ui/react'
+import { useModalStore } from 'shared/store/modalStore'
 import { Colors } from 'shared/util/colors'
-import { useActions, useAppState } from 'store'
 
 const ERROR_TEMPLATES = {
   CANDIDATE_CANNOT_UNSTAKE:
@@ -21,12 +21,9 @@ const ERROR_TEMPLATES = {
 }
 
 const ErrorModal = () => {
-  const {
-    modal: { secondaryModals, errorType },
-  } = useAppState()
-  const {
-    modal: { setSecondaryModalActive },
-  } = useActions()
+  const secondaryModals = useModalStore((state) => state.secondaryModals)
+  const errorType = useModalStore((state) => state.errorType)
+  const setSecondaryModalActive = useModalStore((state) => state.setSecondaryModalActive)
 
   const handleClose = () => {
     setSecondaryModalActive({ modalName: 'ErrorModal', value: false })

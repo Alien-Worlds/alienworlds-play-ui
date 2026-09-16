@@ -1,14 +1,15 @@
 import { LogoutIcon } from '@alien-worlds/icons'
 import { Button } from '@alien-worlds/uikit'
 import { Flex } from '@chakra-ui/react'
+import { useModalStore } from 'shared/store/modalStore'
 import { clearCookies } from 'shared/util/helpers'
 import { useActions } from 'store'
 
 export const LogoutButton = () => {
   const {
     main: { logout },
-    modal: { setPrimaryModalActive },
   } = useActions()
+  const setPrimaryModalActive = useModalStore((state) => state.setPrimaryModalActive)
   const onClickLogout = () => {
     clearCookies()
     setPrimaryModalActive({ modalName: 'LoadingModal', value: true })

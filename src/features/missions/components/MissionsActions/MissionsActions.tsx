@@ -5,6 +5,7 @@ import { Button } from '@alien-worlds/uikit'
 import { Box, Text } from '@chakra-ui/react'
 import { useConnectWallet, useSetChain, useWallets } from '@web3-onboard/react'
 import { useNavigate } from 'react-router-dom'
+import { useModalStore } from 'shared/store/modalStore'
 import { Colors } from 'shared/util/colors'
 import { config } from 'shared/util/config'
 import { useScreenSize } from 'shared/util/hooks'
@@ -116,9 +117,7 @@ export const MissionsCentreBtn = () => {
 
 export const ConnectWalletBtn = ({ onClick }: { onClick: any }) => {
   const { isNotDesktop } = useScreenSize()
-  const {
-    modal: { setPrimaryModalActive },
-  } = useActions()
+  const setPrimaryModalActive = useModalStore((state) => state.setPrimaryModalActive)
   const {
     wax: { isDemoUser },
   } = useAppState()
