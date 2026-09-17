@@ -5,16 +5,15 @@ import { SlotNumber } from 'features/mining/components/LandOwners/Components/Slo
 import { useLandBoostSlots } from 'features/mining/hooks/useLandBoostSlots'
 import { LandSlot, SlotSize, SlotVariant } from 'features/mining/types/LandownerTypes'
 import { map } from 'lodash'
-import { useActions, useAppState } from 'store'
+import { useModalStore } from 'shared/store/modalStore'
+import { useAppState } from 'store'
 
 const BoostSlotsInlineComponent = () => {
   const {
     wax: { managingLandBoostFullSlots },
   } = useAppState()
 
-  const {
-    main: { setLandOwnerDrawerPayload },
-  } = useActions()
+  const setLandOwnerDrawerPayload = useModalStore((state) => state.setLandOwnerDrawerPayload)
 
   const { firstAvailableSlot } = useLandBoostSlots()
 

@@ -14,22 +14,21 @@ import {
   Icon,
 } from '@chakra-ui/react'
 import { GlossaryListCategories } from 'features/glossary/components/GlossaryListCategories/GlossaryListCategories'
+import { useGlossaryStore } from 'features/glossary/store/glossaryStore'
 import ScrollContainer from 'react-indiana-drag-scroll'
 import { Colors } from 'shared/util/colors'
 import { useScreenSize } from 'shared/util/hooks'
-import { useActions, useAppState } from 'store'
 
 import { GlossaryDetails } from '../GlossaryDetails/GlossaryDetails'
 import { GlossaryList } from '../GlossaryList/GlossaryList'
 
 const GlossaryDrawer = () => {
-  const {
-    main: { glossaryDrawer },
-  } = useAppState()
-
-  const {
-    main: { glossary: glossaryAction },
-  } = useActions()
+  const glossaryDrawer = useGlossaryStore((state) => state.glossaryDrawer)
+  const closeGlossaryDrawer = useGlossaryStore((state) => state.closeGlossaryDrawer)
+  const searchArticlesByKeyword = useGlossaryStore((state) => state.searchArticlesByKeyword)
+  const resetGlossaryDrawerContentDetails = useGlossaryStore(
+    (state) => state.resetGlossaryDrawerContentDetails
+  )
 
   const { isMobile } = useScreenSize()
   const isMobileAndNoArticleSelected = isMobile && !glossaryDrawer.contentDetails
@@ -40,7 +39,7 @@ const GlossaryDrawer = () => {
         <Flex direction="column" width="full">
           {isMobile && (
             <Button
-              onClick={() => glossaryAction.resetGlossaryDrawerContentDetails()}
+              onClick={() => resetGlossaryDrawerContentDetails()}
               variant="dark"
               marginTop={5}
               gap={3}
@@ -71,7 +70,7 @@ const GlossaryDrawer = () => {
       size={glossaryDrawer.contentDetails ? 'xl' : 'lg'}
       placement="right"
       isOpen={glossaryDrawer.isOpen}
-      onClose={() => glossaryAction.closeGlossaryDrawer()}
+      onClose={() => closeGlossaryDrawer()}
       preserveScrollBarGap
     >
       <DrawerOverlay />
@@ -117,9 +116,7 @@ const GlossaryDrawer = () => {
                         },
                       }}
                       value={glossaryDrawer.searchKeyword || ''}
-                      onChange={({ target: { value } }) =>
-                        glossaryAction.searchArticlesByKeyword(value)
-                      }
+                      onChange={({ target: { value } }) => searchArticlesByKeyword(value)}
                     />
                   </Flex>
                   <Flex gap={6} alignItems="center">

@@ -1,5 +1,6 @@
 import { Box, Flex } from '@chakra-ui/react'
 import { GlossaryDrawer } from 'features/glossary/components/GlossaryDrawer/GlossaryDrawer'
+import { useGlossaryStore } from 'features/glossary/store/glossaryStore'
 import { MissionToClaimSound } from 'features/missions/components/MissionToClaimSound'
 import { Outlet } from 'react-router-dom'
 import { MainDrawer } from 'shared/components/main-drawer/MainDrawer'
@@ -29,8 +30,9 @@ export const MainSidebarWidth = {
 const AdvancedLayout = () => {
   const {
     wax: { isLoggedIn },
-    main: { glossaryDrawer, isCompactSidebar },
+    main: { isCompactSidebar },
   } = useAppState()
+  const glossaryDrawer = useGlossaryStore((state) => state.glossaryDrawer)
   const { isMobile, isNotDesktop } = useScreenSize()
   const { isExpandedMobileSidebar } = useMainSidebar()
   const isLandRelatedPage = useActivePath([

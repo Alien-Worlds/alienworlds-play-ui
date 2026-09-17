@@ -6,6 +6,7 @@ import { Flex, Text, Image, Grid, GridItem, useBreakpointValue } from '@chakra-u
 import { DaoSelect } from 'features/syndicates/components/DaoSelect'
 import { getPlanetImages } from 'features/syndicates/utils/GovernanceHelper'
 import { generatePath, useNavigate } from 'react-router-dom'
+import { useModalStore } from 'shared/store/modalStore'
 import { Colors } from 'shared/util/colors'
 import { unionDAOFinder } from 'shared/util/helpers'
 import { useActions } from 'store'
@@ -26,9 +27,9 @@ export const SyndicatesView = () => {
     sm: '48px',
   })
   const {
-    main: { toggleMainDrawer },
     wax: { getDAOInfo, setSelectedDacId },
   } = useActions()
+  const toggleMainDrawer = useModalStore((state) => state.toggleMainDrawer)
   const navigate = useNavigate()
   return (
     <Flex width="100%" flexDirection="column" alignItems="center" gap={2}>

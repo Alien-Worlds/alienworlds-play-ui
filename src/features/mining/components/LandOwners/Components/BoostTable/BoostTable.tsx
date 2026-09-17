@@ -21,8 +21,9 @@ import { useLandBoostSlots } from 'features/mining/hooks/useLandBoostSlots'
 import { LandSlot, SlotSize, SlotVariant } from 'features/mining/types/LandownerTypes'
 import { map } from 'lodash'
 import ScrollContainer from 'react-indiana-drag-scroll'
+import { useModalStore } from 'shared/store/modalStore'
 import { Colors } from 'shared/util/colors'
-import { useActions, useAppState } from 'store'
+import { useAppState } from 'store'
 import { v4 } from 'uuid'
 
 interface BoostTableProps {
@@ -210,9 +211,10 @@ const BoostSlotRow = ({ slot, firstAvailableSlot, onSlotAction, onUnlockSlot }: 
 }
 
 const BoostTable: FC<BoostTableProps> = ({ onShowUnlockModal, setSlotToUnlock }) => {
-  const {
-    main: { setLandOwnerDrawerPayload, setIsLandOwnerAddSlotDrawerOpen },
-  } = useActions()
+  const setLandOwnerDrawerPayload = useModalStore((state) => state.setLandOwnerDrawerPayload)
+  const setIsLandOwnerAddSlotDrawerOpen = useModalStore(
+    (state) => state.setIsLandOwnerAddSlotDrawerOpen
+  )
   const [id] = useState(() => v4())
   const {
     wax: { managingLandBoostFullSlots, isLoadingManagingLandBoosts },

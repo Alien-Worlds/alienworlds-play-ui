@@ -1,12 +1,10 @@
 import { Box, Text } from '@chakra-ui/react'
+import { useGlossaryStore } from 'features/glossary/store/glossaryStore'
 import ScrollContainer from 'react-indiana-drag-scroll'
 import { sanitizedHtmlString } from 'shared/util/helpers'
-import { useAppState } from 'store'
 
 const GlossaryDetails = () => {
-  const {
-    main: { glossaryDrawer },
-  } = useAppState()
+  const glossaryDrawer = useGlossaryStore((state) => state.glossaryDrawer)
 
   return (
     <ScrollContainer className="scroll-container" hideScrollbars={false}>

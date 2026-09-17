@@ -11,6 +11,7 @@ import { catchError, parallel, pipe, wait, filter as overmindFilter, waitUntil }
 import { toast } from 'react-hot-toast'
 import { matchPath } from 'react-router'
 import { router } from 'routes'
+import { useModalStore } from 'shared/store/modalStore'
 import { config } from 'shared/util/config'
 import { padZero, isValidDacId, getUserRankInfo, sessionKitWallets } from 'shared/util/helpers'
 import { isMissionsRelatedPage } from 'shared/util/router'
@@ -50,7 +51,7 @@ import {
   mapLandToMiningParams,
   showOnboardingNewsletter,
 } from './helpers'
-import { LandOwnerDrawerType, PagePath, PullRequest, WalletType } from './types'
+import { PagePath, PullRequest, WalletType } from './types'
 import { Context } from '..'
 import { Constants } from '../../shared/util/constants'
 
@@ -592,12 +593,6 @@ export const presetAssetsFilter = ({ state, actions }: Context) => {
   })
 }
 
-export const toggleMainDrawer = pipe(({ state }: Context, forceState: boolean | null = null) => {
-  const newState = forceState !== null ? forceState : !state.main.isMainDrawerOpen
-
-  state.main.isMainDrawerOpen = newState
-})
-
 export const setShiningUrl = pipe(({ state }: Context, url: string) => {
   state.main.shiningUrl = url
 })
@@ -627,7 +622,7 @@ export const showHomePage = pipe(
 )
 export const showInventoryPage = pipe(
   ({ actions }: Context) => {
-    actions.main.toggleMainDrawer(false)
+    useModalStore.getState().toggleMainDrawer(false)
     actions.main.presetAssetsFilter()
     actions.wax.collectEvent({
       name: Constants.GA_PAGE_VISIT,
@@ -641,7 +636,7 @@ export const showInventoryPage = pipe(
 
 export const showShiningPage = pipe(
   ({ actions }: Context) => {
-    actions.main.toggleMainDrawer(false)
+    useModalStore.getState().toggleMainDrawer(false)
     actions.main.presetAssetsFilter()
     actions.wax.collectEvent({
       name: Constants.GA_PAGE_VISIT,
@@ -655,7 +650,7 @@ export const showShiningPage = pipe(
 
 export const showGovernancePage = pipe(
   ({ state, actions }: Context) => {
-    actions.main.toggleMainDrawer(false)
+    useModalStore.getState().toggleMainDrawer(false)
     actions.wax.collectEvent({
       name: Constants.GA_PAGE_VISIT,
       fields: {
@@ -674,7 +669,7 @@ export const showGovernancePage = pipe(
 export const showGovernanceDetailsPage = pipe(
   ({ state, actions }: Context, id: string) => {
     const { navigate } = router
-    actions.main.toggleMainDrawer(false)
+    useModalStore.getState().toggleMainDrawer(false)
 
     if (isValidDacId(id)) {
       state.wax.selectedDacId = id
@@ -708,7 +703,7 @@ export const showGovernanceDetailsPage = pipe(
 export const showGovernanceDaoSelect = pipe(
   ({ state, actions }: Context, id: string) => {
     const { navigate } = router
-    actions.main.toggleMainDrawer(false)
+    useModalStore.getState().toggleMainDrawer(false)
     if (isValidDacId(id)) {
       state.wax.selectedDacId = id
     } else {
@@ -741,7 +736,7 @@ export const showGovernanceDaoSelect = pipe(
 
 export const showGovernanceCandidatesPage = pipe(
   ({ state, actions }: Context, { id }: { id: string }) => {
-    actions.main.toggleMainDrawer(false)
+    useModalStore.getState().toggleMainDrawer(false)
     const { navigate } = router
     if (isValidDacId(id)) {
       state.wax.selectedDacId = id
@@ -775,7 +770,7 @@ export const showGovernanceCandidatesPage = pipe(
 
 export const showGovernanceBecomeCandidatePage = pipe(({ state, actions }: Context, id: string) => {
   const { navigate } = router
-  actions.main.toggleMainDrawer(false)
+  useModalStore.getState().toggleMainDrawer(false)
   if (isValidDacId(id)) {
     state.wax.selectedDacId = id
   } else {
@@ -797,7 +792,7 @@ export const showGovernanceBecomeCandidatePage = pipe(({ state, actions }: Conte
 export const showGovernanceManageCandidacyPage = pipe(
   ({ state, actions }: Context, id: string) => {
     const { navigate } = router
-    actions.main.toggleMainDrawer(false)
+    useModalStore.getState().toggleMainDrawer(false)
     if (isValidDacId(id)) {
       state.wax.selectedDacId = id
     } else {
@@ -831,7 +826,7 @@ export const showGovernanceManageCandidacyPage = pipe(
 
 export const showGovernanceMemberTerms = pipe(({ state, actions }: Context, id: string) => {
   const { navigate } = router
-  actions.main.toggleMainDrawer(false)
+  useModalStore.getState().toggleMainDrawer(false)
   if (isValidDacId(id)) {
     state.wax.selectedDacId = id
   } else {
@@ -854,7 +849,7 @@ export const showGovernanceSignCandidateVotePage = pipe(
   ({ state, actions }: Context, payload: { id: string; walletId: string }) => {
     const { id, walletId } = payload
     const { navigate } = router
-    actions.main.toggleMainDrawer(false)
+    useModalStore.getState().toggleMainDrawer(false)
     if (isValidDacId(id)) {
       state.wax.selectedDacId = id
       state.wax.selectedDacCandidateWalletId = walletId
@@ -896,7 +891,7 @@ export const showGovernanceSignCandidateVotePage = pipe(
 export const showGovernanceCustodianDashboard = pipe(
   ({ state, actions }: Context, id: string) => {
     const { navigate } = router
-    actions.main.toggleMainDrawer(false)
+    useModalStore.getState().toggleMainDrawer(false)
     if (isValidDacId(id)) {
       state.wax.selectedDacId = id
     } else {
@@ -937,7 +932,7 @@ export const showGovernanceCustodianDashboard = pipe(
 
 export const showMissionsPage = pipe(
   ({ actions }: Context) => {
-    actions.main.toggleMainDrawer(false)
+    useModalStore.getState().toggleMainDrawer(false)
     actions.missions.setSelectedMissionsTab(0)
     actions.wax.collectEvent({
       name: Constants.GA_PAGE_VISIT,
@@ -955,7 +950,7 @@ export const showMissionsPage = pipe(
 
 export const showMissionsExplorerPage = pipe(
   ({ actions }: Context) => {
-    actions.main.toggleMainDrawer(false)
+    useModalStore.getState().toggleMainDrawer(false)
     actions.missions.setSelectedMissionsTab(1)
     actions.wax.collectEvent({
       name: Constants.GA_PAGE_VISIT,
@@ -973,7 +968,7 @@ export const showMissionsExplorerPage = pipe(
 
 export const showMissionsInventoryPage = pipe(
   ({ actions }: Context) => {
-    actions.main.toggleMainDrawer(false)
+    useModalStore.getState().toggleMainDrawer(false)
     actions.missions.setSelectedMissionsTab(2)
     actions.wax.collectEvent({
       name: Constants.GA_PAGE_VISIT,
@@ -987,7 +982,7 @@ export const showMissionsInventoryPage = pipe(
 
 export const showMissionDetailsPage = pipe(
   ({ state, actions }: Context, id: string) => {
-    actions.main.toggleMainDrawer(false)
+    useModalStore.getState().toggleMainDrawer(false)
     state.missions.selectedMissionId = id
     actions.wax.collectEvent({
       name: Constants.GA_PAGE_VISIT,
@@ -1002,7 +997,7 @@ export const showMissionDetailsPage = pipe(
 
 export const showMissionJoinPage = pipe(
   ({ state, actions }: Context, id: string) => {
-    actions.main.toggleMainDrawer(false)
+    useModalStore.getState().toggleMainDrawer(false)
     state.missions.selectedMissionId = id
     actions.wax.collectEvent({
       name: Constants.GA_PAGE_VISIT,
@@ -1017,7 +1012,7 @@ export const showMissionJoinPage = pipe(
 
 export const showMiningPage = pipe(
   async ({ actions }: Context) => {
-    actions.main.toggleMainDrawer(false)
+    useModalStore.getState().toggleMainDrawer(false)
     actions.main.presetAssetsFilter()
     actions.wax.collectEvent({
       name: Constants.GA_PAGE_VISIT,
@@ -1031,7 +1026,7 @@ export const showMiningPage = pipe(
 
 export const showPlanetPage = pipe(
   async ({ actions }: Context) => {
-    actions.main.toggleMainDrawer(false)
+    useModalStore.getState().toggleMainDrawer(false)
     actions.wax.collectEvent({
       name: Constants.GA_PAGE_VISIT,
       fields: { location: PagePath.Planet },
@@ -1055,7 +1050,7 @@ export const showLandPage = pipe(
     actions.atomic.resetLandAssetsFilter()
   },
   async ({ actions }: Context) => {
-    actions.main.toggleMainDrawer(false)
+    useModalStore.getState().toggleMainDrawer(false)
     actions.wax.collectEvent({
       name: Constants.GA_PAGE_VISIT,
       fields: { location: PagePath.Land },
@@ -1069,7 +1064,7 @@ export const showLandPage = pipe(
 
 export const showErrorPage = pipe(
   async ({ actions }: Context) => {
-    actions.main.toggleMainDrawer(false)
+    useModalStore.getState().toggleMainDrawer(false)
     actions.wax.collectEvent({
       name: Constants.GA_PAGE_VISIT,
       fields: { location: PagePath.Error },
@@ -1082,7 +1077,7 @@ export const showErrorPage = pipe(
 
 export const showProfileInfoPage = pipe(
   async ({ actions }: Context) => {
-    actions.main.toggleMainDrawer(false)
+    useModalStore.getState().toggleMainDrawer(false)
     actions.wax.collectEvent({
       name: Constants.GA_PAGE_VISIT,
       fields: { location: PagePath.ProfileInfo },
@@ -1095,7 +1090,7 @@ export const showProfileInfoPage = pipe(
 
 export const showProfileBalancesPage = pipe(
   async ({ actions }: Context) => {
-    actions.main.toggleMainDrawer(false)
+    useModalStore.getState().toggleMainDrawer(false)
     actions.wax.collectEvent({
       name: Constants.GA_PAGE_VISIT,
       fields: { location: PagePath.ProfileBalances },
@@ -1108,7 +1103,7 @@ export const showProfileBalancesPage = pipe(
 
 export const showOutpostPage = pipe(
   async ({ actions }: Context) => {
-    actions.main.toggleMainDrawer(false)
+    useModalStore.getState().toggleMainDrawer(false)
     actions.wax.collectEvent({
       name: Constants.GA_PAGE_VISIT,
       fields: { location: PagePath.Outpost },
@@ -1121,7 +1116,7 @@ export const showOutpostPage = pipe(
 
 export const showLandMgtPage = pipe(
   ({ state, actions }: Context, id: string) => {
-    actions.main.toggleMainDrawer(false)
+    useModalStore.getState().toggleMainDrawer(false)
     state.wax.managingLandId = id
 
     actions.wax.collectEvent({
@@ -1360,14 +1355,6 @@ export const claimMine = pipe(
   })
 )
 
-export const setLandOwnerDrawerPayload = pipe(({ state }, payload: LandOwnerDrawerType) => {
-  state.main.landOwnerDrawerPayload = payload
-})
-
-export const setIsLandOwnerAddSlotDrawerOpen = pipe(({ state }: Context, isOpen: boolean) => {
-  state.main.isLandOwnerAddSlotDrawerOpen = isOpen
-})
-
 export const toggleCompactSidebar = pipe(
   ({ state }: Context, forceState: boolean | null = null) => {
     const newState = forceState !== null ? forceState : !state.main.isCompactSidebar
@@ -1386,6 +1373,3 @@ export const storeOnboardingNewsletterWasShown = pipe(
 export const setOutPostModalsActive = pipe(({ state }: Context, shown: boolean = false) => {
   state.main.isOutPostModalsActive = shown
 })
-
-export * as glossary from './actions/glossary'
-export * as mining from './actions/mining'

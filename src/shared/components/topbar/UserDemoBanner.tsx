@@ -1,5 +1,6 @@
 import { InfoIcon } from '@alien-worlds/icons'
 import { Button, Grid, GridItem, Text, Hide } from '@chakra-ui/react'
+import { useGlossaryStore } from 'features/glossary/store/glossaryStore'
 import { useModalStore } from 'shared/store/modalStore'
 import { theme } from 'shared/styles/theme'
 import { Colors } from 'shared/util/colors'
@@ -12,16 +13,14 @@ import { Constants } from '../../util/constants'
 const UserDemoBanner = () => {
   const setPrimaryModalActive = useModalStore((state) => state.setPrimaryModalActive)
   const isModalActive = useModalStore((state) => state.isModalActive)
+  const miningToolsDrawer = useModalStore((state) => state.miningToolsDrawer)
+  const planetDetailsDrawer = useModalStore((state) => state.planetDetailsDrawer)
+  const syndicatesProposalDrawer = useModalStore((state) => state.syndicatesProposalDrawer)
+  const isLandOwnerAddSlotDrawerOpen = useModalStore((state) => state.isLandOwnerAddSlotDrawerOpen)
+  const glossaryDrawer = useGlossaryStore((state) => state.glossaryDrawer)
   const { isMobile } = useScreenSize()
   const {
-    main: {
-      glossaryDrawer,
-      miningToolsDrawer,
-      planetDetailsDrawer,
-      isOutPostModalsActive,
-      syndicatesProposalDrawer,
-      isLandOwnerAddSlotDrawerOpen,
-    },
+    main: { isOutPostModalsActive },
     wax: { walletId, isAuthenticating },
   } = useAppState()
 

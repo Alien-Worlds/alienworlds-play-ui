@@ -20,20 +20,19 @@ import { LandownerView } from 'shared/components/main-drawer/LandownerView'
 import { LogoutButton } from 'shared/components/main-drawer/LogoutButton'
 import { Menu } from 'shared/components/main-drawer/Menu'
 import { SocialCards } from 'shared/components/main-drawer/SocialCards'
+import { useModalStore } from 'shared/store/modalStore'
 import { pageTransition } from 'shared/util/animations'
 import { Colors } from 'shared/util/colors'
 import { config } from 'shared/util/config'
 import { useScreenSize } from 'shared/util/hooks'
-import { useActions, useAppState } from 'store'
+import { useAppState } from 'store'
 
 import { Constants } from '../../util/constants'
 
 export const MainDrawer: VFC = () => {
+  const isMainDrawerOpen = useModalStore((state) => state.isMainDrawerOpen)
+  const toggleMainDrawer = useModalStore((state) => state.toggleMainDrawer)
   const {
-    main: { toggleMainDrawer },
-  } = useActions()
-  const {
-    main: { isMainDrawerOpen },
     wax: { isDemoUser, selectedDrawerView },
   } = useAppState()
 

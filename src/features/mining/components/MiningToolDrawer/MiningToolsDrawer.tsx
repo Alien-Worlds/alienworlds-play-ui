@@ -26,6 +26,7 @@ import ScrollContainer from 'react-indiana-drag-scroll'
 import { matchPath } from 'react-router'
 import { router } from 'routes'
 import { SortBySelector } from 'shared/components/SortBySelector/SortBySelector'
+import { useModalStore } from 'shared/store/modalStore'
 import { Colors } from 'shared/util/colors'
 import { useActions, useAppState } from 'store'
 import { defaultSortByNameOption, defaultSortByRarityOption } from 'store/atomic/helpers'
@@ -36,13 +37,11 @@ export const MiningToolsDrawer = () => {
   const {
     wax: { setBag },
     atomic: { setAssetsFilter },
-    main: {
-      mining: { closeMiningToolsDrawer },
-    },
   } = useActions()
+  const closeMiningToolsDrawer = useModalStore((state) => state.closeMiningToolsDrawer)
+  const miningToolsDrawer = useModalStore((state) => state.miningToolsDrawer)
   const {
     wax: { walletId },
-    main: { miningToolsDrawer },
     atomic: { bagAssets, assetsFilter },
   } = useAppState()
 
