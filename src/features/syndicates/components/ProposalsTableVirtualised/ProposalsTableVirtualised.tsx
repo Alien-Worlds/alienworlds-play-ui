@@ -14,19 +14,19 @@ import { MsigsResponse } from 'graphql/types'
 import { find, get, isEmpty, some, toNumber } from 'lodash'
 import { useLocation } from 'react-router-dom'
 import { AutoSizer, Table, InfiniteLoader } from 'react-virtualized'
-import { useActions, useAppState } from 'store'
+import { useModalStore } from 'shared/store/modalStore'
+import { useAppState } from 'store'
 
 import 'react-virtualized/styles.css'
 
 const ProposalsTableVirtualised = () => {
-  const {
-    main: {
-      mining: { openSyndicatesProposalDrawer, closeSyndicatesProposalDrawer },
-    },
-  } = useActions()
+  const openSyndicatesProposalDrawer = useModalStore((state) => state.openSyndicatesProposalDrawer)
+  const closeSyndicatesProposalDrawer = useModalStore(
+    (state) => state.closeSyndicatesProposalDrawer
+  )
+  const syndicatesProposalDrawer = useModalStore((state) => state.syndicatesProposalDrawer)
   const {
     wax: { selectedDacId },
-    main: { syndicatesProposalDrawer },
   } = useAppState()
 
   const { msigsProposals }: { msigsProposals: MsigsResponse[] } = useMsigsProposals(selectedDacId)

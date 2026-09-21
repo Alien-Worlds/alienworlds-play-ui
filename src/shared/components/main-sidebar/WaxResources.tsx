@@ -6,7 +6,7 @@ import { DetailsOldIcon } from '@alien-worlds/icons'
 import { Box, Flex, Text } from '@chakra-ui/react'
 import { useModalStore } from 'shared/store/modalStore'
 import { Colors } from 'shared/util/colors'
-import { useActions, useAppState } from 'store'
+import { useAppState } from 'store'
 
 interface PercentageBarProps {
   title: string
@@ -60,10 +60,8 @@ const WaxResources: FC = () => {
     main: { isCompactSidebar },
     wax: { resources },
   } = useAppState()
-  const {
-    main: { toggleMainDrawer },
-  } = useActions()
   const setSecondaryModalActive = useModalStore((state) => state.setSecondaryModalActive)
+  const toggleMainDrawer = useModalStore((state) => state.toggleMainDrawer)
 
   if (resources === null) {
     return <></>

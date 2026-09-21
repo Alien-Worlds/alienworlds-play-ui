@@ -222,18 +222,14 @@ export const setBag = pipe(
       return
     }
 
+    const activeSlotIndex = useModalStore.getState().miningToolsDrawer.activeSlotIndex
+
     if (state.wax.bag?.items?.length < asssetIds?.length) {
-      toastMessage(
-        `Tool Slot #${state.main.miningToolsDrawer.activeSlotIndex + 1} equipped successfully.`
-      )
+      toastMessage(`Tool Slot #${activeSlotIndex + 1} equipped successfully.`)
     } else if (state.wax.bag?.items?.length === asssetIds?.length) {
-      toastMessage(
-        `Tool Slot #${state.main.miningToolsDrawer.activeSlotIndex + 1} updated successfully.`
-      )
+      toastMessage(`Tool Slot #${activeSlotIndex + 1} updated successfully.`)
     } else if (state.wax.bag?.items?.length > asssetIds?.length) {
-      toastMessage(
-        `Tool Slot #${state.main.miningToolsDrawer.activeSlotIndex + 1} cleared successfully.`
-      )
+      toastMessage(`Tool Slot #${activeSlotIndex + 1} cleared successfully.`)
     }
 
     if (state.wax.bag) {

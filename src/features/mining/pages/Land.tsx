@@ -61,20 +61,18 @@ interface MiningPlanetOptionItem {
 
 const Land: VFC = () => {
   const {
-    main: { planetDetailsDrawer },
     atomic: { landAssetsFilter, landAsset },
     wax: { whereToMine, walletId, planetSelectedForMining, isOnboarded },
   } = useAppState()
 
   const {
     wax: { setPlanetSelectedForMiningIntent },
-    main: {
-      showLandPage,
-
-      mining: { openPlanetDetailsDrawer, closePlanetDetailsDrawer },
-    },
+    main: { showLandPage },
   } = useActions()
   const setPrimaryModalActive = useModalStore((state) => state.setPrimaryModalActive)
+  const planetDetailsDrawer = useModalStore((state) => state.planetDetailsDrawer)
+  const openPlanetDetailsDrawer = useModalStore((state) => state.openPlanetDetailsDrawer)
+  const closePlanetDetailsDrawer = useModalStore((state) => state.closePlanetDetailsDrawer)
   const navigate = useNavigate()
 
   const { data: rarityPools, refetch } = useRarityPools(

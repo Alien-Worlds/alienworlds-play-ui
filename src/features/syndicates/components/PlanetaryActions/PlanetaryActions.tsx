@@ -28,9 +28,7 @@ import { useActions, useAppState } from 'store'
 import { PagePath } from 'store/main/types'
 
 export const VisitPlanetBtn = ({ selectedDac }: { selectedDac: DaoDetailsResponse }) => {
-  const {
-    main: { toggleMainDrawer },
-  } = useActions()
+  const toggleMainDrawer = useModalStore((state) => state.toggleMainDrawer)
   const navigate = useNavigate()
   const { isNotDesktop } = useScreenSize()
 
@@ -166,9 +164,7 @@ export const CustodianCentreBtn = ({
   isActive?: boolean
   selectedDacId: string
 }) => {
-  const {
-    main: { toggleMainDrawer },
-  } = useActions()
+  const toggleMainDrawer = useModalStore((state) => state.toggleMainDrawer)
   const navigate = useNavigate()
   const { isNotDesktop } = useScreenSize()
   return (
@@ -201,9 +197,7 @@ export const ManageCandidacyBtn = ({
   isActive?: boolean
   selectedDacId: string
 }) => {
-  const {
-    main: { toggleMainDrawer },
-  } = useActions()
+  const toggleMainDrawer = useModalStore((state) => state.toggleMainDrawer)
   const navigate = useNavigate()
   const { isNotDesktop } = useScreenSize()
   return (
@@ -230,9 +224,7 @@ export const ManageCandidacyBtn = ({
 }
 
 export const ManageLandBtn = ({ land, isActive }: { land: IAsset; isActive?: boolean }) => {
-  const {
-    main: { toggleMainDrawer },
-  } = useActions()
+  const toggleMainDrawer = useModalStore((state) => state.toggleMainDrawer)
   const navigate = useNavigate()
   const { isNotDesktop } = useScreenSize()
   return (

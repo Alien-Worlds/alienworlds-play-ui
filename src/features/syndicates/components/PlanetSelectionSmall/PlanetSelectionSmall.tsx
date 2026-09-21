@@ -8,6 +8,7 @@ import { DaoWalletDetailsResponse } from 'graphql/types'
 import { endsWith, get, map, reject, replace, split, startCase, toNumber } from 'lodash'
 import { useNavigate, generatePath } from 'react-router-dom'
 import { useCurrentPath } from 'shared/hooks/useRouter'
+import { useModalStore } from 'shared/store/modalStore'
 import { Colors } from 'shared/util/colors'
 import { config } from 'shared/util/config'
 import {
@@ -61,14 +62,15 @@ const PlanetSelectionSmall = ({
   size?: string
 }) => {
   const {
-    main: { isMainDrawerOpen },
     wax: { walletId, selectedDacId },
   } = useAppState()
 
   const {
-    main: { toggleMainDrawer },
     wax: { setSelectedDacId, collectEvent },
   } = useActions()
+
+  const isMainDrawerOpen = useModalStore((state) => state.isMainDrawerOpen)
+  const toggleMainDrawer = useModalStore((state) => state.toggleMainDrawer)
 
   const navigate = useNavigate()
   const { isMobile } = useScreenSize()

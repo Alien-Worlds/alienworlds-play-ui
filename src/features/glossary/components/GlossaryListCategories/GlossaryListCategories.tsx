@@ -2,18 +2,13 @@ import { useEffect, useState } from 'react'
 
 import { Dropdown, Option } from '@alien-worlds/uikit'
 import { Flex } from '@chakra-ui/react'
+import { useGlossaryStore } from 'features/glossary/store/glossaryStore'
 import { GlossaryCategoriesOptions } from 'features/glossary/utils/glossaryConst'
 import { uniq, map } from 'lodash'
-import { useActions, useAppState } from 'store'
 
 const GlossaryListCategories = () => {
-  const {
-    main: { glossaryDrawer },
-  } = useAppState()
-
-  const {
-    main: { glossary: glossaryActions },
-  } = useActions()
+  const glossaryDrawer = useGlossaryStore((state) => state.glossaryDrawer)
+  const setSelectedCategory = useGlossaryStore((state) => state.setSelectedCategory)
 
   const [articleCategories, setArticleCategories] = useState<Option[]>([])
 
@@ -32,7 +27,7 @@ const GlossaryListCategories = () => {
         defaultValue={articleCategories[0]}
         options={articleCategories}
         onChange={(item: Option) => {
-          glossaryActions.setSelectedCategory(item.value)
+          setSelectedCategory(item.value)
         }}
         variant="simple"
         size="md"

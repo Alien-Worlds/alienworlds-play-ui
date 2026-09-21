@@ -140,4 +140,43 @@ describe('useModalStore', () => {
     expect(result.current.primaryModals.LoginModal).toBe(true)
     expect(result.current.secondaryModals.VideoPlayerModal).toBe(false)
   })
+
+  it('starts with the main drawer closed', () => {
+    const { result } = renderHook(() => useModalStore())
+
+    expect(result.current.isMainDrawerOpen).toBe(false)
+  })
+
+  it('toggleMainDrawer flips the current state when called with no argument', () => {
+    const { result } = renderHook(() => useModalStore())
+
+    act(() => {
+      result.current.toggleMainDrawer()
+    })
+    expect(result.current.isMainDrawerOpen).toBe(true)
+
+    act(() => {
+      result.current.toggleMainDrawer()
+    })
+    expect(result.current.isMainDrawerOpen).toBe(false)
+  })
+
+  it('toggleMainDrawer sets an explicit state when called with a boolean', () => {
+    const { result } = renderHook(() => useModalStore())
+
+    act(() => {
+      result.current.toggleMainDrawer(true)
+    })
+    expect(result.current.isMainDrawerOpen).toBe(true)
+
+    act(() => {
+      result.current.toggleMainDrawer(true)
+    })
+    expect(result.current.isMainDrawerOpen).toBe(true)
+
+    act(() => {
+      result.current.toggleMainDrawer(false)
+    })
+    expect(result.current.isMainDrawerOpen).toBe(false)
+  })
 })

@@ -7,15 +7,13 @@ import { map } from 'lodash'
 import { useNavigate } from 'react-router-dom'
 import { MenuItem } from 'shared/components/main-sidebar/PageList'
 import { useActivePath } from 'shared/hooks/useRouter'
-import { useActions } from 'store'
+import { useModalStore } from 'shared/store/modalStore'
 import { PagePath } from 'store/main/types'
 import { v4 } from 'uuid'
 
 export const Menu = () => {
   const navigate = useNavigate()
-  const {
-    main: { toggleMainDrawer },
-  } = useActions()
+  const toggleMainDrawer = useModalStore((state) => state.toggleMainDrawer)
 
   const MenuList: MenuItem[] = [
     {
