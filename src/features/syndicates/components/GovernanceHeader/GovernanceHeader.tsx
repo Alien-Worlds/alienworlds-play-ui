@@ -26,6 +26,7 @@ import {
 } from 'graphql/types'
 import { get, split, sumBy, toLower } from 'lodash'
 import { DateTime, Duration } from 'luxon'
+import { useSessionStore } from 'shared/store/sessionStore'
 import { Colors } from 'shared/util/colors'
 import { getISODateUTC, isUnionDAO } from 'shared/util/helpers'
 import { useScreenSize } from 'shared/util/hooks'
@@ -53,13 +54,10 @@ const planetIconStyle = {
 
 export const GovernanceHeader = memo(() => {
   const {
-    wax: {
-      isDemoUser,
-
-      walletId,
-      selectedDacId,
-    },
+    wax: { selectedDacId },
   } = useAppState()
+  const isDemoUser = useSessionStore((state) => state.isDemoUser)
+  const walletId = useSessionStore((state) => state.walletId)
 
   const { isMobile } = useScreenSize()
 

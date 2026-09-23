@@ -9,7 +9,8 @@ import { useMemo } from 'react'
 
 import { useUserDaoBalances } from 'graphql/hooks/useUserDaoBalances'
 import { useWalletDetails } from 'graphql/hooks/useWalletDetails'
-import { useAppState, useActions } from 'store'
+import { useSessionStore } from 'shared/store/sessionStore'
+import { useActions } from 'store'
 
 import { CLAIMS_CONSTANTS } from '../constants/profile.constants'
 import { useProfileStore } from '../store/profileStore'
@@ -17,9 +18,7 @@ import { ClaimableReward, UseClaimsDataReturn } from '../types/profile.types'
 import { calculateTimeRemaining, isRewardClaimable, generateClaimKey } from '../utils/profile.utils'
 
 export const useClaimsData = (): UseClaimsDataReturn => {
-  const {
-    wax: { walletId },
-  } = useAppState()
+  const walletId = useSessionStore((state) => state.walletId)
 
   const {
     wax: {

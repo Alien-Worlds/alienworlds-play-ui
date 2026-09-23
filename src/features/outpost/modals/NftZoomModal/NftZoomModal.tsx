@@ -13,10 +13,10 @@ import {
 } from '@chakra-ui/react'
 import { NftZoomModalProps } from 'features/outpost/types/nftOutpostTypes'
 import { motion } from 'framer-motion'
+import { useSessionStore } from 'shared/store/sessionStore'
 import { Colors } from 'shared/util/colors'
 import { config } from 'shared/util/config'
 import { formatUserPointsWithDecimal } from 'shared/util/helpers'
-import { useAppState } from 'store'
 
 const AnimatedBox = motion(Box)
 
@@ -29,9 +29,7 @@ const NftZoomModal: FC<NftZoomModalProps> = ({
   src,
   hideSubtitle,
 }) => {
-  const {
-    wax: { isDemoUser },
-  } = useAppState()
+  const isDemoUser = useSessionStore((state) => state.isDemoUser)
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="full" preserveScrollBarGap>
       <ModalContent position="relative" bg={Colors.BLACK_SOLID_95}>

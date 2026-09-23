@@ -2,10 +2,9 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 
 let mockIsDemoUser = false
-jest.mock('store', () => ({
-  useAppState: () => ({
-    wax: { isDemoUser: mockIsDemoUser },
-  }),
+jest.mock('shared/store/sessionStore', () => ({
+  useSessionStore: (selector: (state: unknown) => unknown) =>
+    selector({ isDemoUser: mockIsDemoUser, walletId: 'someplayer.wam' }),
 }))
 
 import { LoreSelect } from './LoreSelect'

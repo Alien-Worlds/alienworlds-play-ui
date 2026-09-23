@@ -13,8 +13,8 @@ import {
   UserLevelsBadgeTitle,
 } from 'shared/components/UserLevelsBadges/UserLevelsBadges'
 import { BadgesMap } from 'shared/components/UserLevelsBadges/UserLevelsBadges'
+import { useSessionStore } from 'shared/store/sessionStore'
 import { Colors } from 'shared/util/colors'
-import { useAppState } from 'store'
 
 import { Constants } from '../../../../shared/util/constants'
 
@@ -40,9 +40,8 @@ export const CurrentBadge = () => {
 
 export const Header = () => {
   const avatarSize = useBreakpointValue({ base: 5.6312, sm: 6.6312, md: 7.6312, lg: 8.6312, xl: 9 })
-  const {
-    wax: { isDemoUser, walletId },
-  } = useAppState()
+  const isDemoUser = useSessionStore((state) => state.isDemoUser)
+  const walletId = useSessionStore((state) => state.walletId)
   const { currentLevelReward } = useLevelNftRewards()
 
   return (

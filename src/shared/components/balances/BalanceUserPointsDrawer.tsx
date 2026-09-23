@@ -1,25 +1,26 @@
-import { pageTransition } from 'shared/util/animations'
-import { formatUserPointsWithDecimal } from 'shared/util/helpers'
-
 import { useState } from 'react'
 
 import { NFTOldIcon } from '@alien-worlds/icons'
 import { Button } from '@alien-worlds/uikit'
 import { Box, Flex, Text } from '@chakra-ui/react'
-import { Colors } from 'shared/util/colors'
 import { LoadingSpinner } from 'features/syndicates/components/LoadingSpinner/LoadingSpinner'
 import { motion } from 'framer-motion'
 import { useWalletDetails } from 'graphql/hooks/useWalletDetails'
 import { WalletDetailsResponse } from 'graphql/types'
 import { get } from 'lodash'
 import { useNavigate } from 'react-router-dom'
+import { useSessionStore } from 'shared/store/sessionStore'
+import { pageTransition } from 'shared/util/animations'
+import { Colors } from 'shared/util/colors'
+import { formatUserPointsWithDecimal } from 'shared/util/helpers'
 import { useAppState } from 'store'
 import { PagePath } from 'store/main/types'
 
 const BalanceUserPointsDrawer = () => {
   const {
-    wax: { isLoggedIn, isAuthenticating, walletId },
+    wax: { isLoggedIn, isAuthenticating },
   } = useAppState()
+  const walletId = useSessionStore((state) => state.walletId)
 
   const { walletDetails, loading }: { walletDetails: WalletDetailsResponse; loading: boolean } =
     useWalletDetails(walletId)

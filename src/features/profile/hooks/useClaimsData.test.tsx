@@ -1,7 +1,7 @@
 import { act, renderHook, waitFor } from '@testing-library/react'
 
-import { useProfileStore } from '../store/profileStore'
 import { useClaimsData } from './useClaimsData'
+import { useProfileStore } from '../store/profileStore'
 
 const mockTryClaimMiningRewards = jest.fn().mockResolvedValue(undefined)
 const mockTryClaimLandownerCommissions = jest.fn().mockResolvedValue(undefined)
@@ -9,7 +9,6 @@ const mockTryClaimLandownerAllowance = jest.fn().mockResolvedValue(undefined)
 const mockTryClaimUnstake = jest.fn().mockResolvedValue(undefined)
 
 jest.mock('store', () => ({
-  useAppState: () => ({ wax: { walletId: 'wallet.wam' } }),
   useActions: () => ({
     wax: {
       tryClaimMiningRewards: mockTryClaimMiningRewards,
@@ -18,6 +17,11 @@ jest.mock('store', () => ({
       tryClaimUnstake: mockTryClaimUnstake,
     },
   }),
+}))
+
+jest.mock('shared/store/sessionStore', () => ({
+  useSessionStore: (selector: (state: unknown) => unknown) =>
+    selector({ walletId: 'wallet.wam', isDemoUser: false }),
 }))
 
 const mockWalletDetails: any = {

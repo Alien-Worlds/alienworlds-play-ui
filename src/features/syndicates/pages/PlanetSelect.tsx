@@ -13,6 +13,7 @@ import { DaoDetailsResponse } from 'graphql/types'
 import { forEach, split, startCase, get } from 'lodash'
 import { generatePath, useNavigate } from 'react-router-dom'
 import Carousel from 'react-spring-3d-carousel'
+import { useSessionStore } from 'shared/store/sessionStore'
 import { pageTransition } from 'shared/util/animations'
 import { Colors } from 'shared/util/colors'
 import { config } from 'shared/util/config'
@@ -36,8 +37,9 @@ export const PlanetSelect = memo(() => {
   } = useActions()
   const [currentSlide, setCurrentSlide] = useState(0)
   const {
-    wax: { walletId, selectedDacId },
+    wax: { selectedDacId },
   } = useAppState()
+  const walletId = useSessionStore((state) => state.walletId)
   const { isDesktop } = useScreenSize()
 
   const memoizedSelectedDacId = useMemo(() => selectedDacId, [selectedDacId])

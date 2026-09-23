@@ -5,13 +5,11 @@ import { useLevelNftOffers } from 'features/outpost/hooks/queries/useLevelNftOff
 import { useWalletDetails } from 'graphql/hooks/useWalletDetails'
 import { WalletDetailsResponse } from 'graphql/types'
 import { find, get } from 'lodash'
-import { useAppState } from 'store'
+import { useSessionStore } from 'shared/store/sessionStore'
 import { WaxLevelOfferWithTemplate } from 'store/wax/types'
 
 export const useLevelNftRewards = () => {
-  const {
-    wax: { walletId },
-  } = useAppState()
+  const walletId = useSessionStore((state) => state.walletId)
   const { levelNftOffers } = useLevelNftOffers()
   const { walletDetails }: { walletDetails: WalletDetailsResponse; loading: boolean } =
     useWalletDetails(walletId)

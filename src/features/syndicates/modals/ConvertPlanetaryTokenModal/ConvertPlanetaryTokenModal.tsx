@@ -46,6 +46,7 @@ import {
   toNumber,
 } from 'lodash'
 import { useModalStore } from 'shared/store/modalStore'
+import { useSessionStore } from 'shared/store/sessionStore'
 import { Colors } from 'shared/util/colors'
 import { validateAmount } from 'shared/util/formhelper'
 import { convertPlanetIdToName, getSyndicatesCurrentPage } from 'shared/util/helpers'
@@ -66,8 +67,10 @@ export const ConvertPlanetaryTokenModal = () => {
     wax: { tryStake, tryUnstake, collectEvent },
   } = useActions()
   const {
-    wax: { walletId, isDemoUser, selectedDacId },
+    wax: { selectedDacId },
   } = useAppState()
+  const walletId = useSessionStore((state) => state.walletId)
+  const isDemoUser = useSessionStore((state) => state.isDemoUser)
   const primaryModals = useModalStore((state) => state.primaryModals)
   const setPrimaryModalActive = useModalStore((state) => state.setPrimaryModalActive)
   const client = useApolloClient()

@@ -3,7 +3,7 @@ import { ReactNode, createContext, useContext, useMemo } from 'react'
 import { useLores } from 'graphql/hooks/useLoreProposals'
 import { useWalletDetails } from 'graphql/hooks/useWalletDetails'
 import { LoreProposal, WalletDetailsResponse, loresResponse } from 'graphql/types'
-import { useAppState } from 'store'
+import { useSessionStore } from 'shared/store/sessionStore'
 
 type LoreDataContextValue = {
   lores: loresResponse | null
@@ -18,9 +18,7 @@ type LoreDataContextValue = {
 const LoreDataContext = createContext<LoreDataContextValue | undefined>(undefined)
 
 export function LoreDataProvider({ children }: { children: ReactNode }) {
-  const {
-    wax: { walletId },
-  } = useAppState()
+  const walletId = useSessionStore((state) => state.walletId)
   const { lores, loading: loadingLores } = useLores()
   const { walletDetails, loading: walletDetailsLoading } = useWalletDetails(walletId)
 

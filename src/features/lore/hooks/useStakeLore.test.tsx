@@ -22,9 +22,6 @@ jest.mock('../data/LoreDataProvider', () => ({
 }))
 
 jest.mock('store', () => ({
-  useAppState: () => ({
-    wax: { walletId: 'wallet.wam', isDemoUser: mockIsDemoUser },
-  }),
   useActions: () => ({
     wax: {
       tryStakeVotePowerLore: mockTryStakeVotePowerLore,
@@ -32,6 +29,11 @@ jest.mock('store', () => ({
     },
     main: { getLorePullRequests: mockGetLorePullRequests },
   }),
+}))
+
+jest.mock('shared/store/sessionStore', () => ({
+  useSessionStore: (selector: (state: unknown) => unknown) =>
+    selector({ isDemoUser: mockIsDemoUser, walletId: 'wallet.wam' }),
 }))
 
 jest.mock('shared/store/modalStore', () => ({

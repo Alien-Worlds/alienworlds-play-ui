@@ -9,15 +9,13 @@ import { useMemo } from 'react'
 
 import { useUserDaoBalances } from 'graphql/hooks/useUserDaoBalances'
 import { useWalletDetails } from 'graphql/hooks/useWalletDetails'
-import { useAppState } from 'store'
+import { useSessionStore } from 'shared/store/sessionStore'
 
 import { BalanceData, UseBalanceDataReturn } from '../types/profile.types'
 import { calculateTotalStaked, extractBalanceValue } from '../utils/profile.utils'
 
 export const useBalanceData = (): UseBalanceDataReturn => {
-  const {
-    wax: { walletId },
-  } = useAppState()
+  const walletId = useSessionStore((state) => state.walletId)
 
   const { walletDetails, loading: walletLoading } = useWalletDetails(walletId)
   const { userDaoBalances, loading: daoLoading } = useUserDaoBalances({ walletId })

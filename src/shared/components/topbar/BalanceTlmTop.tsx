@@ -6,15 +6,13 @@ import { LoadingSpinner } from 'features/syndicates/components/LoadingSpinner/Lo
 import { motion } from 'framer-motion'
 import { useWalletDetails } from 'graphql/hooks/useWalletDetails'
 import { WalletDetailsResponse } from 'graphql/types'
+import { useSessionStore } from 'shared/store/sessionStore'
 import { pageTransition } from 'shared/util/animations'
 import { Colors } from 'shared/util/colors'
 import { formatNumber } from 'shared/util/numbers'
-import { useAppState } from 'store'
 
 const BalanceTlmTop: VFC = () => {
-  const {
-    wax: { walletId },
-  } = useAppState()
+  const walletId = useSessionStore((state) => state.walletId)
   const { walletDetails, loading }: { walletDetails: WalletDetailsResponse; loading: boolean } =
     useWalletDetails(walletId)
 

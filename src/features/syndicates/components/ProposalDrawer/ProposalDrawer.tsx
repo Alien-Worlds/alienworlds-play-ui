@@ -35,6 +35,7 @@ import { DaoWalletDetailsResponse } from 'graphql/types'
 import { get, head, lowerCase, map, startCase, times, toLower, toNumber } from 'lodash'
 import { useMatch } from 'react-router-dom'
 import { useModalStore } from 'shared/store/modalStore'
+import { useSessionStore } from 'shared/store/sessionStore'
 import { Colors } from 'shared/util/colors'
 import { formatNumber } from 'shared/util/numbers'
 import { useActions, useAppState } from 'store'
@@ -121,8 +122,9 @@ const ProposalCard = ({ action, lastIndex = false, total = 0 }: ProposalCardType
 
 export const ProposalDrawer = ({ proposal, isOpen, onClose }: ProposalDrawerType) => {
   const {
-    wax: { walletId, selectedDacId },
+    wax: { selectedDacId },
   } = useAppState()
+  const walletId = useSessionStore((state) => state.walletId)
   const {
     wax: { setDacCustodianProposalPayload, tryApproveProposal, tryExecuteProposal },
   } = useActions()

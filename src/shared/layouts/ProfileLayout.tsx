@@ -1,12 +1,10 @@
 import { Box, Container, Flex } from '@chakra-ui/react'
 import { Header } from 'features/profile/components/Header/Header'
 import { Outlet } from 'react-router'
-import { useAppState } from 'store'
+import { useSessionStore } from 'shared/store/sessionStore'
 
 const ProfileLayout = () => {
-  const {
-    wax: { isDemoUser },
-  } = useAppState()
+  const isDemoUser = useSessionStore((state) => state.isDemoUser)
 
   return (
     <Container maxW="100%" alignItems="start" p={{ base: 0, md: 2 }} pt={{ base: 0, md: -2 }}>

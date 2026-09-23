@@ -7,6 +7,7 @@ import { useDaoDetails } from 'graphql/hooks/useDaoDetails'
 import { useWalletDaoDetails } from 'graphql/hooks/useWalletDaoDetails'
 import { DaoDetailsResponse, DaoWalletDetailsResponse } from 'graphql/types'
 import { capitalize, get, replace, toNumber } from 'lodash'
+import { useSessionStore } from 'shared/store/sessionStore'
 import { Colors } from 'shared/util/colors'
 import { convertPlanetIdToName } from 'shared/util/helpers'
 import { PlanetIcon } from 'shared/util/icons'
@@ -15,8 +16,9 @@ import { useAppState } from 'store'
 
 export const PlanetaryBalances: VFC = () => {
   const {
-    wax: { selectedDacId, walletId },
+    wax: { selectedDacId },
   } = useAppState()
+  const walletId = useSessionStore((state) => state.walletId)
   const {
     daoDetails,
     loading: daoDetailsLoading,

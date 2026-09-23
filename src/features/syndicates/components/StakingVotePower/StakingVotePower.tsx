@@ -35,6 +35,7 @@ import { USER_DAO_BALANCES } from 'graphql/queries/userDaoBalances'
 import { DaoDetailsResponse, DaoWalletDetailsResponse } from 'graphql/types'
 import { capitalize, get, isEmpty, isNull, isUndefined, replace, round, toNumber } from 'lodash'
 import { useModalStore } from 'shared/store/modalStore'
+import { useSessionStore } from 'shared/store/sessionStore'
 import { Colors } from 'shared/util/colors'
 import { validateAmount } from 'shared/util/formhelper'
 import { convertPlanetIdToName, getDacSymbol } from 'shared/util/helpers'
@@ -69,12 +70,12 @@ const StakingVotePower = () => {
   const textRef = useRef<HTMLDivElement>()
   const {
     wax: {
-      walletId,
       selectedDacId,
 
       actionProgressState,
     },
   } = useAppState()
+  const walletId = useSessionStore((state) => state.walletId)
   const {
     wax: {
       tryStakeVotePower,

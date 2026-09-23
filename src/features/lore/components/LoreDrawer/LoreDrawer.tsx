@@ -12,9 +12,10 @@ import { map } from 'lodash'
 import { find } from 'lodash'
 import { useCopyToClipboard } from 'react-use'
 import { useModalStore } from 'shared/store/modalStore'
+import { useSessionStore } from 'shared/store/sessionStore'
 import { Colors } from 'shared/util/colors'
 import { validateAmount } from 'shared/util/formhelper'
-import { useActions, useAppState } from 'store'
+import { useActions } from 'store'
 import { toastMessage } from 'store/main/actions'
 
 import { Constants } from '../../../../shared/util/constants'
@@ -37,9 +38,7 @@ interface ILoreDrawerProps {
 const LoreDrawer = ({ isOpen, onClose, lore, currentNumber }: ILoreDrawerProps) => {
   const [, copyToClipboard] = useCopyToClipboard()
 
-  const {
-    wax: { isDemoUser },
-  } = useAppState()
+  const isDemoUser = useSessionStore((state) => state.isDemoUser)
   const {
     wax: { tryLoreVoting },
   } = useActions()

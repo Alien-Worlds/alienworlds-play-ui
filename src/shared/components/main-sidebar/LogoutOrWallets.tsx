@@ -3,6 +3,7 @@ import { Flex, Text, Image, Box } from '@chakra-ui/react'
 import walletsLine from 'assets/images/walletsLine.png'
 import { WalletsManager } from 'shared/components/main-sidebar/WalletsManager'
 import { useModalStore } from 'shared/store/modalStore'
+import { useSessionStore } from 'shared/store/sessionStore'
 import { Colors } from 'shared/util/colors'
 import { clearCookies } from 'shared/util/helpers'
 import { useAppState, useActions } from 'store'
@@ -12,9 +13,9 @@ const LogoutOrWallets = () => {
     main: { logout },
   } = useActions()
   const {
-    wax: { isDemoUser },
     main: { isCompactSidebar },
   } = useAppState()
+  const isDemoUser = useSessionStore((state) => state.isDemoUser)
   const setPrimaryModalActive = useModalStore((state) => state.setPrimaryModalActive)
 
   const onClickLogout = () => {
