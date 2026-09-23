@@ -6,6 +6,7 @@ import { Box, Text } from '@chakra-ui/react'
 import { useConnectWallet, useSetChain, useWallets } from '@web3-onboard/react'
 import { useNavigate } from 'react-router-dom'
 import { useModalStore } from 'shared/store/modalStore'
+import { useSessionStore } from 'shared/store/sessionStore'
 import { Colors } from 'shared/util/colors'
 import { config } from 'shared/util/config'
 import { useScreenSize } from 'shared/util/hooks'
@@ -118,9 +119,7 @@ export const MissionsCentreBtn = () => {
 export const ConnectWalletBtn = ({ onClick }: { onClick: any }) => {
   const { isNotDesktop } = useScreenSize()
   const setPrimaryModalActive = useModalStore((state) => state.setPrimaryModalActive)
-  const {
-    wax: { isDemoUser },
-  } = useAppState()
+  const isDemoUser = useSessionStore((state) => state.isDemoUser)
   return (
     <Button
       height="40px"
@@ -171,8 +170,8 @@ export const useWalletConnect = () => {
   } = useActions()
   const {
     web3: { userWallet },
-    wax: { walletId },
   } = useAppState()
+  const walletId = useSessionStore((state) => state.walletId)
 
   const isWalletPresent = (name: string) => {
     for (let i = 0; i < connectedWallets.length; i = +1) {
