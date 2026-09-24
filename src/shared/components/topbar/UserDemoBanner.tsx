@@ -22,9 +22,9 @@ const UserDemoBanner = () => {
   const { isMobile } = useScreenSize()
   const {
     main: { isOutPostModalsActive },
-    wax: { isAuthenticating },
   } = useAppState()
   const walletId = useSessionStore((state) => state.walletId)
+  const isAuthenticating = useSessionStore((state) => state.isAuthenticating)
 
   if (walletId !== config.DemoUserWaxAccount) return null
 

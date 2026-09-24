@@ -73,12 +73,15 @@ const TopBar = () => {
     wax: { setIsSyndicatesSidebarOpen, setSelectedDrawerView },
   } = useActions()
   const {
-    wax: { isLoggedIn, isAuthenticating, selectedDrawerView, isSyndicatesSidebarOpen },
-    main: { currentWallet, isOutPostModalsActive },
+    wax: { selectedDrawerView, isSyndicatesSidebarOpen },
+    main: { isOutPostModalsActive },
     atomic: { ownedLandsAssets },
   } = useAppState()
   const walletId = useSessionStore((state) => state.walletId)
   const isDemoUser = useSessionStore((state) => state.isDemoUser)
+  const isLoggedIn = useSessionStore((state) => state.isLoggedIn)
+  const isAuthenticating = useSessionStore((state) => state.isAuthenticating)
+  const currentWallet = useSessionStore((state) => state.currentWallet)
   const isModalActive = useModalStore((state) => state.isModalActive)
   const isMainDrawerOpen = useModalStore((state) => state.isMainDrawerOpen)
   const toggleMainDrawer = useModalStore((state) => state.toggleMainDrawer)

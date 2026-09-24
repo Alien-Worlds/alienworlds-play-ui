@@ -33,9 +33,10 @@ const PlayerAvatar = ({
 }) => {
   const {
     atomic: { avatarAsset },
-    wax: { isLoggedIn, isAuthenticating },
   } = useAppState()
   const walletId = useSessionStore((state) => state.walletId)
+  const isLoggedIn = useSessionStore((state) => state.isLoggedIn)
+  const isAuthenticating = useSessionStore((state) => state.isAuthenticating)
 
   const { walletDetails, loading }: { walletDetails: WalletDetailsResponse; loading: boolean } =
     useWalletDetails(walletId)
