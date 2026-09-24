@@ -20,10 +20,10 @@ import {
 import { Tournament } from 'graphql/hooks/useCompetitions'
 import { DateTime } from 'luxon'
 import { useCopyToClipboard } from 'react-use'
+import { useSessionStore } from 'shared/store/sessionStore'
 import { Colors } from 'shared/util/colors'
 import { Constants } from 'shared/util/constants'
 import { useScreenSize } from 'shared/util/hooks'
-import { useAppState } from 'store'
 import { toastMessage } from 'store/main/actions'
 
 interface Props {
@@ -138,9 +138,7 @@ export const CompetitionDrawer = ({
   onClaimReward,
   walletId,
 }: Props) => {
-  const {
-    wax: { isDemoUser },
-  } = useAppState()
+  const isDemoUser = useSessionStore((state) => state.isDemoUser)
   const [, copyToClipboard] = useCopyToClipboard()
   const currentBreakPoint = useBreakpoint()
   const responsiveValues = useMemo(

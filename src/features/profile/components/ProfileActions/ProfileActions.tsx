@@ -4,8 +4,8 @@ import { useNavigate } from 'react-router-dom'
 import { useCopyToClipboard } from 'react-use'
 import { Tag } from 'shared/components/topbar/Tag'
 import { useActivePath } from 'shared/hooks/useRouter'
+import { useSessionStore } from 'shared/store/sessionStore'
 import { Colors } from 'shared/util/colors'
-import { useAppState } from 'store'
 import { toastMessage } from 'store/main/actions'
 import { PagePath } from 'store/main/types'
 
@@ -83,9 +83,8 @@ export const OutpostBtn = () => {
 }
 
 export const TagWithWalletBtn = () => {
-  const {
-    wax: { walletId, isDemoUser },
-  } = useAppState()
+  const walletId = useSessionStore((state) => state.walletId)
+  const isDemoUser = useSessionStore((state) => state.isDemoUser)
   const [, copyToClipboard] = useCopyToClipboard()
   return (
     <div className="-mr-[10px] flex w-full flex-col items-center gap-[20px] pb-[20px] pl-[10px] pt-0 md:w-auto md:gap-[5px] md:pb-[30px] md:pt-[5px] xl:items-start">

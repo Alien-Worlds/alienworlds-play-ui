@@ -2,9 +2,9 @@ import { renderHook } from '@testing-library/react'
 
 import { useBalanceData } from './useBalanceData'
 
-const mockUseAppState = jest.fn()
-jest.mock('store', () => ({
-  useAppState: () => mockUseAppState(),
+jest.mock('shared/store/sessionStore', () => ({
+  useSessionStore: (selector: (state: unknown) => unknown) =>
+    selector({ walletId: 'wallet.wam', isDemoUser: false }),
 }))
 
 const mockUseWalletDetails = jest.fn()
@@ -23,7 +23,6 @@ describe('useBalanceData', () => {
   })
 
   it('returns null balanceData until wallet details and dao balances are loaded', () => {
-    mockUseAppState.mockReturnValue({ wax: { walletId: 'wallet.wam' } })
     mockUseWalletDetails.mockReturnValue({ walletDetails: null, loading: false })
     mockUseUserDaoBalances.mockReturnValue({ userDaoBalances: null, loading: false })
 
@@ -32,7 +31,6 @@ describe('useBalanceData', () => {
   })
 
   it('computes tlm balance, staked amount, and shards once data resolves', () => {
-    mockUseAppState.mockReturnValue({ wax: { walletId: 'wallet.wam' } })
     mockUseWalletDetails.mockReturnValue({
       walletDetails: {
         tlm_balance: '12.5000 TLM',
@@ -60,7 +58,6 @@ describe('useBalanceData', () => {
   })
 
   it('reflects combined loading state from wallet and dao queries', () => {
-    mockUseAppState.mockReturnValue({ wax: { walletId: 'wallet.wam' } })
     mockUseWalletDetails.mockReturnValue({ walletDetails: null, loading: false })
     mockUseUserDaoBalances.mockReturnValue({ userDaoBalances: null, loading: true })
 

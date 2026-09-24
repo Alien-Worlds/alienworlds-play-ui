@@ -2,6 +2,7 @@ import { InfoIcon } from '@alien-worlds/icons'
 import { Button, Grid, GridItem, Text, Hide } from '@chakra-ui/react'
 import { useGlossaryStore } from 'features/glossary/store/glossaryStore'
 import { useModalStore } from 'shared/store/modalStore'
+import { useSessionStore } from 'shared/store/sessionStore'
 import { theme } from 'shared/styles/theme'
 import { Colors } from 'shared/util/colors'
 import { config } from 'shared/util/config'
@@ -21,8 +22,9 @@ const UserDemoBanner = () => {
   const { isMobile } = useScreenSize()
   const {
     main: { isOutPostModalsActive },
-    wax: { walletId, isAuthenticating },
+    wax: { isAuthenticating },
   } = useAppState()
+  const walletId = useSessionStore((state) => state.walletId)
 
   if (walletId !== config.DemoUserWaxAccount) return null
 

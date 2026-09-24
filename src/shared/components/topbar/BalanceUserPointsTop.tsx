@@ -9,6 +9,7 @@ import { useWalletDetails } from 'graphql/hooks/useWalletDetails'
 import { WalletDetailsResponse } from 'graphql/types'
 import { get } from 'lodash'
 import { useNavigate } from 'react-router-dom'
+import { useSessionStore } from 'shared/store/sessionStore'
 import { pageTransition } from 'shared/util/animations'
 import { Colors } from 'shared/util/colors'
 import { formatUserPointsWithDecimal } from 'shared/util/helpers'
@@ -17,8 +18,9 @@ import { PagePath } from 'store/main/types'
 
 const BalanceUserPointsTop = () => {
   const {
-    wax: { isLoggedIn, isAuthenticating, walletId },
+    wax: { isLoggedIn, isAuthenticating },
   } = useAppState()
+  const walletId = useSessionStore((state) => state.walletId)
 
   const { walletDetails, loading }: { walletDetails: WalletDetailsResponse; loading: boolean } =
     useWalletDetails(walletId)

@@ -18,9 +18,9 @@ import { useWalletDetails } from 'graphql/hooks/useWalletDetails'
 import { WalletDetailsResponse } from 'graphql/types'
 import { get } from 'lodash'
 import { useModalStore } from 'shared/store/modalStore'
+import { useSessionStore } from 'shared/store/sessionStore'
 import { Colors } from 'shared/util/colors'
 import { formatUserPointsWithDecimal } from 'shared/util/helpers'
-import { useAppState } from 'store'
 
 const NftRedemptionModal: FC<NftRedemptionModalProps> = ({
   isOpen,
@@ -30,9 +30,8 @@ const NftRedemptionModal: FC<NftRedemptionModalProps> = ({
   redeemAction,
 }) => {
   const setPrimaryModalActive = useModalStore((state) => state.setPrimaryModalActive)
-  const {
-    wax: { isDemoUser, walletId },
-  } = useAppState()
+  const isDemoUser = useSessionStore((state) => state.isDemoUser)
+  const walletId = useSessionStore((state) => state.walletId)
 
   const { walletDetails, loading }: { walletDetails: WalletDetailsResponse; loading: boolean } =
     useWalletDetails(walletId)

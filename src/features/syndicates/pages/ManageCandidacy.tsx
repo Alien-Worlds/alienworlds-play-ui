@@ -14,6 +14,7 @@ import { Candidate, DaoDetailsResponse, DaoWalletDetailsResponse } from 'graphql
 import { find, get, startCase } from 'lodash'
 import { useParams } from 'react-router-dom'
 import { useModalStore } from 'shared/store/modalStore'
+import { useSessionStore } from 'shared/store/sessionStore'
 import { Colors } from 'shared/util/colors'
 import { useScreenSize } from 'shared/util/hooks'
 import { getLevelVariant, maleHumanAvatar } from 'shared/util/nft'
@@ -24,8 +25,9 @@ import { DACUserStatusType } from 'store/wax/types'
 import { Constants } from '../../../shared/util/constants'
 export const ManageCandidacy = () => {
   const {
-    wax: { walletId, selectedDacId, player, currentTag },
+    wax: { selectedDacId, player, currentTag },
   } = useAppState()
+  const walletId = useSessionStore((state) => state.walletId)
   const {
     daoDetails,
     loading: daoDetailsLoading,

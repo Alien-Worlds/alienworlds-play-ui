@@ -2,7 +2,7 @@ import { Flex } from '@chakra-ui/react'
 import { findIndex } from 'lodash'
 import { useLocation, useNavigate } from 'react-router-dom'
 import Select from 'react-select'
-import { useAppState } from 'store'
+import { useSessionStore } from 'shared/store/sessionStore'
 import { PagePath } from 'store/main/types'
 
 const miningOptions = [
@@ -80,9 +80,7 @@ const darkTheme = (theme) => ({
 export function MiningSelect() {
   const navigate = useNavigate()
   const { pathname } = useLocation()
-  const {
-    wax: { isDemoUser },
-  } = useAppState()
+  const isDemoUser = useSessionStore((state) => state.isDemoUser)
 
   const tabIndex = findIndex(miningOptions, (item) => item.value === pathname)
   if (tabIndex !== -1)

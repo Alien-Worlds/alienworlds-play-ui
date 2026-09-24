@@ -9,6 +9,7 @@ import { endsWith, get, map, reject, replace, split, startCase, toNumber } from 
 import { useNavigate, generatePath } from 'react-router-dom'
 import { useCurrentPath } from 'shared/hooks/useRouter'
 import { useModalStore } from 'shared/store/modalStore'
+import { useSessionStore } from 'shared/store/sessionStore'
 import { Colors } from 'shared/util/colors'
 import { config } from 'shared/util/config'
 import {
@@ -62,8 +63,9 @@ const PlanetSelectionSmall = ({
   size?: string
 }) => {
   const {
-    wax: { walletId, selectedDacId },
+    wax: { selectedDacId },
   } = useAppState()
+  const walletId = useSessionStore((state) => state.walletId)
 
   const {
     wax: { setSelectedDacId, collectEvent },

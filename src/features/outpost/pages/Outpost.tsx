@@ -12,15 +12,14 @@ import { LoadingSpinner } from 'features/syndicates/components/LoadingSpinner/Lo
 import { useWalletDetails } from 'graphql/hooks/useWalletDetails'
 import { WalletDetailsResponse } from 'graphql/types'
 import { get, isNil } from 'lodash'
+import { useSessionStore } from 'shared/store/sessionStore'
 import { Colors } from 'shared/util/colors'
 import { formatUserPointsWithDecimal } from 'shared/util/helpers'
-import { useActions, useAppState } from 'store'
+import { useActions } from 'store'
 import { v4 } from 'uuid'
 
 const Outpost = () => {
-  const {
-    wax: { walletId },
-  } = useAppState()
+  const walletId = useSessionStore((state) => state.walletId)
   const {
     main: { setOutPostModalsActive },
   } = useActions()

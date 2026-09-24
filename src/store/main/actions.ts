@@ -12,6 +12,7 @@ import { toast } from 'react-hot-toast'
 import { matchPath } from 'react-router'
 import { router } from 'routes'
 import { useModalStore } from 'shared/store/modalStore'
+import { useSessionStore } from 'shared/store/sessionStore'
 import { config } from 'shared/util/config'
 import { padZero, isValidDacId, getUserRankInfo, sessionKitWallets } from 'shared/util/helpers'
 import { isMissionsRelatedPage } from 'shared/util/router'
@@ -135,6 +136,7 @@ export const tryAutoLogin = pipe(
       state.wax.isAuthenticating = true
       state.main.currentWallet = localStorage.getItem('aw_currentWallet')
       state.wax.walletId = await effects.wax.api.tryAutoLogin()
+      useSessionStore.getState().setWalletId(state.wax.walletId)
       state.wax.miner = await effects.wax.api.getMiner()
 
       if (state.wax.miner === null) {
@@ -157,6 +159,7 @@ export const signUp = pipe(
     const result = await effects.wax.api.loginWax()
     if (result) state.main.isWaxLoggedIn = true
     state.wax.walletId = result
+    useSessionStore.getState().setWalletId(state.wax.walletId)
     state.wax.miner = await effects.wax.api.getMiner()
     if (state.wax.miner === null) {
       router.navigate(PagePath.NewsletterJoin)
@@ -182,6 +185,7 @@ export const loginWombat = pipe(
     state.wax.isAuthenticating = true
 
     state.wax.walletId = await effects.wax.api.loginWombat()
+    useSessionStore.getState().setWalletId(state.wax.walletId)
     state.main.syncAi = getDefaultSyncAi()
     state.wax.isAuthenticating = false
     state.wax.miner = await effects.wax.api.getMiner()
@@ -203,6 +207,7 @@ export const login = pipe(
       state.wax.isAuthenticating = true
     }
     state.wax.walletId = await effects.wax.api.login()
+    useSessionStore.getState().setWalletId(state.wax.walletId)
     state.main.syncAi = getDefaultSyncAi()
     state.wax.isAuthenticating = false
     state.wax.miner = await effects.wax.api.getMiner()
@@ -264,6 +269,7 @@ export const loginAnchor = pipe(
     state.wax.isAuthenticating = true
 
     state.wax.walletId = await effects.wax.api.loginAnchor()
+    useSessionStore.getState().setWalletId(state.wax.walletId)
     state.main.syncAi = getDefaultSyncAi()
     state.wax.isAuthenticating = false
     state.wax.miner = await effects.wax.api.getMiner()
@@ -293,6 +299,7 @@ export const loginWax = pipe(
     const result = await effects.wax.api.loginWax()
     if (result) state.main.isWaxLoggedIn = true
     state.wax.walletId = result
+    useSessionStore.getState().setWalletId(state.wax.walletId)
     state.main.syncAi = getDefaultSyncAi()
     state.wax.isAuthenticating = false
     state.wax.miner = await effects.wax.api.getMiner()
@@ -430,6 +437,7 @@ export const logout = pipe(
     state.wax.isAuthenticating = true
     state.main.currentWallet = 'demo'
     state.wax.walletId = await effects.wax.api.tryAutoLogin()
+    useSessionStore.getState().setWalletId(state.wax.walletId)
     state.wax.isAuthenticating = false
     state.main.syncAi = getDefaultSyncAi()
   },
