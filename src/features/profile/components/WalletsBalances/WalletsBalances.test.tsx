@@ -3,9 +3,9 @@ import { MemoryRouter } from 'react-router-dom'
 
 import { sumStakedAmount, WalletsBalances } from './WalletsBalances'
 
-const mockUseAppState = jest.fn()
-jest.mock('store', () => ({
-  useAppState: () => mockUseAppState(),
+jest.mock('shared/store/sessionStore', () => ({
+  useSessionStore: (selector: (state: unknown) => unknown) =>
+    selector({ walletId: 'wallet.wam', isDemoUser: false }),
 }))
 
 const mockUseWalletDetails = jest.fn()
@@ -63,7 +63,6 @@ describe('WalletsBalances', () => {
   })
 
   it('renders a loading spinner while wallet or dao balances are loading', () => {
-    mockUseAppState.mockReturnValue({ wax: { walletId: 'wallet.wam' } })
     mockUseWalletDetails.mockReturnValue({ walletDetails: baseWalletDetails, loading: true })
     mockUseUserDaoBalances.mockReturnValue({ userDaoBalances: {}, loading: false })
     mockUseWalletConnect.mockReturnValue({ connectedWallets: [], connecting: false })
@@ -78,7 +77,6 @@ describe('WalletsBalances', () => {
   })
 
   it('renders the wax trilium balance once loaded', () => {
-    mockUseAppState.mockReturnValue({ wax: { walletId: 'wallet.wam' } })
     mockUseWalletDetails.mockReturnValue({ walletDetails: baseWalletDetails, loading: false })
     mockUseUserDaoBalances.mockReturnValue({ userDaoBalances: {}, loading: false })
     mockUseWalletConnect.mockReturnValue({ connectedWallets: [], connecting: false })
@@ -95,7 +93,6 @@ describe('WalletsBalances', () => {
   })
 
   it('shows the staked wax trilium block when the user has staked balances', () => {
-    mockUseAppState.mockReturnValue({ wax: { walletId: 'wallet.wam' } })
     mockUseWalletDetails.mockReturnValue({ walletDetails: baseWalletDetails, loading: false })
     mockUseUserDaoBalances.mockReturnValue({
       userDaoBalances: { eyeke: { stake_details: { staked_amount: '10.0000 TLM' } } },
@@ -114,7 +111,6 @@ describe('WalletsBalances', () => {
   })
 
   it('shows the connect wallet button when no bsc wallet is connected', () => {
-    mockUseAppState.mockReturnValue({ wax: { walletId: 'wallet.wam' } })
     mockUseWalletDetails.mockReturnValue({ walletDetails: baseWalletDetails, loading: false })
     mockUseUserDaoBalances.mockReturnValue({ userDaoBalances: {}, loading: false })
     mockUseWalletConnect.mockReturnValue({ connectedWallets: [], connecting: false })
@@ -130,7 +126,6 @@ describe('WalletsBalances', () => {
   })
 
   it('shows bsc balances when a matching bsc chain is connected', () => {
-    mockUseAppState.mockReturnValue({ wax: { walletId: 'wallet.wam' } })
     mockUseWalletDetails.mockReturnValue({ walletDetails: baseWalletDetails, loading: false })
     mockUseUserDaoBalances.mockReturnValue({ userDaoBalances: {}, loading: false })
     mockUseWalletConnect.mockReturnValue({

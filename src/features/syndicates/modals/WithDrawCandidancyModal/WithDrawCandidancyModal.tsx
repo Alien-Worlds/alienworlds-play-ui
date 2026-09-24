@@ -17,6 +17,7 @@ import { MemberTermsStatusBadge } from 'features/syndicates/components/MemberTer
 import { motion } from 'framer-motion'
 import { find } from 'lodash'
 import { useModalStore } from 'shared/store/modalStore'
+import { useSessionStore } from 'shared/store/sessionStore'
 import { Colors } from 'shared/util/colors'
 import { fallbackAvatarSrc } from 'shared/util/helpers'
 import { useActions, useAppState } from 'store'
@@ -26,8 +27,9 @@ const AnimatedBox = motion(Box)
 
 const WithDrawCandidancyModal = () => {
   const {
-    wax: { walletId, selectedDacCandidates, generatedCandidancyProposal },
+    wax: { selectedDacCandidates, generatedCandidancyProposal },
   } = useAppState()
+  const walletId = useSessionStore((state) => state.walletId)
 
   const {
     wax: { withdrawCandidate },

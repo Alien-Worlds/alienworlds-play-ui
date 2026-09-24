@@ -3,10 +3,15 @@ import { MemoryRouter } from 'react-router-dom'
 
 import { CurrentBadge, Header } from './Header'
 
-const mockUseAppState = jest.fn()
 jest.mock('store', () => ({
-  useAppState: () => mockUseAppState(),
   useActions: () => ({}),
+}))
+
+let mockIsDemoUser = false
+let mockWalletId = 'wallet.wam'
+jest.mock('shared/store/sessionStore', () => ({
+  useSessionStore: (selector: (state: unknown) => unknown) =>
+    selector({ isDemoUser: mockIsDemoUser, walletId: mockWalletId }),
 }))
 
 jest.mock('features/outpost/hooks/queries/useLevelNftRewards', () => ({
@@ -39,9 +44,8 @@ describe('Header', () => {
   })
 
   it('shows the wallet id for a regular user', () => {
-    mockUseAppState.mockReturnValue({
-      wax: { isDemoUser: false, walletId: 'wallet.wam' },
-    })
+    mockIsDemoUser = false
+    mockWalletId = 'wallet.wam'
 
     render(
       <MemoryRouter>
@@ -53,9 +57,8 @@ describe('Header', () => {
   })
 
   it('shows the demo account label for demo users', () => {
-    mockUseAppState.mockReturnValue({
-      wax: { isDemoUser: true, walletId: 'wallet.wam' },
-    })
+    mockIsDemoUser = true
+    mockWalletId = 'wallet.wam'
 
     render(
       <MemoryRouter>

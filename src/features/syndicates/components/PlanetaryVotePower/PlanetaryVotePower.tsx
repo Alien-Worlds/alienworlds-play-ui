@@ -5,14 +5,16 @@ import { Box, HStack, VStack, Text } from '@chakra-ui/react'
 import { LoadingSpinner } from 'features/syndicates/components/LoadingSpinner/LoadingSpinner'
 import { useWalletDaoDetails } from 'graphql/hooks/useWalletDaoDetails'
 import { DaoWalletDetailsResponse } from 'graphql/types'
+import { useSessionStore } from 'shared/store/sessionStore'
 import { Colors } from 'shared/util/colors'
 import { formatNumber } from 'shared/util/numbers'
 import { useAppState } from 'store'
 
 export const PlanetaryVotePower: VFC = () => {
   const {
-    wax: { walletId, selectedDacId },
+    wax: { selectedDacId },
   } = useAppState()
+  const walletId = useSessionStore((state) => state.walletId)
   const {
     walletDaoDetails,
     loading: walletDaoDetailsLoading,

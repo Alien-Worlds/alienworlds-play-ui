@@ -20,11 +20,12 @@ import { DaoDetailsResponse, WalletDetailsResponse } from 'graphql/types'
 import { capitalize, get, lowerCase } from 'lodash'
 import { useNavigate } from 'react-router-dom'
 import { useModalStore } from 'shared/store/modalStore'
+import { useSessionStore } from 'shared/store/sessionStore'
 import { Colors } from 'shared/util/colors'
 import { convertPlanetIdToName, getMiningRewardsTimeInHours } from 'shared/util/helpers'
 import { useScreenSize } from 'shared/util/hooks'
 import { formatNumber } from 'shared/util/numbers'
-import { useActions, useAppState } from 'store'
+import { useActions } from 'store'
 import { PagePath } from 'store/main/types'
 
 export const VisitPlanetBtn = ({ selectedDac }: { selectedDac: DaoDetailsResponse }) => {
@@ -55,9 +56,7 @@ export const VisitPlanetBtn = ({ selectedDac }: { selectedDac: DaoDetailsRespons
 }
 
 export const AddVotePowerBtn = () => {
-  const {
-    wax: { isDemoUser },
-  } = useAppState()
+  const isDemoUser = useSessionStore((state) => state.isDemoUser)
   const setPrimaryModalActive = useModalStore((state) => state.setPrimaryModalActive)
 
   const { isNotDesktop } = useScreenSize()
@@ -89,9 +88,7 @@ export const AddVotePowerBtn = () => {
 }
 
 export const ConvertTokenBtn = ({ selectedDac }: { selectedDac: DaoDetailsResponse }) => {
-  const {
-    wax: { isDemoUser },
-  } = useAppState()
+  const isDemoUser = useSessionStore((state) => state.isDemoUser)
   const setPrimaryModalActive = useModalStore((state) => state.setPrimaryModalActive)
 
   const { isNotDesktop } = useScreenSize()
@@ -125,9 +122,7 @@ export const SignMemberTermsBtn = ({ selectedDacId }: { selectedDacId: string })
   const {
     wax: { signPlanetMemberTerms },
   } = useActions()
-  const {
-    wax: { isDemoUser },
-  } = useAppState()
+  const isDemoUser = useSessionStore((state) => state.isDemoUser)
   const setPrimaryModalActive = useModalStore((state) => state.setPrimaryModalActive)
   const { isNotDesktop } = useScreenSize()
 
@@ -295,9 +290,7 @@ export const ClaimCommissionRewardsBtn = () => {
   const {
     wax: { tryClaimLandownerCommissions },
   } = useActions()
-  const {
-    wax: { walletId },
-  } = useAppState()
+  const walletId = useSessionStore((state) => state.walletId)
 
   const { isNotDesktop } = useScreenSize()
   const [isClaimingCommissionRewards, setIsClaimingCommissionRewards] = useState(false)
@@ -360,9 +353,7 @@ export const ClaimDTALRewardsBtn = () => {
   const {
     wax: { tryClaimLandownerAllowance },
   } = useActions()
-  const {
-    wax: { walletId },
-  } = useAppState()
+  const walletId = useSessionStore((state) => state.walletId)
   const { walletDetails, loading }: { walletDetails: WalletDetailsResponse; loading: boolean } =
     useWalletDetails(walletId)
   const claimableLandownerAllowance = get(walletDetails, 'land_ratings_payout', '0.0000 TLM')
@@ -433,9 +424,7 @@ export const ClaimMineRewardsBtn = ({
   const {
     wax: { tryClaimMiningRewards },
   } = useActions()
-  const {
-    wax: { walletId },
-  } = useAppState()
+  const walletId = useSessionStore((state) => state.walletId)
 
   const { isNotDesktop } = useScreenSize()
   const [isClaimingMiningRewards, setIsClaimingMiningRewards] = useState(false)

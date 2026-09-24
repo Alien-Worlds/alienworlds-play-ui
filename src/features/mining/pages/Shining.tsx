@@ -63,6 +63,7 @@ import {
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { useNavigate } from 'react-router-dom'
 import { useModalStore } from 'shared/store/modalStore'
+import { useSessionStore } from 'shared/store/sessionStore'
 import { Colors } from 'shared/util/colors'
 import { config } from 'shared/util/config'
 import { isShinableNFT } from 'shared/util/helpers'
@@ -86,9 +87,8 @@ const Shining = () => {
     main: { showShiningPage, setShiningUrl, setOutPostModalsActive },
   } = useActions()
   const setPrimaryModalActive = useModalStore((state) => state.setPrimaryModalActive)
-  const {
-    wax: { isDemoUser, walletId },
-  } = useAppState()
+  const isDemoUser = useSessionStore((state) => state.isDemoUser)
+  const walletId = useSessionStore((state) => state.walletId)
   const {
     wax: { isShining },
     atomic: { filteredAndSortedAssets, assets, triggerFilterAndSortAssets },

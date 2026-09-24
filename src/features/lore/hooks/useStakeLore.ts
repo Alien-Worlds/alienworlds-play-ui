@@ -4,7 +4,8 @@ import { useApolloClient } from '@apollo/client'
 import { WALLET_DETAILS_QUERY_ALL } from 'graphql/queries/walletDetails'
 import { get } from 'lodash'
 import { useModalStore } from 'shared/store/modalStore'
-import { useAppState, useActions } from 'store'
+import { useSessionStore } from 'shared/store/sessionStore'
+import { useActions } from 'store'
 
 import { useLoreData } from '../data/LoreDataProvider'
 import { useLoreStore } from '../store/loreStore'
@@ -37,9 +38,8 @@ export function useStakeLore(): {
   isDemoUser: boolean
 } {
   const client = useApolloClient()
-  const {
-    wax: { walletId, isDemoUser },
-  } = useAppState()
+  const walletId = useSessionStore((state) => state.walletId)
+  const isDemoUser = useSessionStore((state) => state.isDemoUser)
   const { walletDetails, loreVoterInfo, globals, loadingLores, walletDetailsLoading } =
     useLoreData()
   const {

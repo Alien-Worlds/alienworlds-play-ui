@@ -11,6 +11,7 @@ import { LoadingSpinner } from 'features/syndicates/components/LoadingSpinner/Lo
 import { map } from 'lodash'
 import ScrollContainer from 'react-indiana-drag-scroll'
 import { useModalStore } from 'shared/store/modalStore'
+import { useSessionStore } from 'shared/store/sessionStore'
 import { Colors } from 'shared/util/colors'
 import { sanitizedHtmlString } from 'shared/util/helpers'
 import { useScreenSize } from 'shared/util/hooks'
@@ -31,8 +32,8 @@ const LoreContent = () => {
   } = useActions()
   const {
     main: { loreReadMe, currentWallet },
-    wax: { isDemoUser },
   } = useAppState()
+  const isDemoUser = useSessionStore((state) => state.isDemoUser)
   const setSecondaryModalActive = useModalStore((state) => state.setSecondaryModalActive)
   const setPrimaryModalActive = useModalStore((state) => state.setPrimaryModalActive)
   const [loreContent, setLoreContent] = useState('')

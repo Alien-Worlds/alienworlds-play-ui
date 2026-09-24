@@ -10,6 +10,7 @@ import { useWalletDaoDetails } from 'graphql/hooks/useWalletDaoDetails'
 import { useWalletDetails } from 'graphql/hooks/useWalletDetails'
 import { Candidate } from 'graphql/types'
 import { Outlet, matchPath, useLocation, useMatch } from 'react-router-dom'
+import { useSessionStore } from 'shared/store/sessionStore'
 import { unionDAOFinder } from 'shared/util/helpers'
 import { useScreenSize } from 'shared/util/hooks'
 import { useActions, useAppState } from 'store'
@@ -20,8 +21,9 @@ const GovernanceLayout = memo(() => {
     wax: { resetCandidatesList, resetCustodiansList, resetCustodiansProposalsList },
   } = useActions()
   const {
-    wax: { selectedDacId, votedCandidatesList, isSyndicatesSidebarOpen, walletId },
+    wax: { selectedDacId, votedCandidatesList, isSyndicatesSidebarOpen },
   } = useAppState()
+  const walletId = useSessionStore((state) => state.walletId)
 
   const location = useLocation()
   const { isDesktop } = useScreenSize()

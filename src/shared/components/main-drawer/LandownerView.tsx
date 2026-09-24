@@ -15,6 +15,7 @@ import {
 } from 'features/syndicates/components/PlanetaryActions/PlanetaryActions'
 import { filter, forEach } from 'lodash'
 import Carousel from 'react-spring-3d-carousel'
+import { useSessionStore } from 'shared/store/sessionStore'
 import { Colors } from 'shared/util/colors'
 import { useScreenSize } from 'shared/util/hooks'
 import { PlanetLandIcon } from 'shared/util/icons'
@@ -23,9 +24,9 @@ import { v4 } from 'uuid'
 
 export const LandownerView: VFC = () => {
   const {
-    wax: { isDemoUser },
     atomic: { landAsset, ownedLandsAssets },
   } = useAppState()
+  const isDemoUser = useSessionStore((state) => state.isDemoUser)
   const {
     wax: { setLandId, setManagingLandDetails, loadManagingLandDetailsAndBoosts },
   } = useActions()

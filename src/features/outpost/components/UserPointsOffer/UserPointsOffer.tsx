@@ -27,6 +27,7 @@ import { NftZoomModal } from 'features/outpost/modals/NftZoomModal/NftZoomModal'
 import { ShowRedeemModal } from 'features/outpost/types/nftOutpostTypes'
 import { motion } from 'framer-motion'
 import { useModalStore } from 'shared/store/modalStore'
+import { useSessionStore } from 'shared/store/sessionStore'
 import { Colors } from 'shared/util/colors'
 import {
   formatUserPointsWithDecimal,
@@ -35,7 +36,7 @@ import {
   showExpireTimeLeft,
   showUpcomingTimeLeft,
 } from 'shared/util/helpers'
-import { useActions, useAppState } from 'store'
+import { useActions } from 'store'
 import { WaxPointsOfferWithTemplate } from 'store/wax/types'
 import { v4 as uuidv4 } from 'uuid'
 
@@ -63,9 +64,7 @@ const UserPointsOffer = ({
   const [asset, setAsset] = useState<NFTCardTypes>(null)
   const [supplyLeft, setSupplyLeft] = useState<number>(null)
 
-  const {
-    wax: { walletId },
-  } = useAppState()
+  const walletId = useSessionStore((state) => state.walletId)
 
   useEffect(() => {
     setAsset(NFTCardSingleCardPrep(pointsOffer.asset, walletId))
@@ -163,9 +162,7 @@ const UserPointsOffer = ({
   const {
     main: { setOutPostModalsActive },
   } = useActions()
-  const {
-    wax: { isDemoUser },
-  } = useAppState()
+  const isDemoUser = useSessionStore((state) => state.isDemoUser)
   const setPrimaryModalActive = useModalStore((state) => state.setPrimaryModalActive)
   const [showZoomModal, setShowZoomModal] = useState(false)
 

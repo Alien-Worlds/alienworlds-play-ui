@@ -21,6 +21,7 @@ import { LogoutButton } from 'shared/components/main-drawer/LogoutButton'
 import { Menu } from 'shared/components/main-drawer/Menu'
 import { SocialCards } from 'shared/components/main-drawer/SocialCards'
 import { useModalStore } from 'shared/store/modalStore'
+import { useSessionStore } from 'shared/store/sessionStore'
 import { pageTransition } from 'shared/util/animations'
 import { Colors } from 'shared/util/colors'
 import { config } from 'shared/util/config'
@@ -33,8 +34,9 @@ export const MainDrawer: VFC = () => {
   const isMainDrawerOpen = useModalStore((state) => state.isMainDrawerOpen)
   const toggleMainDrawer = useModalStore((state) => state.toggleMainDrawer)
   const {
-    wax: { isDemoUser, selectedDrawerView },
+    wax: { selectedDrawerView },
   } = useAppState()
+  const isDemoUser = useSessionStore((state) => state.isDemoUser)
 
   const { isMobile } = useScreenSize()
   const currentYear = new Date().getFullYear()

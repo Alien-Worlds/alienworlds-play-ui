@@ -36,6 +36,7 @@ import { usePlanetDetail } from 'graphql/hooks/usePlanetDetail'
 import { get, toLower } from 'lodash'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { useNavigate } from 'react-router-dom'
+import { useSessionStore } from 'shared/store/sessionStore'
 import { Colors } from 'shared/util/colors'
 import { useActions, useAppState, useEffects } from 'store'
 import { PagePath } from 'store/main/types'
@@ -51,9 +52,11 @@ const Inventory = () => {
   } = useActions()
 
   const {
-    wax: { planetSelectedForMining, walletId, isDemoUser },
+    wax: { planetSelectedForMining },
     atomic: { filteredAndSortedAssets, bagAssets, landAsset },
   } = useAppState()
+  const walletId = useSessionStore((state) => state.walletId)
+  const isDemoUser = useSessionStore((state) => state.isDemoUser)
   const { planetDetails, loading } = usePlanetDetail(planetSelectedForMining)
   const navigate = useNavigate()
   const [zoomImg, setZoomImg] = useState<string>(null)

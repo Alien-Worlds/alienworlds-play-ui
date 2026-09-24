@@ -11,6 +11,7 @@ import { MiningCounter } from 'shared/components/topbar/MiningCounter'
 import { PlayerAvatar } from 'shared/components/topbar/PlayerAvatar'
 import { Tag } from 'shared/components/topbar/Tag'
 import { useModalStore } from 'shared/store/modalStore'
+import { useSessionStore } from 'shared/store/sessionStore'
 import { theme } from 'shared/styles/theme'
 import { Colors } from 'shared/util/colors'
 import { config } from 'shared/util/config'
@@ -72,18 +73,12 @@ const TopBar = () => {
     wax: { setIsSyndicatesSidebarOpen, setSelectedDrawerView },
   } = useActions()
   const {
-    wax: {
-      walletId,
-      isLoggedIn,
-      isDemoUser,
-
-      isAuthenticating,
-      selectedDrawerView,
-      isSyndicatesSidebarOpen,
-    },
+    wax: { isLoggedIn, isAuthenticating, selectedDrawerView, isSyndicatesSidebarOpen },
     main: { currentWallet, isOutPostModalsActive },
     atomic: { ownedLandsAssets },
   } = useAppState()
+  const walletId = useSessionStore((state) => state.walletId)
+  const isDemoUser = useSessionStore((state) => state.isDemoUser)
   const isModalActive = useModalStore((state) => state.isModalActive)
   const isMainDrawerOpen = useModalStore((state) => state.isMainDrawerOpen)
   const toggleMainDrawer = useModalStore((state) => state.toggleMainDrawer)

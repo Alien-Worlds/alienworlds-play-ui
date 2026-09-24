@@ -20,10 +20,9 @@ jest.mock('graphql/hooks/useWalletDetails', () => ({
   useWalletDetails: () => mockWalletDetailsResult,
 }))
 
-jest.mock('store', () => ({
-  useAppState: () => ({
-    wax: { walletId: 'wallet.wam' },
-  }),
+jest.mock('shared/store/sessionStore', () => ({
+  useSessionStore: (selector: (state: unknown) => unknown) =>
+    selector({ isDemoUser: false, walletId: 'wallet.wam' }),
 }))
 
 describe('LoreDataProvider', () => {

@@ -35,6 +35,7 @@ import { USER_DAO_BALANCES } from 'graphql/queries/userDaoBalances'
 import { DaoDetailsResponse, DaoWalletDetailsResponse } from 'graphql/types'
 import { capitalize, get, isEmpty, isNull, isUndefined, replace, round, toNumber } from 'lodash'
 import { useModalStore } from 'shared/store/modalStore'
+import { useSessionStore } from 'shared/store/sessionStore'
 import { Colors } from 'shared/util/colors'
 import { validateAdditionalAmount } from 'shared/util/formhelper'
 import { convertPlanetIdToName, getDacSymbol, getSyndicatesCurrentPage } from 'shared/util/helpers'
@@ -73,13 +74,12 @@ const AddStakingVotePower = () => {
   const client = useApolloClient()
   const {
     wax: {
-      walletId,
-
       selectedDacId,
 
       actionProgressState,
     },
   } = useAppState()
+  const walletId = useSessionStore((state) => state.walletId)
 
   const {
     wax: {

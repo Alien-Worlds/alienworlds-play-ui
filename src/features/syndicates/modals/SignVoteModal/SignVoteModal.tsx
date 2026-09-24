@@ -24,6 +24,7 @@ import { DAO_WALLET_DETAILS_QUERY } from 'graphql/queries/daoWalletDetails'
 import { Candidate } from 'graphql/types'
 import { filter, map } from 'lodash'
 import { useModalStore } from 'shared/store/modalStore'
+import { useSessionStore } from 'shared/store/sessionStore'
 import { Colors } from 'shared/util/colors'
 import { fallbackAvatarSrc, getDacPlaceRingVariantByPlace, pluralize } from 'shared/util/helpers'
 import { useScreenSize } from 'shared/util/hooks'
@@ -43,8 +44,9 @@ const SignVoteModal = () => {
   } = useActions()
   const client = useApolloClient()
   const {
-    wax: { selectedDacId, votedCandidatesList, actionProgressState, isDemoUser },
+    wax: { selectedDacId, votedCandidatesList, actionProgressState },
   } = useAppState()
+  const isDemoUser = useSessionStore((state) => state.isDemoUser)
   const setPrimaryModalActive = useModalStore((state) => state.setPrimaryModalActive)
   const primaryModals = useModalStore((state) => state.primaryModals)
 

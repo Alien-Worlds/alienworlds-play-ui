@@ -34,6 +34,7 @@ import {
 import { filter, toLower } from 'lodash'
 import { useNavigate, useParams } from 'react-router-dom'
 import { AppModal } from 'shared/layouts'
+import { useSessionStore } from 'shared/store/sessionStore'
 import { Colors } from 'shared/util/colors'
 import { landBoostValueByRarity, formatLandRating } from 'shared/util/helpers'
 import { useActions, useAppState } from 'store'
@@ -45,8 +46,9 @@ import { Constants } from '../../../shared/util/constants'
 const LandMgt: VFC = () => {
   const {
     atomic: { landAsset: currentLand, ownedLandBoostsAssets, assetsFilter },
-    wax: { walletId, managingLandId, nftLandCardProperties, managingLandDetails: landAsset },
+    wax: { managingLandId, nftLandCardProperties, managingLandDetails: landAsset },
   } = useAppState()
+  const walletId = useSessionStore((state) => state.walletId)
 
   const {
     atomic: { setAssetsFilter },

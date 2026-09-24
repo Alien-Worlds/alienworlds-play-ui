@@ -91,7 +91,7 @@ jest.mock('store', () => ({
     },
   }),
   useAppState: () => ({
-    wax: { planetSelectedForMining: null, walletId: 'wallet.wam', isDemoUser: false },
+    wax: { planetSelectedForMining: null },
     atomic: {
       filteredAndSortedAssets: mockFilteredAndSortedAssets,
       bagAssets: [],
@@ -101,6 +101,11 @@ jest.mock('store', () => ({
   useEffects: () => ({
     atomic: { api: { getAssetById: mockGetAssetById } },
   }),
+}))
+
+jest.mock('shared/store/sessionStore', () => ({
+  useSessionStore: (selector: (state: unknown) => unknown) =>
+    selector({ walletId: 'wallet.wam', isDemoUser: false }),
 }))
 
 jest.mock('features/inventory/hooks/useAssetProcessing', () => ({

@@ -19,8 +19,9 @@ import { CompetitionDrawer } from 'features/competitions/CompetitionDrawer'
 import { LoadingSpinner } from 'features/syndicates/components/LoadingSpinner'
 import { Tournament, useCompetitions } from 'graphql/hooks/useCompetitions'
 import { map } from 'lodash'
+import { useSessionStore } from 'shared/store/sessionStore'
 import { Colors } from 'shared/util/colors'
-import { useActions, useAppState } from 'store'
+import { useActions } from 'store'
 
 const StyledTab = styled(Tab)({
   width: '212px',
@@ -46,9 +47,7 @@ export const Competitions = () => {
     base: 'vertical',
     md: 'horizontal',
   })
-  const {
-    wax: { walletId },
-  } = useAppState()
+  const walletId = useSessionStore((state) => state.walletId)
   const actions = useActions()
 
   const handleCurrentCompetition = (competition: Tournament) => {
