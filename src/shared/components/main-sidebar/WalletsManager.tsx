@@ -20,9 +20,10 @@ export const WalletsManager = () => {
     main: { setSessionKit, setCurrentSession },
   } = useActions()
   const {
-    main: { isCompactSidebar, currentWallet },
+    main: { isCompactSidebar },
   } = useAppState()
   const isDemoUser = useSessionStore((state) => state.isDemoUser)
+  const currentWallet = useSessionStore((state) => state.currentWallet)
 
   const [selectedWallet, setSelectedWallet] = useState<string>(null)
   const [, setSession]: [Session | undefined, Dispatch<SetStateAction<Session | undefined>>] =

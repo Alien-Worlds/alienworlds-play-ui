@@ -11,6 +11,7 @@ import { DaoDetailsResponse } from 'graphql/types'
 import { includes } from 'lodash'
 import { useLocation } from 'react-router-dom'
 import { useCurrentPath } from 'shared/hooks/useRouter'
+import { useSessionStore } from 'shared/store/sessionStore'
 import { config } from 'shared/util/config'
 import { dacList } from 'shared/util/helpers'
 import { isMissionsRelatedPage } from 'shared/util/router'
@@ -97,9 +98,10 @@ const BackgroundImage: VFC = () => {
   const updateAccountCenter = useAccountCenter()
   const [{ wallet }, connect] = useConnectWallet()
   const {
-    wax: { isLoggedIn, selectedDacId, whereToMine, whereToMineIntent, planetSelectedForMining },
+    wax: { selectedDacId, whereToMine, whereToMineIntent, planetSelectedForMining },
     missions: { selectedMission },
   } = useAppState()
+  const isLoggedIn = useSessionStore((state) => state.isLoggedIn)
 
   const [opacityOverride, setOpacityOverride] = useState(1)
   const { pathname } = useLocation()

@@ -12,6 +12,7 @@ import { useActivePath } from 'shared/hooks/useRouter'
 import DrawersLayout from 'shared/layouts/DrawersLayout'
 import MainContainer from 'shared/layouts/MainContainer'
 import ModalLayout from 'shared/layouts/ModalLayout'
+import { useSessionStore } from 'shared/store/sessionStore'
 import { useMainSidebar, useScreenSize } from 'shared/util/hooks'
 import { useAppState } from 'store'
 import { PagePath } from 'store/main/types'
@@ -29,9 +30,9 @@ export const MainSidebarWidth = {
  */
 const AdvancedLayout = () => {
   const {
-    wax: { isLoggedIn },
     main: { isCompactSidebar },
   } = useAppState()
+  const isLoggedIn = useSessionStore((state) => state.isLoggedIn)
   const glossaryDrawer = useGlossaryStore((state) => state.glossaryDrawer)
   const { isMobile, isNotDesktop } = useScreenSize()
   const { isExpandedMobileSidebar } = useMainSidebar()

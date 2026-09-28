@@ -45,7 +45,7 @@ let mockIsDemoUser = false
 
 jest.mock('store', () => ({
   useAppState: () => ({
-    main: { loreReadMe: '# Hello Lore', currentWallet: 'wallet.wam' },
+    main: { loreReadMe: '# Hello Lore' },
   }),
   useActions: () => ({
     main: { getLorePullRequests: mockGetLorePullRequests },
@@ -62,7 +62,7 @@ jest.mock('shared/store/modalStore', () => ({
 
 jest.mock('shared/store/sessionStore', () => ({
   useSessionStore: (selector: (state: unknown) => unknown) =>
-    selector({ isDemoUser: mockIsDemoUser, walletId: 'wallet.wam' }),
+    selector({ isDemoUser: mockIsDemoUser, walletId: 'wallet.wam', currentWallet: 'wallet.wam' }),
 }))
 
 import { Lore } from './Lore'

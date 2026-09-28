@@ -31,9 +31,10 @@ const LoreContent = () => {
     main: { getLorePullRequests },
   } = useActions()
   const {
-    main: { loreReadMe, currentWallet },
+    main: { loreReadMe },
   } = useAppState()
   const isDemoUser = useSessionStore((state) => state.isDemoUser)
+  const currentWallet = useSessionStore((state) => state.currentWallet)
   const setSecondaryModalActive = useModalStore((state) => state.setSecondaryModalActive)
   const setPrimaryModalActive = useModalStore((state) => state.setPrimaryModalActive)
   const [loreContent, setLoreContent] = useState('')

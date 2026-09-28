@@ -31,9 +31,11 @@ const Tag = ({
   color?: string
 }) => {
   const {
-    wax: { currentTag, player, isSettingTag, isAuthenticating, isLoggedIn, isOnboarded },
+    wax: { currentTag, player, isSettingTag, isOnboarded },
   } = useAppState()
   const isDemoUser = useSessionStore((state) => state.isDemoUser)
+  const isAuthenticating = useSessionStore((state) => state.isAuthenticating)
+  const isLoggedIn = useSessionStore((state) => state.isLoggedIn)
 
   const {
     wax: { setTag },
