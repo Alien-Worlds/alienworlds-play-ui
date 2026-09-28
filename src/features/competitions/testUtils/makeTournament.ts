@@ -1,0 +1,27 @@
+import { Tournament } from 'graphql/hooks/useCompetitions'
+
+export const makeTournament = (overrides: Partial<Tournament> = {}): Tournament => ({
+  id: 42,
+  admin: 'admin.wam',
+  title: 'Trilium Rush',
+  description: 'Mine as much Trilium as you can before the clock runs out.',
+  winnings_budget: '1000 TLM',
+  winnings_claimed: '0 TLM',
+  winnings_allocated_perc_x_100: '0',
+  admin_pay_perc_x_100: '0',
+  shards_budget: '500',
+  shards_claimed: '0',
+  shards_allocated_perc_x_100: '0',
+  start_time: '2026-03-05T10:00:00Z',
+  end_time: '2026-03-12T18:30:00Z',
+  min_players: 2,
+  max_players: 100,
+  num_players: 17,
+  state: '1.playing',
+  notice: '',
+  players: [],
+  image: null,
+  url: 'https://example.com/competition/42',
+  allow_late_registration: false,
+  ...overrides,
+})
