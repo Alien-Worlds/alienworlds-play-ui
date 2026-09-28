@@ -7,6 +7,11 @@ jest.mock('store', () => ({
   useAppState: () => mockUseAppState(),
 }))
 
+jest.mock('shared/store/sessionStore', () => ({
+  useSessionStore: (selector: (state: unknown) => unknown) =>
+    selector({ walletId: 'wallet.wam', isDemoUser: false }),
+}))
+
 const mockUseWalletDaoDetails = jest.fn()
 jest.mock('graphql/hooks/useWalletDaoDetails', () => ({
   useWalletDaoDetails: (...args: unknown[]) => mockUseWalletDaoDetails(...args),
@@ -31,7 +36,7 @@ describe('PlanetaryTokens', () => {
   })
 
   it('renders a loading spinner while wallet dao details or user dao balances are loading', () => {
-    mockUseAppState.mockReturnValue({ wax: { selectedDacId: 'eyeke', walletId: 'wallet.wam' } })
+    mockUseAppState.mockReturnValue({ wax: { selectedDacId: 'eyeke' } })
     mockUseWalletDaoDetails.mockReturnValue({ walletDaoDetails: null, loading: true })
     mockUseUserDaoBalances.mockReturnValue({ userDaoBalances: {}, loading: false })
 
@@ -40,15 +45,19 @@ describe('PlanetaryTokens', () => {
   })
 
   it('renders a row per planet from userDaoBalances, excluding testa', () => {
-    mockUseAppState.mockReturnValue({ wax: { selectedDacId: 'eyeke', walletId: 'wallet.wam' } })
+    mockUseAppState.mockReturnValue({ wax: { selectedDacId: 'eyeke' } })
     mockUseWalletDaoDetails.mockReturnValue({
       walletDaoDetails: { stake_details: { available_tlm_in_dao: '0' } },
       loading: false,
     })
     mockUseUserDaoBalances.mockReturnValue({
       userDaoBalances: {
-        eyeke: { stake_details: { available_tlm_in_dao: '10.0000 TLM', staked_amount: '5.0000 TLM' } },
-        testa: { stake_details: { available_tlm_in_dao: '1.0000 TLM', staked_amount: '1.0000 TLM' } },
+        eyeke: {
+          stake_details: { available_tlm_in_dao: '10.0000 TLM', staked_amount: '5.0000 TLM' },
+        },
+        testa: {
+          stake_details: { available_tlm_in_dao: '1.0000 TLM', staked_amount: '1.0000 TLM' },
+        },
       },
       loading: false,
     })
@@ -61,7 +70,7 @@ describe('PlanetaryTokens', () => {
   })
 
   it('renders the staked planetary TLM header', () => {
-    mockUseAppState.mockReturnValue({ wax: { selectedDacId: 'eyeke', walletId: 'wallet.wam' } })
+    mockUseAppState.mockReturnValue({ wax: { selectedDacId: 'eyeke' } })
     mockUseWalletDaoDetails.mockReturnValue({
       walletDaoDetails: { stake_details: { available_tlm_in_dao: '0' } },
       loading: false,

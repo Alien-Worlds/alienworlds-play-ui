@@ -17,6 +17,7 @@ import { cloneDeep, filter, find, get, isEmpty, map } from 'lodash'
 import { generatePath, useNavigate, useParams } from 'react-router'
 import { useClickAway } from 'react-use'
 import { useModalStore } from 'shared/store/modalStore'
+import { useSessionStore } from 'shared/store/sessionStore'
 import { useScreenSize } from 'shared/util/hooks'
 import { useActions, useAppState } from 'store'
 import { toastErrorMessage } from 'store/main/actions'
@@ -31,7 +32,6 @@ export const CandidateListPage = () => {
   const setSecondaryModalActive = useModalStore((state) => state.setSecondaryModalActive)
   const {
     wax: {
-      walletId,
       votedCandidatesList,
 
       termsAccepted,
@@ -40,6 +40,7 @@ export const CandidateListPage = () => {
       selectedDacCandidateWalletId,
     },
   } = useAppState()
+  const walletId = useSessionStore((state) => state.walletId)
 
   const { daoDetailsStructed } = useStructuredDaoDetail({
     dacId: selectedDacId,

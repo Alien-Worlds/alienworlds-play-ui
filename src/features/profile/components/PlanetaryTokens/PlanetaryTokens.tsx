@@ -7,6 +7,7 @@ import { useUserDaoBalances } from 'graphql/hooks/useUserDaoBalances'
 import { useWalletDaoDetails } from 'graphql/hooks/useWalletDaoDetails'
 import { DaoWalletDetailsResponse, UserBalancesResponse } from 'graphql/types'
 import { capitalize, filter, get, map, replace, toNumber } from 'lodash'
+import { useSessionStore } from 'shared/store/sessionStore'
 import { Colors } from 'shared/util/colors'
 import { convertPlanetIdToName } from 'shared/util/helpers'
 import { PlanetIcon, PlanetIconRGB } from 'shared/util/icons'
@@ -17,8 +18,9 @@ import { v4 } from 'uuid'
 
 export const PlanetaryTokens = () => {
   const {
-    wax: { selectedDacId, walletId },
+    wax: { selectedDacId },
   } = useAppState()
+  const walletId = useSessionStore((state) => state.walletId)
   const {
     walletDaoDetails,
     loading: walletDaoDetailsLoading,

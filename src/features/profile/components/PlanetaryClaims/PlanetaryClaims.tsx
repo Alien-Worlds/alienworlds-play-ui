@@ -12,11 +12,12 @@ import { DAO_WALLET_DETAILS_QUERY } from 'graphql/queries/daoWalletDetails'
 import { USER_DAO_BALANCES } from 'graphql/queries/userDaoBalances'
 import { UserBalancesResponse, WalletDetailsResponse } from 'graphql/types'
 import { capitalize, filter, get, map, split } from 'lodash'
+import { useSessionStore } from 'shared/store/sessionStore'
 import { Colors } from 'shared/util/colors'
 import { convertPlanetIdToName, getMiningRewardsTimeInHours } from 'shared/util/helpers'
 import { PlanetIconRGB } from 'shared/util/icons'
 import { formatNumber } from 'shared/util/numbers'
-import { useActions, useAppState } from 'store'
+import { useActions } from 'store'
 import { v4 } from 'uuid'
 
 export const PlanetaryClaims = () => {
@@ -28,9 +29,7 @@ export const PlanetaryClaims = () => {
       tryClaimLandownerCommissions,
     },
   } = useActions()
-  const {
-    wax: { walletId },
-  } = useAppState()
+  const walletId = useSessionStore((state) => state.walletId)
   const client = useApolloClient()
   const [isClaimingTokens, setIsClaimingTokens] = useState(false)
   const [isClaimingMiningRewards, setIsClaimingMiningRewards] = useState(false)

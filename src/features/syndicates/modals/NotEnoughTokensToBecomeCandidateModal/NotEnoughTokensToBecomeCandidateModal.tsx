@@ -18,6 +18,7 @@ import { useWalletDaoDetails } from 'graphql/hooks/useWalletDaoDetails'
 import { DaoWalletDetailsResponse } from 'graphql/types'
 import { capitalize, get, head, replace, split, toNumber } from 'lodash'
 import { useModalStore } from 'shared/store/modalStore'
+import { useSessionStore } from 'shared/store/sessionStore'
 import { Colors } from 'shared/util/colors'
 import { convertPlanetIdToName } from 'shared/util/helpers'
 import { formatNumber } from 'shared/util/numbers'
@@ -29,8 +30,9 @@ const AnimatedBox = motion(Box)
 
 const NotEnoughTokensToBecomeCandidateModal = () => {
   const {
-    wax: { selectedDacId, currentDAOInfo, walletId },
+    wax: { selectedDacId, currentDAOInfo },
   } = useAppState()
+  const walletId = useSessionStore((state) => state.walletId)
 
   const secondaryModals = useModalStore((state) => state.secondaryModals)
   const setSecondaryModalActive = useModalStore((state) => state.setSecondaryModalActive)

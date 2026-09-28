@@ -22,9 +22,6 @@ const mockSetPrimaryModalActive = jest.fn()
 const mockTryLoreVoting = jest.fn()
 
 jest.mock('store', () => ({
-  useAppState: () => ({
-    wax: { isDemoUser: mockIsDemoUser },
-  }),
   useActions: () => ({
     wax: { tryLoreVoting: mockTryLoreVoting },
   }),
@@ -33,6 +30,11 @@ jest.mock('store', () => ({
 jest.mock('shared/store/modalStore', () => ({
   useModalStore: (selector: (state: unknown) => unknown) =>
     selector({ setPrimaryModalActive: mockSetPrimaryModalActive }),
+}))
+
+jest.mock('shared/store/sessionStore', () => ({
+  useSessionStore: (selector: (state: unknown) => unknown) =>
+    selector({ isDemoUser: mockIsDemoUser, walletId: 'someplayer.wam' }),
 }))
 
 import { LoreDrawer, isAllowedStatus } from './LoreDrawer'

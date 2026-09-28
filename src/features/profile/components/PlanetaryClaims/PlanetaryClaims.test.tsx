@@ -7,10 +7,8 @@ const mockTryClaimUnstake = jest.fn().mockResolvedValue(undefined)
 const mockTryClaimMiningRewards = jest.fn().mockResolvedValue(undefined)
 const mockTryClaimLandownerAllowance = jest.fn().mockResolvedValue(undefined)
 const mockTryClaimLandownerCommissions = jest.fn().mockResolvedValue(undefined)
-const mockUseAppState = jest.fn()
 
 jest.mock('store', () => ({
-  useAppState: () => mockUseAppState(),
   useActions: () => ({
     wax: {
       tryClaimUnstake: mockTryClaimUnstake,
@@ -19,6 +17,11 @@ jest.mock('store', () => ({
       tryClaimLandownerCommissions: mockTryClaimLandownerCommissions,
     },
   }),
+}))
+
+jest.mock('shared/store/sessionStore', () => ({
+  useSessionStore: (selector: (state: unknown) => unknown) =>
+    selector({ walletId: 'wallet.wam', isDemoUser: false }),
 }))
 
 const mockRefetchQueries = jest.fn().mockResolvedValue(undefined)
@@ -52,7 +55,9 @@ jest.mock('shared/util/helpers', () => ({
 }))
 
 const noUnstakesBalances = {
-  eyeke: { stake_details: { unstakes: [], staked_amount: '0.0000 TLM', dao_token_balance: '0.0000 TLM' } },
+  eyeke: {
+    stake_details: { unstakes: [], staked_amount: '0.0000 TLM', dao_token_balance: '0.0000 TLM' },
+  },
 }
 
 describe('PlanetaryClaims', () => {
@@ -61,7 +66,6 @@ describe('PlanetaryClaims', () => {
   })
 
   it('renders a loading spinner while wallet details or dao balances are loading', () => {
-    mockUseAppState.mockReturnValue({ wax: { walletId: 'wallet.wam' } })
     mockUseWalletDetails.mockReturnValue({ walletDetails: null, loading: true })
     mockUseUserDaoBalances.mockReturnValue({ userDaoBalances: {}, loading: false })
 
@@ -70,7 +74,6 @@ describe('PlanetaryClaims', () => {
   })
 
   it('claims mining rewards when the mining claim button is clicked', async () => {
-    mockUseAppState.mockReturnValue({ wax: { walletId: 'wallet.wam' } })
     mockUseWalletDetails.mockReturnValue({
       walletDetails: {
         mining_claim: { amount: '5.0000 TLM', last_claim_time: null },
@@ -90,7 +93,6 @@ describe('PlanetaryClaims', () => {
   })
 
   it('disables the mining claim button when there are no claimable rewards', () => {
-    mockUseAppState.mockReturnValue({ wax: { walletId: 'wallet.wam' } })
     mockUseWalletDetails.mockReturnValue({
       walletDetails: {
         mining_claim: { amount: '0.0000 TLM', last_claim_time: null },
@@ -108,7 +110,6 @@ describe('PlanetaryClaims', () => {
   })
 
   it('claims landowner commissions when the commission claim button is clicked', async () => {
-    mockUseAppState.mockReturnValue({ wax: { walletId: 'wallet.wam' } })
     mockUseWalletDetails.mockReturnValue({
       walletDetails: {
         mining_claim: { amount: '0.0000 TLM', last_claim_time: null },
@@ -128,7 +129,6 @@ describe('PlanetaryClaims', () => {
   })
 
   it('claims landowner allowance when the DTAL claim button is clicked', async () => {
-    mockUseAppState.mockReturnValue({ wax: { walletId: 'wallet.wam' } })
     mockUseWalletDetails.mockReturnValue({
       walletDetails: {
         mining_claim: { amount: '0.0000 TLM', last_claim_time: null },
@@ -148,7 +148,6 @@ describe('PlanetaryClaims', () => {
   })
 
   it('renders an unstake row and claims it, refetching balances queries', async () => {
-    mockUseAppState.mockReturnValue({ wax: { walletId: 'wallet.wam' } })
     mockUseWalletDetails.mockReturnValue({
       walletDetails: {
         mining_claim: { amount: '0.0000 TLM', last_claim_time: null },

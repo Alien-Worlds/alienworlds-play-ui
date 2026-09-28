@@ -49,6 +49,7 @@ import {
   RingPositions,
 } from 'shared/components/RingPositionHelper/RingPositionHelper'
 import { useModalStore } from 'shared/store/modalStore'
+import { useSessionStore } from 'shared/store/sessionStore'
 import { Colors } from 'shared/util/colors'
 import { dacIdToDacTreasuryAccountList } from 'shared/util/helpers'
 import { useActions, useAppState } from 'store'
@@ -62,8 +63,9 @@ interface MiningPlanetOptionItem {
 const Land: VFC = () => {
   const {
     atomic: { landAssetsFilter, landAsset },
-    wax: { whereToMine, walletId, planetSelectedForMining, isOnboarded },
+    wax: { whereToMine, planetSelectedForMining, isOnboarded },
   } = useAppState()
+  const walletId = useSessionStore((state) => state.walletId)
 
   const {
     wax: { setPlanetSelectedForMiningIntent },

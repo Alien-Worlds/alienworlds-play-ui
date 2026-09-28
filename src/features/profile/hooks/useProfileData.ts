@@ -9,15 +9,14 @@ import { useMemo } from 'react'
 
 import { useLevelNftRewards } from 'features/outpost/hooks/queries/useLevelNftRewards'
 import { useWalletDetails } from 'graphql/hooks/useWalletDetails'
-import { useAppState } from 'store'
+import { useSessionStore } from 'shared/store/sessionStore'
 
 import { ProfileData, UseProfileDataReturn } from '../types/profile.types'
 import { createSafeProfileData, formatWalletDisplay } from '../utils/profile.utils'
 
 export const useProfileData = (): UseProfileDataReturn => {
-  const {
-    wax: { walletId, isDemoUser },
-  } = useAppState()
+  const walletId = useSessionStore((state) => state.walletId)
+  const isDemoUser = useSessionStore((state) => state.isDemoUser)
 
   const { walletDetails, loading: walletLoading } = useWalletDetails(walletId)
   const { currentLevelReward } = useLevelNftRewards()

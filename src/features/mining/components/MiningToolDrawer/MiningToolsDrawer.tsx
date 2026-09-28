@@ -27,6 +27,7 @@ import { matchPath } from 'react-router'
 import { router } from 'routes'
 import { SortBySelector } from 'shared/components/SortBySelector/SortBySelector'
 import { useModalStore } from 'shared/store/modalStore'
+import { useSessionStore } from 'shared/store/sessionStore'
 import { Colors } from 'shared/util/colors'
 import { useActions, useAppState } from 'store'
 import { defaultSortByNameOption, defaultSortByRarityOption } from 'store/atomic/helpers'
@@ -41,9 +42,9 @@ export const MiningToolsDrawer = () => {
   const closeMiningToolsDrawer = useModalStore((state) => state.closeMiningToolsDrawer)
   const miningToolsDrawer = useModalStore((state) => state.miningToolsDrawer)
   const {
-    wax: { walletId },
     atomic: { bagAssets, assetsFilter },
   } = useAppState()
+  const walletId = useSessionStore((state) => state.walletId)
 
   const [currentBagAsset, setCurrentBagAsset] = useState<NFTCardTypes>()
   const { assets: currentAssets } = useFilteredMiningAssets({ currentBagAsset })

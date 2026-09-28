@@ -5,8 +5,9 @@ import { Button } from '@alien-worlds/uikit'
 import { Flex, Image, Link, Text, Box, IconButton } from '@chakra-ui/react'
 import { delay } from 'lodash'
 import { useNavigate } from 'react-router'
+import { useSessionStore } from 'shared/store/sessionStore'
 import { Colors } from 'shared/util/colors'
-import { useActions, useAppState } from 'store'
+import { useActions } from 'store'
 import { PagePath } from 'store/main/types'
 
 import { config } from '../../../shared/util/config'
@@ -28,9 +29,7 @@ const socialButtonsProps = {
 }
 
 const SignUp: VFC = () => {
-  const {
-    wax: { isLoggedIn },
-  } = useAppState()
+  const isLoggedIn = useSessionStore((state) => state.isLoggedIn)
 
   const {
     wax: { collectEvent },

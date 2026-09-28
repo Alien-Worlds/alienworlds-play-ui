@@ -1,5 +1,5 @@
 import Select from 'react-select'
-import { useAppState } from 'store'
+import { useSessionStore } from 'shared/store/sessionStore'
 
 const LoreOptions = [
   {
@@ -75,9 +75,7 @@ interface Props {
 }
 
 export function LoreSelect({ value, onChange }: Props) {
-  const {
-    wax: { isDemoUser },
-  } = useAppState()
+  const isDemoUser = useSessionStore((state) => state.isDemoUser)
 
   return (
     <div className={`flex w-full sm:max-w-sm ${isDemoUser ? 'mt-0 sm:mt-4' : 'mt-0'}`}>

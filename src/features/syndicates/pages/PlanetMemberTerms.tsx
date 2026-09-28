@@ -14,6 +14,7 @@ import ReactMarkdown from 'react-markdown'
 import { useParams } from 'react-router'
 import { useGetMemberTerms } from 'shared/hooks/queries/wax/useGetMemberTerms'
 import { useModalStore } from 'shared/store/modalStore'
+import { useSessionStore } from 'shared/store/sessionStore'
 import { Colors } from 'shared/util/colors'
 import { useActions, useAppState } from 'store'
 import { SigningDACTermsState } from 'store/main/state'
@@ -31,8 +32,10 @@ export const PlanetMemberTerms = ({ isModal = false }) => {
   } = useActions()
   const {
     main: { signingDACTermsState },
-    wax: { selectedDacId, isDemoUser, walletId },
+    wax: { selectedDacId },
   } = useAppState()
+  const isDemoUser = useSessionStore((state) => state.isDemoUser)
+  const walletId = useSessionStore((state) => state.walletId)
   const setPrimaryModalActive = useModalStore((state) => state.setPrimaryModalActive)
   const {
     walletDaoDetails,

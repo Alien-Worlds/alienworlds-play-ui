@@ -20,6 +20,7 @@ import { ProposalStateButton } from 'features/syndicates/utils/GovernanceHelper'
 import { motion } from 'framer-motion'
 import { MSIGS_QUERY } from 'graphql/queries/msigs'
 import { useModalStore } from 'shared/store/modalStore'
+import { useSessionStore } from 'shared/store/sessionStore'
 import { Colors } from 'shared/util/colors'
 import { useActions, useAppState } from 'store'
 
@@ -27,8 +28,9 @@ const AnimatedBox = motion(Box)
 
 const CancelProposalModal = () => {
   const {
-    wax: { selectedDacId, dacCustodianProposalPayload, walletId },
+    wax: { selectedDacId, dacCustodianProposalPayload },
   } = useAppState()
+  const walletId = useSessionStore((state) => state.walletId)
   const {
     wax: { tryCancelProposal },
   } = useActions()

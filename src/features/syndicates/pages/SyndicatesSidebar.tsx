@@ -53,6 +53,7 @@ import { DateTime } from 'luxon'
 import { useNavigate } from 'react-router-dom'
 import { useActivePath } from 'shared/hooks/useRouter'
 import { useModalStore } from 'shared/store/modalStore'
+import { useSessionStore } from 'shared/store/sessionStore'
 import { Colors } from 'shared/util/colors'
 import { convertPlanetIdToName, getSyndicatesCurrentPage, isUnionDAO } from 'shared/util/helpers'
 import { useScreenSize } from 'shared/util/hooks'
@@ -163,8 +164,10 @@ const ResponsiveComponentValues = (currentBreakPoint: string): ResponsiveValuesT
 
 export const SyndicatesSidebar = memo(() => {
   const {
-    wax: { walletId, isDemoUser, selectedDacId, isSyndicatesSidebarOpen },
+    wax: { selectedDacId, isSyndicatesSidebarOpen },
   } = useAppState()
+  const walletId = useSessionStore((state) => state.walletId)
+  const isDemoUser = useSessionStore((state) => state.isDemoUser)
   const client = useApolloClient()
   const {
     wax: {

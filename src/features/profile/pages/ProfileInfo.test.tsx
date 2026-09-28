@@ -6,10 +6,8 @@ import { ProfileInfo } from './ProfileInfo'
 const mockSetPrimaryModalActive = jest.fn()
 const mockSetOutPostModalsActive = jest.fn()
 const mockShowProfileInfoPage = jest.fn()
-const mockUseAppState = jest.fn()
 
 jest.mock('store', () => ({
-  useAppState: () => mockUseAppState(),
   useActions: () => ({
     main: {
       setOutPostModalsActive: mockSetOutPostModalsActive,
@@ -21,6 +19,13 @@ jest.mock('store', () => ({
 jest.mock('shared/store/modalStore', () => ({
   useModalStore: (selector: (state: unknown) => unknown) =>
     selector({ setPrimaryModalActive: mockSetPrimaryModalActive }),
+}))
+
+let mockIsDemoUser = false
+let mockWalletId = 'wallet.wam'
+jest.mock('shared/store/sessionStore', () => ({
+  useSessionStore: (selector: (state: unknown) => unknown) =>
+    selector({ walletId: mockWalletId, isDemoUser: mockIsDemoUser }),
 }))
 
 const mockUseWalletDetails = jest.fn()
@@ -61,15 +66,14 @@ jest.mock('features/syndicates/components/LoadingSpinner/LoadingSpinner', () => 
   LoadingSpinner: () => <div data-testid="loading-spinner" />,
 }))
 
-const baseAppState = { wax: { walletId: 'wallet.wam', isDemoUser: false } }
-
 describe('ProfileInfo', () => {
   afterEach(() => {
     jest.clearAllMocks()
+    mockIsDemoUser = false
+    mockWalletId = 'wallet.wam'
   })
 
   it('renders a loading spinner while wallet details are loading', () => {
-    mockUseAppState.mockReturnValue(baseAppState)
     mockUseWalletDetails.mockReturnValue({ walletDetails: null, loading: true })
     mockUseLevelNftRewards.mockReturnValue({ currentLevelReward: null, nextLevelReward: null })
     mockUseRedeemLevelNftOffer.mockReturnValue({
@@ -82,7 +86,6 @@ describe('ProfileInfo', () => {
   })
 
   it('calls showProfileInfoPage on mount', () => {
-    mockUseAppState.mockReturnValue(baseAppState)
     mockUseWalletDetails.mockReturnValue({
       walletDetails: { userpoints_details: { total_points: 10, top_level: 3 } },
       loading: false,
@@ -101,7 +104,6 @@ describe('ProfileInfo', () => {
   })
 
   it('shows the "EXP to go" button when the user has not reached the next level requirement', () => {
-    mockUseAppState.mockReturnValue(baseAppState)
     mockUseWalletDetails.mockReturnValue({
       walletDetails: { userpoints_details: { total_points: 10, top_level: 3 } },
       loading: false,
@@ -120,7 +122,6 @@ describe('ProfileInfo', () => {
   })
 
   it('shows the claim button and redeems the offer when the user meets the requirement', async () => {
-    mockUseAppState.mockReturnValue(baseAppState)
     mockUseWalletDetails.mockReturnValue({
       walletDetails: { userpoints_details: { total_points: 250, top_level: 3 } },
       loading: false,
@@ -143,7 +144,7 @@ describe('ProfileInfo', () => {
   })
 
   it('opens the login modal instead of redeeming for demo users', async () => {
-    mockUseAppState.mockReturnValue({ wax: { walletId: 'wallet.wam', isDemoUser: true } })
+    mockIsDemoUser = true
     mockUseWalletDetails.mockReturnValue({
       walletDetails: { userpoints_details: { total_points: 250, top_level: 3 } },
       loading: false,
@@ -169,7 +170,6 @@ describe('ProfileInfo', () => {
   })
 
   it('shows a claiming button while the redeem mutation is in flight', () => {
-    mockUseAppState.mockReturnValue(baseAppState)
     mockUseWalletDetails.mockReturnValue({
       walletDetails: { userpoints_details: { total_points: 250, top_level: 3 } },
       loading: false,

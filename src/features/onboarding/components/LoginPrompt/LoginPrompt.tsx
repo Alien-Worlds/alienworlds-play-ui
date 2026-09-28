@@ -4,9 +4,10 @@ import { DiscordIcon, TelegramIcon } from '@alien-worlds/icons'
 import { Button } from '@alien-worlds/uikit'
 import { Flex, Image, Link, Text, Box, IconButton, Spinner } from '@chakra-ui/react'
 import { useLocation, useNavigate } from 'react-router-dom'
+import { useSessionStore } from 'shared/store/sessionStore'
 import { Colors } from 'shared/util/colors'
 import { config } from 'shared/util/config'
-import { useActions, useAppState } from 'store'
+import { useActions } from 'store'
 import { PagePath } from 'store/main/types'
 
 import { Constants } from '../../../../shared/util/constants'
@@ -29,9 +30,7 @@ export const LoginPrompt = () => {
   const {
     main: { tryAutoLogin, login },
   } = useActions()
-  const {
-    wax: { isAuthenticating },
-  } = useAppState()
+  const isAuthenticating = useSessionStore((state) => state.isAuthenticating)
 
   const navigate = useNavigate()
   const { pathname } = useLocation()

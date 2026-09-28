@@ -15,6 +15,7 @@ import { GlossaryInfoIcon } from 'features/glossary/components/GlossaryInfoIcon/
 import { TooltipLocations } from 'features/glossary/utils/glossaryConst'
 import { motion } from 'framer-motion'
 import { useModalStore } from 'shared/store/modalStore'
+import { useSessionStore } from 'shared/store/sessionStore'
 import { pageTransition } from 'shared/util/animations'
 import { Colors } from 'shared/util/colors'
 import { config } from 'shared/util/config'
@@ -35,9 +36,9 @@ const BalanceTlmBsc = ({ isDrawer, cycleMenu }: BalanceTlmBscTypes) => {
     connectedChain &&
     parseInt(connectedChain.id, 16) === config.BscChainId
   const {
-    wax: { isDemoUser },
     web3: { bscTlmBalanceFormatted, bscStakedTlmBalanceFormatted, userWallet },
   } = useAppState()
+  const isDemoUser = useSessionStore((state) => state.isDemoUser)
   const setPrimaryModalActive = useModalStore((state) => state.setPrimaryModalActive)
   const [isLargerThanMobile] = useMediaQuery('(min-width: 640px)')
   const {

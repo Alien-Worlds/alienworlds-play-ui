@@ -4,10 +4,9 @@ import userEvent from '@testing-library/user-event'
 import { InventoryFiltersDrawer } from './InventoryFiltersDrawer'
 
 let mockIsDemoUser = false
-jest.mock('store', () => ({
-  useAppState: () => ({
-    wax: { isDemoUser: mockIsDemoUser },
-  }),
+jest.mock('shared/store/sessionStore', () => ({
+  useSessionStore: (selector: (state: unknown) => unknown) =>
+    selector({ isDemoUser: mockIsDemoUser }),
 }))
 
 jest.mock('features/inventory/components/AssestsFilterPanelMobil', () => ({

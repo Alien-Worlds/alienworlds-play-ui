@@ -16,11 +16,11 @@ import { useWalletDetails } from 'graphql/hooks/useWalletDetails'
 import { UserBalancesResponse, WalletDetailsResponse } from 'graphql/types'
 import { get, sumBy } from 'lodash'
 import { useNavigate } from 'react-router-dom'
+import { useSessionStore } from 'shared/store/sessionStore'
 import { Colors } from 'shared/util/colors'
 import { config } from 'shared/util/config'
 import { formatUserPointsWithDecimal } from 'shared/util/helpers'
 import { formatNumber } from 'shared/util/numbers'
-import { useAppState } from 'store'
 import { PagePath } from 'store/main/types'
 export function sumStakedAmount(userBalances: UserBalancesResponse): number {
   return sumBy(Object.values(userBalances), (planet) =>
@@ -29,9 +29,7 @@ export function sumStakedAmount(userBalances: UserBalancesResponse): number {
 }
 
 export const WalletsBalances: VFC = () => {
-  const {
-    wax: { walletId },
-  } = useAppState()
+  const walletId = useSessionStore((state) => state.walletId)
   const { walletDetails, loading }: { walletDetails: WalletDetailsResponse; loading: boolean } =
     useWalletDetails(walletId)
   const wallet = useWalletConnect()

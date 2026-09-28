@@ -25,9 +25,10 @@ import { map, toNumber } from 'lodash'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { useWaxPagination } from 'shared/hooks/useWaxPagination'
 import { useModalStore } from 'shared/store/modalStore'
+import { useSessionStore } from 'shared/store/sessionStore'
 import { Colors } from 'shared/util/colors'
 import { formatUserPointsWithDecimal } from 'shared/util/helpers'
-import { useActions, useAppState } from 'store'
+import { useActions } from 'store'
 import { PremintOfferWithTemplate } from 'store/wax/types'
 import { v4 as uuidv4 } from 'uuid'
 
@@ -120,9 +121,7 @@ const CommunityNft: FC<CommunityNftProps> = ({ premintOffer, redeem }) => {
   const {
     main: { setOutPostModalsActive },
   } = useActions()
-  const {
-    wax: { isDemoUser },
-  } = useAppState()
+  const isDemoUser = useSessionStore((state) => state.isDemoUser)
   const setPrimaryModalActive = useModalStore((state) => state.setPrimaryModalActive)
   const [showZoomModal, setShowZoomModal] = useState(false)
 

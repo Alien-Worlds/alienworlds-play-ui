@@ -2,9 +2,11 @@ import { renderHook } from '@testing-library/react'
 
 import { useProfileData } from './useProfileData'
 
-const mockUseAppState = jest.fn()
-jest.mock('store', () => ({
-  useAppState: () => mockUseAppState(),
+let mockIsDemoUser = false
+let mockWalletId = 'wallet.wam'
+jest.mock('shared/store/sessionStore', () => ({
+  useSessionStore: (selector: (state: unknown) => unknown) =>
+    selector({ walletId: mockWalletId, isDemoUser: mockIsDemoUser }),
 }))
 
 const mockUseWalletDetails = jest.fn()
@@ -23,7 +25,8 @@ describe('useProfileData', () => {
   })
 
   it('returns null profileData until wallet details and level reward are loaded', () => {
-    mockUseAppState.mockReturnValue({ wax: { walletId: 'wallet.wam', isDemoUser: false } })
+    mockWalletId = 'wallet.wam'
+    mockIsDemoUser = false
     mockUseWalletDetails.mockReturnValue({ walletDetails: null, loading: false })
     mockUseLevelNftRewards.mockReturnValue({ currentLevelReward: null })
 
@@ -32,7 +35,8 @@ describe('useProfileData', () => {
   })
 
   it('builds profileData once wallet details and level reward resolve', () => {
-    mockUseAppState.mockReturnValue({ wax: { walletId: 'wallet.wam', isDemoUser: false } })
+    mockWalletId = 'wallet.wam'
+    mockIsDemoUser = false
     mockUseWalletDetails.mockReturnValue({
       walletDetails: { userpoints_details: { total_points: 250 } },
       loading: false,
@@ -52,7 +56,8 @@ describe('useProfileData', () => {
   })
 
   it('shows the demo account tag for demo users', () => {
-    mockUseAppState.mockReturnValue({ wax: { walletId: 'wallet.wam', isDemoUser: true } })
+    mockWalletId = 'wallet.wam'
+    mockIsDemoUser = true
     mockUseWalletDetails.mockReturnValue({
       walletDetails: { userpoints_details: { total_points: 0 } },
       loading: false,
@@ -65,7 +70,8 @@ describe('useProfileData', () => {
   })
 
   it('reflects wallet loading state', () => {
-    mockUseAppState.mockReturnValue({ wax: { walletId: 'wallet.wam', isDemoUser: false } })
+    mockWalletId = 'wallet.wam'
+    mockIsDemoUser = false
     mockUseWalletDetails.mockReturnValue({ walletDetails: null, loading: true })
     mockUseLevelNftRewards.mockReturnValue({ currentLevelReward: null })
 

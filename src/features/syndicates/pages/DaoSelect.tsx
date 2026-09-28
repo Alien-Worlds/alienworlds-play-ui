@@ -26,6 +26,7 @@ import {
 import { capitalize, find, get, sumBy } from 'lodash'
 import { useParams } from 'react-router-dom'
 import { generatePath, useNavigate } from 'react-router-dom'
+import { useSessionStore } from 'shared/store/sessionStore'
 import { Colors } from 'shared/util/colors'
 import { convertPlanetIdToName, unionDAOFinder } from 'shared/util/helpers'
 import { formatNumber } from 'shared/util/numbers'
@@ -35,8 +36,9 @@ import { PagePath } from 'store/main/types'
 import { Constants } from '../../../shared/util/constants'
 export const DaoSelect = () => {
   const {
-    wax: { selectedDacId, walletId },
+    wax: { selectedDacId },
   } = useAppState()
+  const walletId = useSessionStore((state) => state.walletId)
   const {
     wax: { collectEvent, getDAOInfo, setSelectedDacId },
     main: { showGovernanceDaoSelect },

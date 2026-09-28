@@ -1,8 +1,8 @@
 import { CrossIcon } from '@alien-worlds/icons'
 import { Dialog, DialogPanel } from '@headlessui/react'
 import { AssetsFilterPanelMobile } from 'features/inventory/components/AssestsFilterPanelMobil'
+import { useSessionStore } from 'shared/store/sessionStore'
 import { Colors } from 'shared/util/colors'
-import { useAppState } from 'store'
 
 interface InventoryFilterDrawerProps {
   isOpen: boolean
@@ -10,9 +10,7 @@ interface InventoryFilterDrawerProps {
 }
 
 export const InventoryFiltersDrawer = ({ isOpen, onClose }: InventoryFilterDrawerProps) => {
-  const {
-    wax: { isDemoUser },
-  } = useAppState()
+  const isDemoUser = useSessionStore((state) => state.isDemoUser)
 
   return (
     <Dialog

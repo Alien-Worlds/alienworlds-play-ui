@@ -11,6 +11,7 @@ import {
 import { LogoutOrWallets } from 'shared/components/main-sidebar/LogoutOrWallets'
 import { SupportButton } from 'shared/components/main-sidebar/SupportButton'
 import { WalletsManager } from 'shared/components/main-sidebar/WalletsManager'
+import { useSessionStore } from 'shared/store/sessionStore'
 import { Colors } from 'shared/util/colors'
 import { useScreenSize, useMainSidebar } from 'shared/util/hooks'
 import { useActions, useAppState } from 'store'
@@ -22,9 +23,9 @@ import { Constants } from '../../util/constants'
 
 const MainSidebar = () => {
   const {
-    wax: { isDemoUser },
     main: { isCompactSidebar },
   } = useAppState()
+  const isDemoUser = useSessionStore((state) => state.isDemoUser)
 
   const {
     main: { toggleCompactSidebar },

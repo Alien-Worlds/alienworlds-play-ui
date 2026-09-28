@@ -5,14 +5,13 @@ import { Outlet, useLocation } from 'react-router-dom'
 import { useActivePath } from 'shared/hooks/useRouter'
 import { BackgroundLayer } from 'shared/layouts'
 import { SessionManager } from 'shared/layouts/SessionManager'
+import { useSessionStore } from 'shared/store/sessionStore'
 import { isMissionsRelatedPage } from 'shared/util/router'
-import { useActions, useAppState } from 'store'
+import { useActions } from 'store'
 import { PagePath } from 'store/main/types'
 
 export const MainLayout = () => {
-  const {
-    wax: { isAuthenticating },
-  } = useAppState()
+  const isAuthenticating = useSessionStore((state) => state.isAuthenticating)
 
   const {
     main: { tryAutoLogin, setIsFocusedWindow },

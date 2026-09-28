@@ -4,6 +4,7 @@ import { Dropdown, Option } from '@alien-worlds/uikit'
 import { Flex, Text } from '@chakra-ui/react'
 import { BoostLevels } from 'features/mining/utils/constants'
 import { find, map } from 'lodash'
+import { useSessionStore } from 'shared/store/sessionStore'
 import { Colors } from 'shared/util/colors'
 import { useActions, useAppState } from 'store'
 
@@ -11,8 +12,9 @@ import { Constants } from '../../../../../../shared/util/constants'
 
 const MinimumBoostSetting = () => {
   const {
-    wax: { managingLandId, managingLandDetails, walletId },
+    wax: { managingLandId, managingLandDetails },
   } = useAppState()
+  const walletId = useSessionStore((state) => state.walletId)
 
   const {
     wax: { setMinBoost, loadManagingLandDetailsAndBoostsWithDelay },

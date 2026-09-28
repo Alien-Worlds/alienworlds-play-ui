@@ -11,6 +11,7 @@ import { WalletDetailsResponse } from 'graphql/types'
 import { get, toLower } from 'lodash'
 import { useNavigate } from 'react-router-dom'
 import { BadgesMap } from 'shared/components/UserLevelsBadges/UserLevelsBadges'
+import { useSessionStore } from 'shared/store/sessionStore'
 import { pageTransition } from 'shared/util/animations'
 import { Colors } from 'shared/util/colors'
 import { getLevelVariant, getNftImage, maleHumanAvatar } from 'shared/util/nft'
@@ -32,8 +33,10 @@ const PlayerAvatar = ({
 }) => {
   const {
     atomic: { avatarAsset },
-    wax: { isLoggedIn, isAuthenticating, walletId },
   } = useAppState()
+  const walletId = useSessionStore((state) => state.walletId)
+  const isLoggedIn = useSessionStore((state) => state.isLoggedIn)
+  const isAuthenticating = useSessionStore((state) => state.isAuthenticating)
 
   const { walletDetails, loading }: { walletDetails: WalletDetailsResponse; loading: boolean } =
     useWalletDetails(walletId)

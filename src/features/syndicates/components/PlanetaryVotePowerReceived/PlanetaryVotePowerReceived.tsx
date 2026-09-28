@@ -2,14 +2,16 @@ import { useEffect, useState, VFC } from 'react'
 
 import { HStack, VStack, Text } from '@chakra-ui/react'
 import { find } from 'lodash'
+import { useSessionStore } from 'shared/store/sessionStore'
 import { Colors } from 'shared/util/colors'
 import { formatNumber } from 'shared/util/numbers'
 import { useAppState } from 'store'
 
 export const PlanetaryVotePowerReceived: VFC = () => {
   const {
-    wax: { selectedDacCandidates, walletId },
+    wax: { selectedDacCandidates },
   } = useAppState()
+  const walletId = useSessionStore((state) => state.walletId)
 
   const [receivedVotePower, setReceivedVotePower] = useState<number | null>(null)
 

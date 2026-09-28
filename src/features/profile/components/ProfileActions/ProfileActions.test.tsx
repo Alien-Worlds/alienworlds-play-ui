@@ -24,8 +24,9 @@ jest.mock('store/main/actions', () => ({
   toastMessage: (...args: unknown[]) => mockToastMessage(...args),
 }))
 
-jest.mock('store', () => ({
-  useAppState: () => ({ wax: { walletId: 'wallet.wam', isDemoUser: false } }),
+jest.mock('shared/store/sessionStore', () => ({
+  useSessionStore: (selector: (state: unknown) => unknown) =>
+    selector({ walletId: 'wallet.wam', isDemoUser: false }),
 }))
 
 describe('ProfileActions buttons', () => {

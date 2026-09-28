@@ -18,6 +18,7 @@ import { useDaoDetails } from 'graphql/hooks/useDaoDetails'
 import { useWalletDaoDetails } from 'graphql/hooks/useWalletDaoDetails'
 import { DaoDetailsResponse, DaoWalletDetailsResponse } from 'graphql/types'
 import { get, replace, startCase, toNumber } from 'lodash'
+import { useSessionStore } from 'shared/store/sessionStore'
 import { Colors } from 'shared/util/colors'
 import { useScreenSize } from 'shared/util/hooks'
 import { useAppState } from 'store'
@@ -25,8 +26,10 @@ import { DACUserStatusType } from 'store/wax/types'
 
 export const SyndicateView = () => {
   const {
-    wax: { selectedDacId, isDemoUser, walletId },
+    wax: { selectedDacId },
   } = useAppState()
+  const isDemoUser = useSessionStore((state) => state.isDemoUser)
+  const walletId = useSessionStore((state) => state.walletId)
   const { isMediumScreen, isNotDesktop } = useScreenSize()
 
   const {
