@@ -2,21 +2,15 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 
 let mockUseLoreDashboardResult: any
-let mockLoreFilter: any
 const mockSetLoreFilter = jest.fn()
 
 jest.mock('features/lore/hooks/useLoreDashboard', () => ({
   useLoreDashboard: () => mockUseLoreDashboardResult,
 }))
 
-jest.mock('store', () => ({
-  useAppState: () => ({
-    wax: { loreFilter: mockLoreFilter },
-  }),
-  useActions: () => ({
-    wax: { setLoreFilter: mockSetLoreFilter },
-  }),
-}))
+// Dashboard doesn't use Overmind, but `syndicates/utils/GovernanceHelper` imports the Overmind
+// root, which drags in wallet plugins that can't load under jsdom.
+jest.mock('store', () => ({}))
 
 jest.mock('features/lore/components/LoreDrawer/LoreDrawer', () => ({
   LoreDrawer: ({ isOpen }: any) => (isOpen ? <div data-testid="lore-drawer" /> : null),
@@ -27,6 +21,7 @@ jest.mock('features/syndicates/components/LoadingSpinner/LoadingSpinner', () => 
 }))
 
 import { Dashboard, loreStatusColorFinder } from './Dashboard'
+import { useLoreStore } from '../../store/loreStore'
 import { LoreStatus } from '../../types/loreTypes'
 
 const makeLore = (overrides: any = {}) => ({
@@ -44,7 +39,10 @@ const makeLore = (overrides: any = {}) => ({
 
 describe('Dashboard', () => {
   beforeEach(() => {
-    mockLoreFilter = { sortBy: 0, reversed: false }
+    useLoreStore.setState({
+      loreFilter: { sortBy: 0, reversed: false },
+      setLoreFilter: mockSetLoreFilter,
+    })
     mockUseLoreDashboardResult = {
       isLoading: false,
       sortedLores: [makeLore()],

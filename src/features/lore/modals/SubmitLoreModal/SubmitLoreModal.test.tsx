@@ -1,5 +1,6 @@
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { useLoreStore } from 'features/lore/store/loreStore'
 
 const mockRefetchQueries = jest.fn()
 jest.mock('@apollo/client', () => ({
@@ -26,20 +27,9 @@ jest.mock('shared/components/FormCheckbox', () => ({
 }))
 
 let mockSecondaryModals: any
-let mockLorePullRequests: any[]
 const mockSetSecondaryModalActive = jest.fn()
 const mockGetLorePullRequestCommit = jest.fn()
-const mockTrySubmitLore = jest.fn()
-
-jest.mock('store', () => ({
-  useAppState: () => ({
-    main: { lorePullRequests: mockLorePullRequests },
-  }),
-  useActions: () => ({
-    main: { getLorePullRequestCommit: mockGetLorePullRequestCommit },
-    wax: { trySubmitLore: mockTrySubmitLore },
-  }),
-}))
+const mockSubmitLore = jest.fn()
 
 jest.mock('shared/store/modalStore', () => ({
   useModalStore: (selector: (state: unknown) => unknown) =>
@@ -55,9 +45,13 @@ describe('SubmitLoreModal', () => {
   beforeEach(() => {
     jest.clearAllMocks()
     mockSecondaryModals = { SubmitLoreModal: true }
-    mockLorePullRequests = [
-      { html_url: 'https://github.com/example/pr/1', number: 1, title: 'Fix bug' },
-    ]
+    useLoreStore.setState({
+      lorePullRequests: [
+        { html_url: 'https://github.com/example/pr/1', number: 1, title: 'Fix bug' },
+      ],
+      getLorePullRequestCommit: mockGetLorePullRequestCommit,
+      submitLore: mockSubmitLore,
+    })
     mockLoresResult = { lores: { globals: { fee: '200.0000 TLM' } }, loading: false }
     mockGetLorePullRequestCommit.mockResolvedValue('Auto-filled description')
   })
@@ -125,7 +119,7 @@ describe('SubmitLoreModal', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Submit Lore' }))
 
     await waitFor(() => {
-      expect(mockTrySubmitLore).toHaveBeenCalledWith(
+      expect(mockSubmitLore).toHaveBeenCalledWith(
         expect.objectContaining({
           title: 'Fix bug',
           url: 'https://github.com/example/pr/1',

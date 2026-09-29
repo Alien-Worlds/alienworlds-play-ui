@@ -1,5 +1,6 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { useLoreStore } from 'features/lore/store/loreStore'
 
 const mockRefetchQueries = jest.fn()
 jest.mock('@apollo/client', () => ({
@@ -9,13 +10,7 @@ jest.mock('@apollo/client', () => ({
 
 let mockSecondaryModals: any
 const mockSetSecondaryModalActive = jest.fn()
-const mockTryUnStakeLore = jest.fn()
-
-jest.mock('store', () => ({
-  useActions: () => ({
-    wax: { tryUnStakeLore: mockTryUnStakeLore },
-  }),
-}))
+const mockUnstakeLore = jest.fn()
 
 jest.mock('shared/store/modalStore', () => ({
   useModalStore: (selector: (state: unknown) => unknown) =>
@@ -29,6 +24,7 @@ import { UnstakeLoreModal } from './UnstakeLoreModal'
 
 describe('UnstakeLoreModal', () => {
   beforeEach(() => {
+    useLoreStore.setState({ unstakeLore: mockUnstakeLore })
     jest.clearAllMocks()
     mockSecondaryModals = { UnstakeAllLoreModal: true }
   })
@@ -50,7 +46,7 @@ describe('UnstakeLoreModal', () => {
 
     await userEvent.click(screen.getByText('Unstake All TLM'))
 
-    expect(mockTryUnStakeLore).toHaveBeenCalled()
+    expect(mockUnstakeLore).toHaveBeenCalled()
     expect(mockRefetchQueries).toHaveBeenCalled()
   })
 

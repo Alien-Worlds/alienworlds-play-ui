@@ -1,5 +1,6 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { useLoreStore } from 'features/lore/store/loreStore'
 
 let mockLoreData: any
 jest.mock('features/lore/data/LoreDataProvider', () => {
@@ -38,19 +39,10 @@ jest.mock('features/syndicates/components/LoadingSpinner/LoadingSpinner', () => 
   LoadingSpinner: () => <div data-testid="loading-spinner" />,
 }))
 
-const mockGetLorePullRequests = jest.fn()
+const mockLoadLorePullRequests = jest.fn()
 const mockSetPrimaryModalActive = jest.fn()
 const mockSetSecondaryModalActive = jest.fn()
 let mockIsDemoUser = false
-
-jest.mock('store', () => ({
-  useAppState: () => ({
-    main: { loreReadMe: '# Hello Lore' },
-  }),
-  useActions: () => ({
-    main: { getLorePullRequests: mockGetLorePullRequests },
-  }),
-}))
 
 jest.mock('shared/store/modalStore', () => ({
   useModalStore: (selector: (state: unknown) => unknown) =>
@@ -69,6 +61,11 @@ import { Lore } from './Lore'
 
 describe('Lore page', () => {
   beforeEach(() => {
+    useLoreStore.setState({
+      loreReadMe: '# Hello Lore',
+      loadLoreReadMe: jest.fn(),
+      loadLorePullRequests: mockLoadLorePullRequests,
+    })
     jest.clearAllMocks()
     mockIsDemoUser = false
     mockLoreData = { loadingLores: false, walletDetailsLoading: false }
@@ -107,7 +104,7 @@ describe('Lore page', () => {
 
     await userEvent.click(screen.getByText('Submit Lore'))
 
-    expect(mockGetLorePullRequests).toHaveBeenCalled()
+    expect(mockLoadLorePullRequests).toHaveBeenCalled()
     expect(mockSetSecondaryModalActive).toHaveBeenCalledWith({
       modalName: 'SubmitLoreModal',
       value: true,

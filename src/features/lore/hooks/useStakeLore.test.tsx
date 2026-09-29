@@ -11,24 +11,14 @@ jest.mock('@apollo/client', () => ({
 
 let mockLoreData: any
 let mockIsDemoUser = false
-const mockTryStakeVotePowerLore = jest.fn()
-const mockTryClaimLoreReward = jest.fn()
+const mockStakeLore = jest.fn()
+const mockClaimLoreReward = jest.fn()
 const mockSetSecondaryModalActive = jest.fn()
 const mockSetPrimaryModalActive = jest.fn()
-const mockGetLorePullRequests = jest.fn()
+const mockLoadLorePullRequests = jest.fn()
 
 jest.mock('../data/LoreDataProvider', () => ({
   useLoreData: () => mockLoreData,
-}))
-
-jest.mock('store', () => ({
-  useActions: () => ({
-    wax: {
-      tryStakeVotePowerLore: mockTryStakeVotePowerLore,
-      tryClaimLoreReward: mockTryClaimLoreReward,
-    },
-    main: { getLorePullRequests: mockGetLorePullRequests },
-  }),
 }))
 
 jest.mock('shared/store/sessionStore', () => ({
@@ -46,6 +36,11 @@ jest.mock('shared/store/modalStore', () => ({
 
 describe('useStakeLore', () => {
   beforeEach(() => {
+    useLoreStore.setState({
+      stakeLore: mockStakeLore,
+      claimLoreReward: mockClaimLoreReward,
+      loadLorePullRequests: mockLoadLorePullRequests,
+    })
     mockIsDemoUser = false
     mockLoreData = {
       walletDetails: { tlm_balance: '100.0000 TLM' },
@@ -95,7 +90,7 @@ describe('useStakeLore', () => {
       await result.current.handlers.onSubmitStake('25')
     })
 
-    expect(mockTryStakeVotePowerLore).toHaveBeenCalledWith('25')
+    expect(mockStakeLore).toHaveBeenCalledWith('25')
     expect(mockRefetchQueries).toHaveBeenCalled()
   })
 
@@ -107,7 +102,7 @@ describe('useStakeLore', () => {
       await result.current.handlers.onSubmitStake('25')
     })
 
-    expect(mockTryStakeVotePowerLore).not.toHaveBeenCalled()
+    expect(mockStakeLore).not.toHaveBeenCalled()
     expect(mockSetPrimaryModalActive).toHaveBeenCalledWith({ modalName: 'LoginModal', value: true })
   })
 
@@ -131,7 +126,7 @@ describe('useStakeLore', () => {
       result.current.handlers.onSubmitLore()
     })
 
-    expect(mockGetLorePullRequests).toHaveBeenCalled()
+    expect(mockLoadLorePullRequests).toHaveBeenCalled()
     expect(mockSetSecondaryModalActive).toHaveBeenCalledWith({
       modalName: 'SubmitLoreModal',
       value: true,
@@ -145,7 +140,7 @@ describe('useStakeLore', () => {
       await result.current.handlers.onClaimReward()
     })
 
-    expect(mockTryClaimLoreReward).toHaveBeenCalled()
+    expect(mockClaimLoreReward).toHaveBeenCalled()
     expect(mockRefetchQueries).toHaveBeenCalled()
   })
 })

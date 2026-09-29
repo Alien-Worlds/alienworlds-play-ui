@@ -14,9 +14,9 @@ import { FormCheckbox } from 'shared/components/FormCheckbox'
 import { useModalStore } from 'shared/store/modalStore'
 import { Colors } from 'shared/util/colors'
 import { validateEmpty } from 'shared/util/formhelper'
-import { useActions, useAppState } from 'store'
-import { PullRequest } from 'store/main/types'
 import * as Yup from 'yup'
+
+import { useLoreStore } from '../../store/loreStore'
 
 const checkboxStyles: SerializedStyles = css`
   box-shadow: none;
@@ -55,14 +55,10 @@ const checkboxStyles: SerializedStyles = css`
 `
 
 const SubmitLoreModal = () => {
-  const {
-    main: { lorePullRequests },
-  } = useAppState()
+  const lorePullRequests = useLoreStore((state) => state.lorePullRequests)
+  const getLorePullRequestCommit = useLoreStore((state) => state.getLorePullRequestCommit)
+  const submitLore = useLoreStore((state) => state.submitLore)
   const client = useApolloClient()
-  const {
-    main: { getLorePullRequestCommit },
-    wax: { trySubmitLore },
-  } = useActions()
   const secondaryModals = useModalStore((state) => state.secondaryModals)
   const setSecondaryModalActive = useModalStore((state) => state.setSecondaryModalActive)
   const { lores, loading: loadingLores }: { lores: loresResponse; loading: boolean } = useLores()
@@ -80,7 +76,7 @@ const SubmitLoreModal = () => {
   const [urlError, setUrlError] = useState(false)
   useEffect(() => {
     setOptions(
-      lorePullRequests.map((item: PullRequest) => ({
+      lorePullRequests.map((item) => ({
         value: item.html_url,
         label: item.html_url,
         number: item.number,
@@ -135,11 +131,10 @@ const SubmitLoreModal = () => {
               validationSchema={validationSchema}
               onSubmit={async ({ title, githubUrl, description, termAndConditions }) => {
                 if (githubUrl.length > 0 && termAndConditions) {
-                  await trySubmitLore({
+                  await submitLore({
                     title,
-                    description: description,
+                    description,
                     url: githubUrl,
-                    type: '',
                     fee: globals.fee,
                   })
                   await client.refetchQueries({ include: [LORES_QUERY] })
