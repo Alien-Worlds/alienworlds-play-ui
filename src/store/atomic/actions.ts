@@ -55,8 +55,6 @@ export const initializeOrReloadAssets = pipe(
     }
 
     state.main.syncAi.assets.isInProgress = true
-    state.main.loreReadMe = await effects.main.getLoreReadMe()
-    state.main.lorePullRequests = await effects.main.getLorePullRequests()
     let page = Constants.WAX_DEFAULT_PAGE_NUMBER
     let allAssets: IAsset[] = []
 

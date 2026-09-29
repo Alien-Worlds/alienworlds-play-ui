@@ -4,7 +4,6 @@ import { ErrorTypes } from 'features/syndicates/types/governanceTypes'
 import { DateTime, Duration } from 'luxon'
 import { derived } from 'overmind'
 import { getDefaultSyncAi } from 'store/main/helpers'
-import { PullRequest } from 'store/main/types'
 
 export type SyncInfo = {
   isInProgress: boolean
@@ -61,9 +60,6 @@ type MainState = {
   currentWallet: string
   isWaxLoggedIn: boolean
   isSwitchingWallets: boolean
-  lorePullRequests: Array<PullRequest>
-  loreReadMe: string
-  loreDescription: string
 }
 
 export enum MiningGameState {
@@ -83,8 +79,6 @@ export enum SigningDACTermsState {
 
 export const defaultState: MainState = {
   isFocusedWindow: true,
-  loreReadMe: null,
-  loreDescription: null,
   syncAi: getDefaultSyncAi(),
   initializingLayout: false,
   loginRedirectTo: null,
@@ -135,7 +129,6 @@ export const defaultState: MainState = {
   currentWallet: null,
   isWaxLoggedIn: false,
   isSwitchingWallets: false,
-  lorePullRequests: [],
 }
 
 export const state: MainState = {

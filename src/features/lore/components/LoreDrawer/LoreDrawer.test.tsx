@@ -1,5 +1,6 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { useLoreStore } from 'features/lore/store/loreStore'
 
 const mockCopyToClipboard = jest.fn()
 jest.mock('react-use', () => ({
@@ -13,19 +14,13 @@ jest.mock('@apollo/client', () => ({
 }))
 
 const mockToastMessage = jest.fn()
-jest.mock('store/main/actions', () => ({
+jest.mock('shared/util/toast', () => ({
   toastMessage: (...args: any[]) => mockToastMessage(...args),
 }))
 
 let mockIsDemoUser = false
 const mockSetPrimaryModalActive = jest.fn()
-const mockTryLoreVoting = jest.fn()
-
-jest.mock('store', () => ({
-  useActions: () => ({
-    wax: { tryLoreVoting: mockTryLoreVoting },
-  }),
-}))
+const mockVoteLore = jest.fn()
 
 jest.mock('shared/store/modalStore', () => ({
   useModalStore: (selector: (state: unknown) => unknown) =>
@@ -72,6 +67,7 @@ describe('isAllowedStatus', () => {
 
 describe('LoreDrawer', () => {
   beforeEach(() => {
+    useLoreStore.setState({ voteLore: mockVoteLore })
     mockIsDemoUser = false
     jest.clearAllMocks()
   })
@@ -138,7 +134,7 @@ describe('LoreDrawer', () => {
     await userEvent.type(screen.getByPlaceholderText('Enter TLM amount 10 000 e.g.'), '5')
     await userEvent.click(screen.getByRole('button', { name: 'Vote' }))
 
-    expect(mockTryLoreVoting).toHaveBeenCalledWith({
+    expect(mockVoteLore).toHaveBeenCalledWith({
       proposalId: 7,
       vote: 'yes',
       votePower: 5,
@@ -153,7 +149,7 @@ describe('LoreDrawer', () => {
     await userEvent.type(screen.getByPlaceholderText('Enter TLM amount 10 000 e.g.'), '5')
     await userEvent.click(screen.getByRole('button', { name: 'Vote' }))
 
-    expect(mockTryLoreVoting).not.toHaveBeenCalled()
+    expect(mockVoteLore).not.toHaveBeenCalled()
     expect(mockSetPrimaryModalActive).toHaveBeenCalledWith({ modalName: 'LoginModal', value: true })
   })
 })

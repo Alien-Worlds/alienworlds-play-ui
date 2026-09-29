@@ -24,9 +24,11 @@ src/features/lore/
 │   ├── useStakeLore.ts       # Stake/unstake/claim business logic
 │   └── useLiveVotePower.ts   # Polls a locally-computed live vote power value
 ├── store/
-│   └── loreStore.ts      # Zustand store for the feature's own local UI state
+│   └── loreStore.ts      # Zustand: UI state, dashboard sort, GitHub data, lore.worlds transactions
 ├── utils/
 │   ├── staking.ts        # Token/stake amount parsing and reward math
+│   ├── loreActions.ts    # lore.worlds transaction action builders (stake/unstake/claim/vote/submit)
+│   ├── github.ts         # the-lore repo reads: open PRs, PR commit message, README
 │   └── utils.ts          # Lore sorting + land asset filtering (shared with features/mining)
 ├── types/
 │   └── loreTypes.ts
@@ -36,9 +38,14 @@ src/features/lore/
 
 ## Where state lives
 
-- **Wallet/chain data** (`isDemoUser`, `loreFilter`, staking/voting actions, modal visibility) stays
-  in Overmind's `wax`/`modal`/`main` namespaces via `useAppState`/`useActions` — it's shared app-wide
-  state, not local to this feature, so it wasn't touched by this migration.
+- **Lore's chain actions and data** live in `store/loreStore.ts` (Zustand), ported from Overmind's
+  `wax`/`main` namespaces: `stakeLore`, `unstakeLore`, `claimLoreReward`, `voteLore`, `submitLore`
+  (built by `utils/loreActions.ts`, signed with `shared/wax/transact`, errors toasted), the dashboard
+  sort (`loreFilter`), and the-lore GitHub data (`lorePullRequests`, `loreReadMe`,
+  `getLorePullRequestCommit`, fetched by `utils/github.ts`). The README is loaded when the Lore page
+  mounts; pull requests when "Submit Lore" is clicked.
+- **Session state** (`isDemoUser`, `walletId`, `currentWallet`) comes from `shared/store/sessionStore`,
+  and modal visibility from `shared/store/modalStore`.
 - **Dashboard row selection** (`selectedProposalId`, which also drives `LoreDrawer`'s open state) and
   **the stake-amount input preview** (`stakedInput`, used to compute `newDailyReward`) are the two
   pieces of state genuinely local to this feature. Both previously lived in ad-hoc `useState` inside
@@ -64,8 +71,7 @@ reasoning `features/inventory` used to leave `NFTCardHelper.tsx` as Chakra.
 
 - Every file in this feature has a co-located `*.test.tsx`/`*.test.ts`. Run `yarn test src/features/lore`.
 - `utils/staking.ts` and `utils/utils.ts` have plain unit tests (no rendering needed).
-- Component tests mock `store` (`useAppState`/`useActions`) with only the slices each file reads, and
-  mock `features/lore/data/LoreDataProvider` or the underlying GraphQL hooks where relevant — see
+- Component tests stub the store actions they trigger with `useLoreStore.setState(...)`, and mock `features/lore/data/LoreDataProvider` or the underlying GraphQL hooks where relevant — see
   existing tests for the established mocking shape.
 - When adding new helpers or hooks, include tests that cover boundary cases (empty stakes, malformed
   numbers, permission gating).

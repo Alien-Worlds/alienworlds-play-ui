@@ -5,7 +5,6 @@ import { WALLET_DETAILS_QUERY_ALL } from 'graphql/queries/walletDetails'
 import { get } from 'lodash'
 import { useModalStore } from 'shared/store/modalStore'
 import { useSessionStore } from 'shared/store/sessionStore'
-import { useActions } from 'store'
 
 import { useLoreData } from '../data/LoreDataProvider'
 import { useLoreStore } from '../store/loreStore'
@@ -42,10 +41,9 @@ export function useStakeLore(): {
   const isDemoUser = useSessionStore((state) => state.isDemoUser)
   const { walletDetails, loreVoterInfo, globals, loadingLores, walletDetailsLoading } =
     useLoreData()
-  const {
-    wax: { tryStakeVotePowerLore, tryClaimLoreReward },
-    main: { getLorePullRequests },
-  } = useActions()
+  const stakeLore = useLoreStore((state) => state.stakeLore)
+  const claimLoreReward = useLoreStore((state) => state.claimLoreReward)
+  const loadLorePullRequests = useLoreStore((state) => state.loadLorePullRequests)
   const setSecondaryModalActive = useModalStore((state) => state.setSecondaryModalActive)
   const setPrimaryModalActive = useModalStore((state) => state.setPrimaryModalActive)
 
@@ -106,10 +104,10 @@ export function useStakeLore(): {
         return
       }
 
-      await tryStakeVotePowerLore(amount)
+      await stakeLore(amount)
       await client.refetchQueries({ include: [WALLET_DETAILS_QUERY_ALL] })
     },
-    [client, isDemoUser, openLoginModalIfDemo, tryStakeVotePowerLore]
+    [client, isDemoUser, openLoginModalIfDemo, stakeLore]
   )
 
   const onUnstakeAll = useCallback(() => {
@@ -122,7 +120,7 @@ export function useStakeLore(): {
   }, [isDemoUser, openLoginModalIfDemo, setSecondaryModalActive])
 
   const onSubmitLore = useCallback(() => {
-    getLorePullRequests()
+    loadLorePullRequests()
 
     if (isDemoUser) {
       openLoginModalIfDemo()
@@ -130,7 +128,7 @@ export function useStakeLore(): {
     }
 
     setSecondaryModalActive({ modalName: 'SubmitLoreModal', value: true })
-  }, [getLorePullRequests, isDemoUser, openLoginModalIfDemo, setSecondaryModalActive])
+  }, [loadLorePullRequests, isDemoUser, openLoginModalIfDemo, setSecondaryModalActive])
 
   const onChangeStakeInput = useCallback(
     (amount: number) => {
@@ -145,9 +143,9 @@ export function useStakeLore(): {
       return
     }
 
-    await tryClaimLoreReward()
+    await claimLoreReward()
     await client.refetchQueries({ include: [WALLET_DETAILS_QUERY_ALL] })
-  }, [client, isDemoUser, openLoginModalIfDemo, tryClaimLoreReward])
+  }, [client, isDemoUser, openLoginModalIfDemo, claimLoreReward])
 
   return {
     walletId,
