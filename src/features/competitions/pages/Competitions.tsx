@@ -4,6 +4,7 @@ import { useBreakpointValue } from '@alien-worlds/uikit'
 import { Tab, TabGroup, TabList, TabPanel, TabPanels } from '@headlessui/react'
 import { CompetitionCard } from 'features/competitions/components/CompetitionCard'
 import { CompetitionDrawer } from 'features/competitions/components/CompetitionDrawer'
+import { useCompetitionsStore } from 'features/competitions/store/competitionsStore'
 import { TournamentStatus } from 'features/competitions/types/competitionTypes'
 import { LoadingSpinner } from 'features/syndicates/components/LoadingSpinner'
 import {
@@ -14,7 +15,6 @@ import {
 import { map } from 'lodash'
 import { useSessionStore } from 'shared/store/sessionStore'
 import { Colors } from 'shared/util/colors'
-import { useActions } from 'store'
 
 const TABS: {
   id: string
@@ -69,7 +69,7 @@ export const Competitions = () => {
       md: false,
     }) ?? true
   const walletId = useSessionStore((state) => state.walletId)
-  const actions = useActions()
+  const claimTournamentReward = useCompetitionsStore((state) => state.claimTournamentReward)
 
   const handleCurrentCompetition = (competition: Tournament) => {
     setCurrentCompetition(competition)
@@ -77,7 +77,7 @@ export const Competitions = () => {
   }
   const { tournaments, loading, error, refetch } = useCompetitions({ waxId: walletId })
   const handleClaimReward = async (tournament: Tournament) => {
-    const success = await actions.wax.tryClaimTournamentReward(tournament.id)
+    const success = await claimTournamentReward(tournament.id)
     if (success) refetch()
   }
 

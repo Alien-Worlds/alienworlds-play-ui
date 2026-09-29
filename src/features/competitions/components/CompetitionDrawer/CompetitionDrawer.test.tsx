@@ -7,7 +7,7 @@ jest.mock('react-use', () => ({
 }))
 
 const mockToastMessage = jest.fn()
-jest.mock('store/main/actions', () => ({
+jest.mock('shared/util/toast', () => ({
   toastMessage: (...args: any[]) => mockToastMessage(...args),
 }))
 

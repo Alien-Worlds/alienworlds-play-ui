@@ -26,6 +26,7 @@ describe('useSessionStore', () => {
     expect(result.current.isLoggedIn).toBe(false)
     expect(result.current.currentWallet).toBeNull()
     expect(result.current.isAuthenticating).toBeNull()
+    expect(result.current.currentSession).toBeNull()
   })
 
   it('setWalletId stores the wallet, marks a real wallet as not a demo user, and logs in', () => {
@@ -88,5 +89,20 @@ describe('useSessionStore', () => {
       result.current.setIsAuthenticating(false)
     })
     expect(result.current.isAuthenticating).toBe(false)
+  })
+
+  it('setCurrentSession stores and clears the Wharf session', () => {
+    const { result } = renderHook(() => useSessionStore())
+    const session = { transact: jest.fn() } as any
+
+    act(() => {
+      result.current.setCurrentSession(session)
+    })
+    expect(result.current.currentSession).toBe(session)
+
+    act(() => {
+      result.current.setCurrentSession(null)
+    })
+    expect(result.current.currentSession).toBeNull()
   })
 })

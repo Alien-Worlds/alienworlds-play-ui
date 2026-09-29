@@ -2401,27 +2401,6 @@ export const api = (() => {
       ]
       await this.executeTransactFinal(request)
     },
-    async claimTournamentReward(compId: number) {
-      if (!options || !options?.getWalletId()) return
-
-      const request: WaxRequest = [
-        {
-          account: Constants.CONTRACT_COMP_WORLDS,
-          name: Constants.CONTRACT_COMP_ACTION_CLAIM,
-          authorization: [
-            {
-              permission: 'active',
-              actor: options.getWalletId(),
-            },
-          ],
-          data: {
-            id: compId,
-            player: options.getWalletId(),
-          },
-        },
-      ]
-      await this.executeTransactFinal(request)
-    },
     async applyMainBoost(landId: string, boost: IAsset) {
       if (!options || !options?.getWalletId()) return
 

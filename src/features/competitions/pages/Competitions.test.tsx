@@ -22,11 +22,10 @@ jest.mock('graphql/hooks/useCompetitions', () => ({
   },
 }))
 
-const mockTryClaimTournamentReward = jest.fn()
-jest.mock('store', () => ({
-  useActions: () => ({
-    wax: { tryClaimTournamentReward: mockTryClaimTournamentReward },
-  }),
+const mockClaimTournamentReward = jest.fn()
+jest.mock('features/competitions/store/competitionsStore', () => ({
+  useCompetitionsStore: (selector: (state: unknown) => unknown) =>
+    selector({ claimTournamentReward: mockClaimTournamentReward }),
 }))
 
 jest.mock('shared/store/sessionStore', () => ({
@@ -132,7 +131,7 @@ describe('Competitions page', () => {
   })
 
   it('refetches after a successful reward claim', async () => {
-    mockTryClaimTournamentReward.mockResolvedValue(true)
+    mockClaimTournamentReward.mockResolvedValue(true)
     mockCompetitions.tournaments = {
       ...emptyTournaments(),
       upcoming: [makeTournament({ id: 7 })],
@@ -142,12 +141,12 @@ describe('Competitions page', () => {
     await userEvent.click(screen.getByRole('button', { name: 'View details' }))
     await userEvent.click(screen.getByRole('button', { name: 'Claim' }))
 
-    expect(mockTryClaimTournamentReward).toHaveBeenCalledWith(7)
+    expect(mockClaimTournamentReward).toHaveBeenCalledWith(7)
     await waitFor(() => expect(mockRefetch).toHaveBeenCalled())
   })
 
   it('does not refetch when the claim fails', async () => {
-    mockTryClaimTournamentReward.mockResolvedValue(false)
+    mockClaimTournamentReward.mockResolvedValue(false)
     mockCompetitions.tournaments = {
       ...emptyTournaments(),
       upcoming: [makeTournament({ id: 7 })],
@@ -157,7 +156,7 @@ describe('Competitions page', () => {
     await userEvent.click(screen.getByRole('button', { name: 'View details' }))
     await userEvent.click(screen.getByRole('button', { name: 'Claim' }))
 
-    await waitFor(() => expect(mockTryClaimTournamentReward).toHaveBeenCalled())
+    await waitFor(() => expect(mockClaimTournamentReward).toHaveBeenCalled())
     expect(mockRefetch).not.toHaveBeenCalled()
   })
 })
