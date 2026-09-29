@@ -34,10 +34,16 @@ logically isolated, or shared with another feature."
 - Effort: ~0.5 day. Just needs the two cross-namespace calls it forwards to be reachable
   (either still-Overmind at the time, or already-migrated equivalents).
 
-### competitions — trivial, but not really "its" state
-- No dedicated namespace. Reads exactly one shared field:
-  `wax.isDemoUser` in [CompetitionDrawer.tsx](../../src/features/competitions/CompetitionDrawer.tsx#L143).
-- Effort: <0.5 day once you know where `isDemoUser` will live (see "global fields" note below).
+### competitions — done (`feature/competitions-store-zustand-migration`)
+- Original finding here was wrong: `isDemoUser`/`walletId` were already read from
+  `shared/store/sessionStore` (landed in Release 5.3.2, #85). The real Overmind dependency was the
+  reward-claim transaction, `wax.tryClaimTournamentReward` (+ `wax.api.claimTournamentReward`
+  effect), used only by competitions.
+- Ported to `src/features/competitions/store/competitionsStore.ts` (`claimTournamentReward`,
+  `isClaimingReward`); the Overmind action and effect are deleted. Competitions now has no imports
+  from `store/` or `overmind`.
+- Needed two small shared pieces, reusable by later features (see "Shared session & transactions"):
+  `sessionStore.currentSession` and `shared/wax/transact`. Toasts moved to `shared/util/toast`.
 
 ### lore — moderate, cleanly separable
 - No dedicated namespace, but everything lore-specific is *logically* isolated even though it's
@@ -47,10 +53,11 @@ logically isolated, or shared with another feature."
     `loreFilter` / `setLoreFilter`
   - `main`: `getLorePullRequests`, `getLorePullRequestCommit`
 - Also reads a few genuinely global fields it doesn't own: `wax.isDemoUser`, `main.currentWallet`.
-  Those just need to point at wherever that global session state ends up — not lore's problem to
-  design.
+  Both already live in `shared/store/sessionStore`.
 - Real effort here is porting async blockchain-transaction action logic (staking, voting,
   claiming, submitting) out of `wax/actions.ts` + `wax/effects.ts`, not just moving plain state.
+  Follow the competitions pattern: build the actions in a lore Zustand store and sign them with
+  `shared/wax/transact`, instead of `effects.wax.api` + `state.wax.lastTransactionError`.
   Needs test coverage matching what's in `wax/effects.ts` today.
 - Effort: ~3-5 days.
 
@@ -72,12 +79,35 @@ logically isolated, or shared with another feature."
 - Effort: 1-2+ weeks if done properly; treat as its own initiative rather than folding it into "the
   four features," since its actual boundary is `atomic`/mining, not inventory.
 
+## Shared session & transactions
+
+Features are migrated one at a time; nothing requires moving all of `wax` at once. Two shared
+pieces (added on the competitions branch) make that possible for features that send transactions:
+
+- **`sessionStore.currentSession`** — the Wharf session that signs transactions. Login still runs
+  in Overmind (`main/actions.ts`: Anchor/Wombat/cloud-wallet login, `setCurrentSession` restore,
+  `switchWallet`), which writes the session to both Overmind and `sessionStore`, the same bridge
+  already used for `walletId`, `currentWallet` and `isAuthenticating`.
+- **`shared/wax/transact(actions)`** — signs with the `sessionStore` session and throws on failure.
+  Replaces the Overmind path (`effects.wax.api.executeTransactWharf`, which swallows errors into
+  `state.wax.lastTransactionError`) for migrated features. Unmigrated wax actions keep using the
+  old path unchanged.
+
+The remaining runtime link is that `sessionStore` is filled by Overmind's login code. That goes
+away in the final phase below.
+
 ## Recommended sequencing
 
-1. `arena` and `competitions` — quick, nearly independent, do first.
+1. `arena` and `competitions` — quick, nearly independent, do first. (competitions: done.)
 2. `lore` — contained but real; needs care around the blockchain-action ports and tests.
 3. `inventory` — decide bridge-vs-full-atomic-migration before starting; likely needs its own
    scoping pass with mining in view, not just this doc.
+4. **Final: session/auth** — once features no longer read session state from Overmind:
+   - Move login / logout / `switchWallet` / session restore out of `main/actions.ts` into Zustand,
+     writing `sessionStore` directly.
+   - Point the wax API's `getCurrentSession` at `sessionStore`, or move the remaining transactions
+     onto `shared/wax/transact`.
+   - Delete `main.currentSession` and the Overmind → `sessionStore` mirroring.
 
 ## Branch naming
 
