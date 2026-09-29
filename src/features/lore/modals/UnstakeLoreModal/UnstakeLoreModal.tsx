@@ -4,14 +4,14 @@ import { Dialog, DialogPanel } from '@headlessui/react'
 import { WALLET_DETAILS_QUERY_ALL } from 'graphql/queries/walletDetails'
 import { useModalStore } from 'shared/store/modalStore'
 import { Colors } from 'shared/util/colors'
-import { useActions } from 'store'
+
+import { useLoreStore } from '../../store/loreStore'
+
 const UnstakeLoreModal = () => {
   const secondaryModals = useModalStore((state) => state.secondaryModals)
   const setSecondaryModalActive = useModalStore((state) => state.setSecondaryModalActive)
   const client = useApolloClient()
-  const {
-    wax: { tryUnStakeLore },
-  } = useActions()
+  const unstakeLore = useLoreStore((state) => state.unstakeLore)
 
   const handleClose = () => {
     setSecondaryModalActive({ modalName: 'UnstakeAllLoreModal', value: false })
@@ -58,7 +58,7 @@ const UnstakeLoreModal = () => {
               variant="alert"
               fontSize={18}
               onClick={async () => {
-                await tryUnStakeLore()
+                await unstakeLore()
                 await client.refetchQueries({ include: [WALLET_DETAILS_QUERY_ALL] })
               }}
             >

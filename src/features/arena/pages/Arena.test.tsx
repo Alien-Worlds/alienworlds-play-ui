@@ -4,17 +4,21 @@ import { MemoryRouter } from 'react-router-dom'
 
 import { Arena } from './Arena'
 
-const mockShowArenaPortalPage = jest.fn()
+const mockCollectEvent = jest.fn()
 jest.mock('store', () => ({
   useActions: () => ({
-    arena: { showArenaPortalPage: mockShowArenaPortalPage },
+    wax: { collectEvent: mockCollectEvent },
   }),
 }))
 
+const mockToggleMainDrawer = jest.fn()
 const mockSetSecondaryModalActive = jest.fn()
 jest.mock('shared/store/modalStore', () => ({
   useModalStore: (selector: (state: unknown) => unknown) =>
-    selector({ setSecondaryModalActive: mockSetSecondaryModalActive }),
+    selector({
+      toggleMainDrawer: mockToggleMainDrawer,
+      setSecondaryModalActive: mockSetSecondaryModalActive,
+    }),
 }))
 
 const arenaItems = [
@@ -54,7 +58,11 @@ describe('Arena page', () => {
   it('tracks the page visit on mount', () => {
     render(<Arena />, { wrapper: MemoryRouter })
 
-    expect(mockShowArenaPortalPage).toHaveBeenCalled()
+    expect(mockToggleMainDrawer).toHaveBeenCalledWith(false)
+    expect(mockCollectEvent).toHaveBeenCalledWith({
+      name: 'page_visit',
+      fields: { location: '/arena' },
+    })
   })
 
   it('renders a tab per category plus "All"', () => {

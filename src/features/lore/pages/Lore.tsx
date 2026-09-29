@@ -7,6 +7,7 @@ import { LoreSelect } from 'features/lore/components/LoreSelect/LoreSelect'
 import { StakeLore } from 'features/lore/components/StakeLore/StakeLore'
 import { LoreDataProvider, useLoreLoadingState } from 'features/lore/data/LoreDataProvider'
 import { useLiveVotePower } from 'features/lore/hooks/useLiveVotePower'
+import { useLoreStore } from 'features/lore/store/loreStore'
 import { LoadingSpinner } from 'features/syndicates/components/LoadingSpinner/LoadingSpinner'
 import { map } from 'lodash'
 import ScrollContainer from 'react-indiana-drag-scroll'
@@ -15,7 +16,6 @@ import { useSessionStore } from 'shared/store/sessionStore'
 import { Colors } from 'shared/util/colors'
 import { sanitizedHtmlString } from 'shared/util/helpers'
 import { useScreenSize } from 'shared/util/hooks'
-import { useActions, useAppState } from 'store'
 
 const TabsOptions = ['Lore', 'Dashboard', 'Stake']
 
@@ -27,12 +27,9 @@ const LoreContent = () => {
       base: 'vertical',
       md: 'horizontal',
     }) ?? 'vertical'
-  const {
-    main: { getLorePullRequests },
-  } = useActions()
-  const {
-    main: { loreReadMe },
-  } = useAppState()
+  const loadLorePullRequests = useLoreStore((state) => state.loadLorePullRequests)
+  const loreReadMe = useLoreStore((state) => state.loreReadMe)
+  const loadLoreReadMe = useLoreStore((state) => state.loadLoreReadMe)
   const isDemoUser = useSessionStore((state) => state.isDemoUser)
   const currentWallet = useSessionStore((state) => state.currentWallet)
   const setSecondaryModalActive = useModalStore((state) => state.setSecondaryModalActive)
@@ -41,6 +38,10 @@ const LoreContent = () => {
   const { isDesktop, isTablet } = screenSize
   const { loadingLores, walletDetailsLoading } = useLoreLoadingState()
   const { currentVotePower } = useLiveVotePower()
+
+  useEffect(() => {
+    if (!loreReadMe) loadLoreReadMe()
+  }, [])
 
   useEffect(() => {
     setLoreContent(loreReadMe)
@@ -123,7 +124,7 @@ const LoreContent = () => {
                 fontWeight={900}
                 isFullWidth={currentBreakPointValue === 'vertical'}
                 onClick={() => {
-                  getLorePullRequests()
+                  loadLorePullRequests()
                   if (isDemoUser) {
                     setPrimaryModalActive({ modalName: 'LoginModal', value: true })
                   } else {

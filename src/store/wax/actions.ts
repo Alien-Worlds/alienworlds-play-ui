@@ -49,7 +49,7 @@ import { initializeOrReloadAssets } from 'store/atomic/actions'
 import { toastErrorMessage, toastMessage } from 'store/main/actions'
 import { executeAfter, shouldExecute } from 'store/main/helpers'
 import { PagePath } from 'store/main/types'
-import { LoreFilter, ProposalsFilter } from 'store/wax/state'
+import { ProposalsFilter } from 'store/wax/state'
 
 import {
   OnboardingData,
@@ -441,153 +441,7 @@ export const tryStakeVotePower = pipe(
     return false
   })
 )
-export const tryStakeVotePowerLore = pipe(
-  async ({ state, effects }: Context, amount: string) => {
-    state.wax.actionProgressState = RequestState.InProgress
-    await effects.wax.api.stakeVotePowerLore({ amount })
 
-    if (state.wax.lastTransactionError) {
-      toastErrorMessage(state.wax.lastTransactionError)
-      state.wax.lastTransactionError = null
-      return false
-    }
-
-    toastMessage(`Staking TLM successfully.`)
-    state.wax.actionProgressState = RequestState.Succeeded
-    executeAfter(state.main.syncAi.tlmBalance, DateTime.now().plus({ seconds: 5 }))
-    // executeAfter(state.main.syncAi.planets, DateTime.now().plus({ seconds: 15 }))
-    return true
-  },
-  catchError(({ state }: Context, error) => {
-    state.wax.actionProgressState = RequestState.Failed
-    toastErrorMessage(error?.message ?? 'Staking Vote Power Failed.')
-    console.error(error)
-    return false
-  })
-)
-export const trySubmitLore = pipe(
-  async (
-    { state, effects }: Context,
-    input: { title: string; url: string; description: string; type: string; fee: string }
-  ) => {
-    state.wax.actionProgressState = RequestState.InProgress
-
-    await effects.wax.api.submitLore({
-      title: input.title,
-      url: input.url,
-      description: input.description,
-      type: 'lore',
-      fee: input.fee,
-    })
-
-    if (state.wax.lastTransactionError) {
-      toastErrorMessage(state.wax.lastTransactionError)
-      state.wax.lastTransactionError = null
-      return false
-    }
-
-    useModalStore.getState().resetAllSecondaryModals()
-    useModalStore.getState().resetAllPrimaryModals()
-
-    toastMessage(`Lore Proposal Submitted.`)
-    state.wax.actionProgressState = RequestState.Succeeded
-    executeAfter(state.main.syncAi.tlmBalance, DateTime.now().plus({ seconds: 5 }))
-    // executeAfter(state.main.syncAi.planets, DateTime.now().plus({ seconds: 15 }))
-    return true
-  },
-  catchError(({ state }: Context, error) => {
-    state.wax.actionProgressState = RequestState.Failed
-    toastErrorMessage(error?.message ?? 'Staking Vote Power Failed.')
-    console.error(error)
-    return false
-  })
-)
-export const tryUnStakeLore = pipe(
-  async ({ state, effects }: Context) => {
-    state.wax.actionProgressState = RequestState.InProgress
-    await effects.wax.api.unStakeLore()
-
-    if (state.wax.lastTransactionError) {
-      toastErrorMessage(state.wax.lastTransactionError)
-      state.wax.lastTransactionError = null
-      return false
-    }
-
-    useModalStore.getState().resetAllSecondaryModals()
-    useModalStore.getState().resetAllPrimaryModals()
-    // actions.wax.getAdjustedVotePower(input.planet.dac_id)
-    // actions.wax.getDAOUnstakes(input.planet.dac_id)
-    // actions.wax.getUserDAOStakes(input.planet.dac_id)
-    // actions.wax.getStakeDelay(input.planet.dac_id)
-    toastMessage(`Unstaked Successfully`)
-    state.wax.actionProgressState = RequestState.Succeeded
-    executeAfter(state.main.syncAi.tlmBalance, DateTime.now().plus({ seconds: 5 }))
-    // executeAfter(state.main.syncAi.planets, DateTime.now().plus({ seconds: 15 }))
-    return true
-  },
-  catchError(({ state }: Context, error) => {
-    state.wax.actionProgressState = RequestState.Failed
-    toastErrorMessage(error?.message ?? 'Staking Vote Power Failed.')
-    console.error(error)
-    return false
-  })
-)
-
-export const tryClaimLoreReward = pipe(
-  async ({ state, effects }: Context) => {
-    state.wax.actionProgressState = RequestState.InProgress
-    await effects.wax.api.claimLoreReward()
-
-    if (state.wax.lastTransactionError) {
-      toastErrorMessage(state.wax.lastTransactionError)
-      state.wax.lastTransactionError = null
-      return false
-    }
-
-    toastMessage('TLM Reward claimed successfully.')
-    state.wax.actionProgressState = RequestState.Succeeded
-    executeAfter(state.main.syncAi.tlmBalance, DateTime.now().plus({ seconds: 5 }))
-    return true
-  },
-  catchError(({ state }: Context, error) => {
-    state.wax.actionProgressState = RequestState.Failed
-    toastErrorMessage(error?.message ?? 'Claim TLM Reward failed.')
-    console.error(error)
-    return false
-  })
-)
-
-export const tryLoreVoting = pipe(
-  async (
-    { state, effects }: Context,
-    input: { proposalId: number; vote: string; votePower: number }
-  ) => {
-    state.wax.actionProgressState = RequestState.InProgress
-    await effects.wax.api.loreVote({
-      proposalId: input.proposalId,
-      vote: input.vote,
-      votePower: input.votePower,
-    })
-
-    if (state.wax.lastTransactionError) {
-      toastErrorMessage(state.wax.lastTransactionError)
-      state.wax.lastTransactionError = null
-      return false
-    }
-
-    toastMessage(`Lore Vote Successful.`)
-    state.wax.actionProgressState = RequestState.Succeeded
-    executeAfter(state.main.syncAi.tlmBalance, DateTime.now().plus({ seconds: 5 }))
-    // executeAfter(state.main.syncAi.planets, DateTime.now().plus({ seconds: 15 }))
-    return true
-  },
-  catchError(({ state }: Context, error) => {
-    state.wax.actionProgressState = RequestState.Failed
-    toastErrorMessage(error?.message ?? 'Staking Vote Power Failed.')
-    console.error(error)
-    return false
-  })
-)
 export const tryVotingCandidates = pipe(
   async ({ state, effects }: Context, input: { dacId: string; newVotes: string[] }) => {
     state.wax.actionProgressState = RequestState.InProgress
@@ -1214,16 +1068,6 @@ export const setProposalsFilter = pipe(
     console.error(error)
   })
 )
-export const setLoreFilter = pipe(
-  ({ state }: Context, loreFilter: LoreFilter) => {
-    state.wax.filterredAndSortedProposals = null
-    state.wax.loreFilter = loreFilter
-    state.wax.triggerFilterAndSortLore = true
-  },
-  catchError((_: Context, error) => {
-    console.error(error)
-  })
-)
 
 export const resetCustodiansProposalsList = pipe(({ state }) => {
   state.wax.dacCustodianProposals = []
@@ -1686,27 +1530,6 @@ export const tryClaimLandownerCommissions = pipe(
   },
   catchError(({ state }: Context, error) => {
     toastErrorMessage(error?.message ?? 'Claim Landowner Commissions has failed.')
-    state.wax.lastTransactionError = null
-    console.error(error)
-    return false
-  })
-)
-
-export const tryClaimTournamentReward = pipe(
-  async ({ state, effects }: Context, compId: number) => {
-    await effects.wax.api.claimTournamentReward(compId)
-
-    if (state.wax.lastTransactionError) {
-      toastErrorMessage(state.wax.lastTransactionError)
-      state.wax.lastTransactionError = null
-      return false
-    }
-
-    toastMessage('Tournament rewards claimed successfully.')
-    return true
-  },
-  catchError(({ state }: Context, error) => {
-    toastErrorMessage(error?.message ?? 'Claim tournament rewards has failed.')
     state.wax.lastTransactionError = null
     console.error(error)
     return false

@@ -11,15 +11,12 @@ import { LoreProposal } from 'graphql/types'
 import { filter, map, startCase } from 'lodash'
 import { Colors } from 'shared/util/colors'
 import { truncateWithEllipsis } from 'shared/util/helpers'
-import { useActions, useAppState } from 'store'
+
+import { useLoreStore } from '../../store/loreStore'
 
 export const SortByTh = ({ sortBy, width }) => {
-  const {
-    wax: { setLoreFilter },
-  } = useActions()
-  const {
-    wax: { loreFilter },
-  } = useAppState()
+  const loreFilter = useLoreStore((state) => state.loreFilter)
+  const setLoreFilter = useLoreStore((state) => state.setLoreFilter)
 
   const [rotate, setRotate] = useState(false)
   const onSelectSortBy = (value: LoreSortBy) => {
