@@ -1,6 +1,5 @@
 import { IAsset } from 'atomicassets/build/API/Explorer/Objects'
 import { LooseObject } from 'features/inventory/utils/NFTCardHelper'
-import { LoreSortBy } from 'features/lore/types/loreTypes'
 import { LandBoost, LandSlot, SlotVariant } from 'features/mining/types/LandownerTypes'
 import {
   CandidacyProposalType,
@@ -35,10 +34,6 @@ import { Constants } from '../../shared/util/constants'
 
 export type ProposalsFilter = {
   sortBy: ProposalsSortBy
-  reversed: boolean
-}
-export type LoreFilter = {
-  sortBy: LoreSortBy
   reversed: boolean
 }
 
@@ -114,9 +109,7 @@ type WaxState = {
   filterredAndSortedProposals: CustodianProposal[]
 
   proposalsFilter: ProposalsFilter
-  loreFilter: LoreFilter
   triggerFilterAndSortProposals: boolean
-  triggerFilterAndSortLore: boolean
   currentDAOInfo: PlanetDACInfo
 
   totalDAOsStakes: number
@@ -150,7 +143,6 @@ export const defaultState: WaxState = {
 
   dacCustodianProposalPayload: null,
   nftLandCardProperties: null,
-  triggerFilterAndSortLore: true,
   selectedUnionDacInfo: null,
   currentDAOInfo: null,
   whereToMine: derived((state: WaxState) => {
@@ -211,10 +203,6 @@ export const defaultState: WaxState = {
   filterredAndSortedProposals: [],
 
   proposalsFilter: {
-    sortBy: null,
-    reversed: true,
-  },
-  loreFilter: {
     sortBy: null,
     reversed: true,
   },

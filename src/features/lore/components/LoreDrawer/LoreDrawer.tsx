@@ -15,10 +15,10 @@ import { useModalStore } from 'shared/store/modalStore'
 import { useSessionStore } from 'shared/store/sessionStore'
 import { Colors } from 'shared/util/colors'
 import { validateAmount } from 'shared/util/formhelper'
-import { useActions } from 'store'
-import { toastMessage } from 'store/main/actions'
+import { toastMessage } from 'shared/util/toast'
 
 import { Constants } from '../../../../shared/util/constants'
+import { useLoreStore } from '../../store/loreStore'
 
 export function isAllowedStatus(status) {
   const allowedStatuses = [
@@ -39,9 +39,7 @@ const LoreDrawer = ({ isOpen, onClose, lore, currentNumber }: ILoreDrawerProps) 
   const [, copyToClipboard] = useCopyToClipboard()
 
   const isDemoUser = useSessionStore((state) => state.isDemoUser)
-  const {
-    wax: { tryLoreVoting },
-  } = useActions()
+  const voteLore = useLoreStore((state) => state.voteLore)
   const setPrimaryModalActive = useModalStore((state) => state.setPrimaryModalActive)
   const client = useApolloClient()
   const demoTopbarHeightMobile = `${Constants.DEMO_TOPBAR_HEIGHT_MOBILE - 60}px`
@@ -187,7 +185,7 @@ const LoreDrawer = ({ isOpen, onClose, lore, currentNumber }: ILoreDrawerProps) 
                       if (isDemoUser) {
                         setPrimaryModalActive({ modalName: 'LoginModal', value: true })
                       } else
-                        await tryLoreVoting({
+                        await voteLore({
                           proposalId: lore.proposal_id,
                           vote: voteCheckBoxes[0] ? 'yes' : 'no',
                           votePower: Number(amount),

@@ -4,21 +4,13 @@ import { useLoreDashboard } from './useLoreDashboard'
 import { useLoreStore } from '../store/loreStore'
 
 let mockLoreData: any
-let mockLoreFilter: any
 
 jest.mock('../data/LoreDataProvider', () => ({
   useLoreData: () => mockLoreData,
 }))
 
-jest.mock('store', () => ({
-  useAppState: () => ({
-    wax: { loreFilter: mockLoreFilter },
-  }),
-}))
-
 describe('useLoreDashboard', () => {
   beforeEach(() => {
-    mockLoreFilter = { sortBy: 0, reversed: false }
     mockLoreData = {
       loadingLores: false,
       proposals: [
@@ -27,7 +19,11 @@ describe('useLoreDashboard', () => {
       ],
     }
     act(() => {
-      useLoreStore.setState({ selectedProposalId: null, stakedInput: 0 })
+      useLoreStore.setState({
+        selectedProposalId: null,
+        stakedInput: 0,
+        loreFilter: { sortBy: 0, reversed: false },
+      })
     })
   })
 

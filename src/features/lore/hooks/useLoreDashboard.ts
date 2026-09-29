@@ -1,7 +1,6 @@
 import { useCallback, useMemo } from 'react'
 
 import { LoreProposal } from 'graphql/types'
-import { useAppState } from 'store'
 
 import { useLoreData } from '../data/LoreDataProvider'
 import { useLoreStore } from '../store/loreStore'
@@ -18,9 +17,7 @@ type UseLoreDashboardResult = {
 
 export function useLoreDashboard(): UseLoreDashboardResult {
   const { proposals, loadingLores } = useLoreData()
-  const {
-    wax: { loreFilter },
-  } = useAppState()
+  const loreFilter = useLoreStore((state) => state.loreFilter)
   const selectedProposalId = useLoreStore((state) => state.selectedProposalId)
   const selectProposal = useLoreStore((state) => state.selectProposal)
   const clearSelectionInStore = useLoreStore((state) => state.clearSelection)

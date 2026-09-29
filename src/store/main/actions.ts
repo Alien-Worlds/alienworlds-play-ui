@@ -52,7 +52,7 @@ import {
   mapLandToMiningParams,
   showOnboardingNewsletter,
 } from './helpers'
-import { PagePath, PullRequest, WalletType } from './types'
+import { PagePath, WalletType } from './types'
 import { Context } from '..'
 import { Constants } from '../../shared/util/constants'
 
@@ -237,46 +237,6 @@ export const login = pipe(
   })
 )
 
-export const getLorePullRequests = pipe(
-  async ({ state, effects }: Context) => {
-    const result: Array<PullRequest> = await effects.main.getLorePullRequests()
-    state.main.lorePullRequests = result
-    return result
-  },
-  catchError((_: Context, error) => {
-    toastErrorMessage(error?.message ?? 'Load Unstake Release Time Failed')
-    console.error(error)
-    return null
-  })
-)
-export const getLoreReadMe = pipe(
-  async ({ state, effects }: Context) => {
-    const result: string = await effects.main.getLoreReadMe()
-    //state.main.lorePullRequests = result
-
-    state.main.loreReadMe = result
-    return result
-  },
-  catchError((_: Context, error) => {
-    toastErrorMessage(error?.message ?? 'Load Unstake Release Time Failed')
-    console.error(error)
-    return null
-  })
-)
-export const getLorePullRequestCommit = pipe(
-  async ({ state, effects }: Context, id: number) => {
-    const result: string = await effects.main.getLorePullCommit({ pullNumber: id })
-    //state.main.lorePullRequests = result
-
-    state.main.loreDescription = result
-    return result
-  },
-  catchError((_: Context, error) => {
-    toastErrorMessage(error?.message ?? 'Load Unstake Release Time Failed')
-    console.error(error)
-    return null
-  })
-)
 export const loginAnchor = pipe(
   async ({ state, actions, effects }: Context) => {
     state.wax.isAuthenticating = true

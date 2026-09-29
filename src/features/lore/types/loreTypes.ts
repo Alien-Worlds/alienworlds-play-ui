@@ -50,3 +50,15 @@ export enum LoreStatus {
   MINTPREP = 'mintprep',
   COMPLETE = 'complete',
 }
+
+export type LoreFilter = {
+  sortBy: LoreSortBy
+  reversed: boolean
+}
+
+/** The fields of a GitHub pull request (on the-lore repo) that lore reads. */
+export interface LorePullRequest {
+  number: number
+  title: string
+  html_url: string
+}
