@@ -1692,27 +1692,6 @@ export const tryClaimLandownerCommissions = pipe(
   })
 )
 
-export const tryClaimTournamentReward = pipe(
-  async ({ state, effects }: Context, compId: number) => {
-    await effects.wax.api.claimTournamentReward(compId)
-
-    if (state.wax.lastTransactionError) {
-      toastErrorMessage(state.wax.lastTransactionError)
-      state.wax.lastTransactionError = null
-      return false
-    }
-
-    toastMessage('Tournament rewards claimed successfully.')
-    return true
-  },
-  catchError(({ state }: Context, error) => {
-    toastErrorMessage(error?.message ?? 'Claim tournament rewards has failed.')
-    state.wax.lastTransactionError = null
-    console.error(error)
-    return false
-  })
-)
-
 export const setLandId = pipe(({ state }, id: string) => {
   state.wax.managingLandId = id
 })

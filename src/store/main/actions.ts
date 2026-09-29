@@ -8,7 +8,6 @@ import { ProposalsSortBy } from 'features/syndicates/types/governanceTypes'
 import { filter, find, get, isNil } from 'lodash'
 import { DateTime, Duration } from 'luxon'
 import { catchError, parallel, pipe, wait, filter as overmindFilter, waitUntil } from 'overmind'
-import { toast } from 'react-hot-toast'
 import { matchPath } from 'react-router'
 import { router } from 'routes'
 import { useModalStore } from 'shared/store/modalStore'
@@ -16,6 +15,7 @@ import { useSessionStore } from 'shared/store/sessionStore'
 import { config } from 'shared/util/config'
 import { padZero, isValidDacId, getUserRankInfo, sessionKitWallets } from 'shared/util/helpers'
 import { isMissionsRelatedPage } from 'shared/util/router'
+import { toastErrorMessage, toastMessage } from 'shared/util/toast'
 import {
   validateAccount,
   filterAndSortAssets,
@@ -55,6 +55,9 @@ import {
 import { PagePath, PullRequest, WalletType } from './types'
 import { Context } from '..'
 import { Constants } from '../../shared/util/constants'
+
+// Moved to shared/util/toast; re-exported so existing `store/main/actions` imports keep working.
+export { toastErrorMessage, toastMessage }
 
 export const redirectAfterLoginOrLogout = pipe(
   overmindFilter(({ state }: Context) => {
@@ -183,6 +186,7 @@ export const setSessionKit = pipe(({ state }, payload: SessionKit) => {
 
 export const setCurrentSession = pipe(({ state }, payload: Session) => {
   state.main.currentSession = payload
+  useSessionStore.getState().setCurrentSession(payload)
 })
 
 export const loginWombat = pipe(
@@ -307,7 +311,9 @@ export const loginWax = pipe(
     copyKit.walletPlugins = [new WalletPluginCloudWallet()]
 
     // login to Wombat
-    state.main.currentSession = await copyKit.login()
+    const session = await copyKit.login()
+    state.main.currentSession = session
+    useSessionStore.getState().setCurrentSession(session)
     const result = await effects.wax.api.loginWax()
     if (result) state.main.isWaxLoggedIn = true
     state.wax.walletId = result
@@ -337,7 +343,9 @@ export const loginWombatInit = pipe(async ({ state, actions }: Context) => {
       copyKit.walletPlugins = [new WalletPluginWombat()]
 
       // login to Wombat
-      state.main.currentSession = await copyKit.login()
+      const session = await copyKit.login()
+      state.main.currentSession = session
+      useSessionStore.getState().setCurrentSession(session)
       await actions.main.loginWombat()
 
       state.main.currentWallet = WalletType.WOMBAT
@@ -359,7 +367,9 @@ export const loginAnchorInit = pipe(async ({ state, actions }: Context) => {
       copyKit.walletPlugins = [new WalletPluginAnchor()]
 
       // login to Anchor
-      state.main.currentSession = await copyKit.login()
+      const session = await copyKit.login()
+      state.main.currentSession = session
+      useSessionStore.getState().setCurrentSession(session)
       await actions.main.loginAnchor()
 
       state.main.currentWallet = WalletType.ANCHOR
@@ -409,6 +419,7 @@ export const switchWallet = pipe(
         await actions.main.loginWaxInit()
       }
       state.main.currentSession = null
+      useSessionStore.getState().setCurrentSession(null)
       state.main.currentWallet = WalletType.WAX
       useSessionStore.getState().setCurrentWallet(state.main.currentWallet)
       setTimeout(() => {
@@ -466,24 +477,6 @@ export const logout = pipe(
     console.error(error)
   })
 )
-
-export const toastMessage = (message: string, duration?: number) => {
-  const wallet = JSON.parse(localStorage.getItem('aw'))
-  const isDemoUser = wallet?.userAccount === config.DemoUserWaxAccount
-
-  toast.success(message, {
-    duration: duration ?? 5000,
-    position: 'top-center',
-    style: { marginTop: isDemoUser ? '60px' : '0px' },
-  })
-}
-
-export const toastErrorMessage = (message: string) => {
-  toast.error(message, {
-    duration: 5000,
-    position: 'bottom-right',
-  })
-}
 
 export const getTransaction = async (transactionId: string) => {
   if (!transactionId) return null

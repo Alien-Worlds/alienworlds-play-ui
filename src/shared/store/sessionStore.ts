@@ -1,3 +1,4 @@
+import { Session } from '@wharfkit/session'
 import { config } from 'shared/util/config'
 import { create } from 'zustand'
 
@@ -7,9 +8,12 @@ export interface SessionStore {
   isLoggedIn: boolean
   currentWallet: string | null
   isAuthenticating: boolean | null
+  /** Wharf session that signs transactions. Mirrored from Overmind's `main.currentSession`. */
+  currentSession: Session | null
   setWalletId: (walletId: string | null) => void
   setCurrentWallet: (currentWallet: string | null) => void
   setIsAuthenticating: (isAuthenticating: boolean | null) => void
+  setCurrentSession: (currentSession: Session | null) => void
 }
 
 export const useSessionStore = create<SessionStore>((set) => ({
@@ -18,6 +22,7 @@ export const useSessionStore = create<SessionStore>((set) => ({
   isLoggedIn: false,
   currentWallet: null,
   isAuthenticating: null,
+  currentSession: null,
 
   setWalletId: (walletId) => {
     set({
@@ -33,5 +38,9 @@ export const useSessionStore = create<SessionStore>((set) => ({
 
   setIsAuthenticating: (isAuthenticating) => {
     set({ isAuthenticating })
+  },
+
+  setCurrentSession: (currentSession) => {
+    set({ currentSession })
   },
 }))

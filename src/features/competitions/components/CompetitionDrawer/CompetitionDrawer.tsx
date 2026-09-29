@@ -14,7 +14,7 @@ import { useCopyToClipboard } from 'react-use'
 import { useSessionStore } from 'shared/store/sessionStore'
 import { Colors } from 'shared/util/colors'
 import { Constants } from 'shared/util/constants'
-import { toastMessage } from 'store/main/actions'
+import { toastMessage } from 'shared/util/toast'
 
 interface Props {
   isOpen: boolean

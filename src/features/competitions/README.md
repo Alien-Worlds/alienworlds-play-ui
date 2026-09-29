@@ -13,6 +13,8 @@ src/features/competitions/
 ├── components/
 │   ├── CompetitionCard/    # Tournament card (Tailwind); buttons depend on TournamentStatus
 │   └── CompetitionDrawer/  # Details drawer (Tailwind + Headless UI Dialog), claim/visit/copy link
+├── store/
+│   └── competitionsStore.ts # Zustand: reward-claim transaction + in-flight flag
 ├── pages/
 │   └── Competitions.tsx    # Route-level composition (Tailwind + Headless UI Tabs)
 ├── types/
@@ -28,8 +30,10 @@ src/features/competitions/
 - **Tournament data** comes from `graphql/hooks/useCompetitions`, queried for the current
   `walletId`.
 - **`walletId`/`isDemoUser`** come from `shared/store/sessionStore` (Zustand).
-- **Claiming a reward** still goes through Overmind's `actions.wax.tryClaimTournamentReward`
-  (blockchain transaction logic, out of scope for the UI migration). The page refetches on success.
+- **Claiming a reward** is `claimTournamentReward` in `store/competitionsStore` (Zustand). It builds
+  the `comp.worlds` `claim` action and signs it with `shared/wax/transact`, which uses the Wharf
+  session from `sessionStore`. No Overmind involved; the old `wax.tryClaimTournamentReward` action
+  and `claimTournamentReward` effect are removed. The page refetches on success.
 - The selected tournament and drawer visibility are plain `useState` in the page; nothing else
   reads them, so they don't warrant a store.
 
@@ -49,8 +53,9 @@ Behavioural notes on the migration:
 ## Testing
 
 - Every component, the page, and the utils have co-located tests. Run `yarn test src/features/competitions`.
-- Component tests mock `shared/store/sessionStore`, `store` (`useActions`) and `react-use` with only
-  the slices each file reads. The page test mocks `useCompetitions` and the drawer.
+- Component tests mock `shared/store/sessionStore` and `react-use` with only the slices each file
+  reads. The page test mocks `useCompetitions`, `competitionsStore` and the drawer; the store test
+  mocks `shared/wax/transact` and the toasts.
 
 ## Contribution Checklist
 - Run `yarn test` and `npx tsc --noEmit -p tsconfig.json` before opening a PR.
