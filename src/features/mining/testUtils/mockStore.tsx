@@ -1,6 +1,9 @@
 import React from 'react'
 
+import { ChakraProvider } from '@chakra-ui/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { render } from '@testing-library/react'
+import { theme } from 'shared/styles/theme'
 
 // Stand-in for the Overmind `store` module, shared by mining tests so the Zustand migration only has
 // to change this file. Point a test at it with:
@@ -44,3 +47,7 @@ export const createQueryWrapper = () => {
     <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
   )
 }
+
+// Chakra's Drawer and Modal read the theme, so components that use them need the provider.
+export const renderWithChakra = (ui: React.ReactElement) =>
+  render(<ChakraProvider theme={theme}>{ui}</ChakraProvider>)
