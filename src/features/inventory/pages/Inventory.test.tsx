@@ -92,15 +92,19 @@ jest.mock('store', () => ({
   }),
   useAppState: () => ({
     wax: { planetSelectedForMining: null },
-    atomic: {
-      filteredAndSortedAssets: mockFilteredAndSortedAssets,
-      bagAssets: [],
-      landAsset: null,
-    },
   }),
   useEffects: () => ({
     atomic: { api: { getAssetById: mockGetAssetById } },
   }),
+}))
+
+jest.mock('shared/store/miningStore', () => ({
+  useMiningStore: (selector: (state: unknown) => unknown) =>
+    selector({
+      filteredAndSortedAssets: mockFilteredAndSortedAssets,
+      bagAssets: [],
+      landAsset: null,
+    }),
 }))
 
 jest.mock('shared/store/sessionStore', () => ({

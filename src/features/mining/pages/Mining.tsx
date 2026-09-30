@@ -25,6 +25,7 @@ import { MiningToolsActiveSlotNumber } from 'features/mining/types/MiningTypes'
 import { LoadingSpinner } from 'features/syndicates/components/LoadingSpinner/LoadingSpinner'
 import { usePlanetDetail } from 'graphql/hooks/usePlanetDetail'
 import { RingPositionHelper } from 'shared/components/RingPositionHelper/RingPositionHelper'
+import { useMiningStore } from 'shared/store/miningStore'
 import { useModalStore } from 'shared/store/modalStore'
 import { Colors } from 'shared/util/colors'
 import { config } from 'shared/util/config'
@@ -153,9 +154,9 @@ const CardCharge: VFC<{ land: IAsset }> = ({ land }) => {
 
 const Mining: VFC = () => {
   const {
-    atomic: { landAsset },
     wax: { planetSelectedForMining },
   } = useAppState()
+  const landAsset = useMiningStore((state) => state.landAsset)
 
   const {
     main: { showMiningPage },

@@ -10,6 +10,7 @@ import { BalanceUserPointsTop } from 'shared/components/topbar/BalanceUserPoints
 import { MiningCounter } from 'shared/components/topbar/MiningCounter'
 import { PlayerAvatar } from 'shared/components/topbar/PlayerAvatar'
 import { Tag } from 'shared/components/topbar/Tag'
+import { useMiningStore } from 'shared/store/miningStore'
 import { useModalStore } from 'shared/store/modalStore'
 import { useSessionStore } from 'shared/store/sessionStore'
 import { theme } from 'shared/styles/theme'
@@ -75,8 +76,8 @@ const TopBar = () => {
   const {
     wax: { selectedDrawerView, isSyndicatesSidebarOpen },
     main: { isOutPostModalsActive },
-    atomic: { ownedLandsAssets },
   } = useAppState()
+  const ownedLandsAssets = useMiningStore((state) => state.ownedLandsAssets)
   const walletId = useSessionStore((state) => state.walletId)
   const isDemoUser = useSessionStore((state) => state.isDemoUser)
   const isLoggedIn = useSessionStore((state) => state.isLoggedIn)

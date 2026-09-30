@@ -22,7 +22,6 @@ import {
   NFTCardOverlayRender,
   NFTCardTopRightPanelRender,
 } from 'features/inventory/utils/NFTCardOverlayRender'
-import { filterAssets } from 'features/lore/utils/utils'
 import { MiningSelect } from 'features/mining/components/MiningSelect/MiningSelect'
 import { MiningTabPanelMotion } from 'features/mining/components/MiningTabs'
 import { OptionalMiningTabs } from 'features/mining/components/OptionalMiningTabs'
@@ -39,6 +38,7 @@ import { usePlanetAssets } from 'features/mining/hooks/usePlanetAssets'
 import { useRarityPools } from 'features/mining/hooks/useRarityPools'
 import { PlanetDetailsDrawer } from 'features/mining/modals/PlanetDetailsDrawer'
 import { ASSET_TYPE_LAND } from 'features/mining/utils/constants'
+import { filterAndSortLands } from 'features/mining/utils/landFilter'
 import { getPlanetImage, PlanetImageSizes } from 'features/mining/utils/planet'
 import { LoadingSpinner } from 'features/syndicates/components/LoadingSpinner/LoadingSpinner'
 import { usePlanets } from 'graphql/hooks/usePlanets'
@@ -48,6 +48,7 @@ import {
   RingPositionHelper,
   RingPositions,
 } from 'shared/components/RingPositionHelper/RingPositionHelper'
+import { useMiningStore } from 'shared/store/miningStore'
 import { useModalStore } from 'shared/store/modalStore'
 import { useSessionStore } from 'shared/store/sessionStore'
 import { Colors } from 'shared/util/colors'
@@ -62,9 +63,10 @@ interface MiningPlanetOptionItem {
 
 const Land: VFC = () => {
   const {
-    atomic: { landAssetsFilter, landAsset },
     wax: { whereToMine, planetSelectedForMining, isOnboarded },
   } = useAppState()
+  const landAssetsFilter = useMiningStore((state) => state.landAssetsFilter)
+  const landAsset = useMiningStore((state) => state.landAsset)
   const walletId = useSessionStore((state) => state.walletId)
 
   const {
@@ -92,7 +94,7 @@ const Land: VFC = () => {
 
   useEffect(() => {
     if (landAssetsFilter && assets) {
-      const filteredAssets = filterAssets(assets, landAssetsFilter)
+      const filteredAssets = filterAndSortLands(assets, landAssetsFilter)
       setSortedAssets(NFTCardDataPreparation(filteredAssets, walletId))
     }
   }, [landAssetsFilter])

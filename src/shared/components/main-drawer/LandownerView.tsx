@@ -15,17 +15,17 @@ import {
 } from 'features/syndicates/components/PlanetaryActions/PlanetaryActions'
 import { filter, forEach } from 'lodash'
 import Carousel from 'react-spring-3d-carousel'
+import { useMiningStore } from 'shared/store/miningStore'
 import { useSessionStore } from 'shared/store/sessionStore'
 import { Colors } from 'shared/util/colors'
 import { useScreenSize } from 'shared/util/hooks'
 import { PlanetLandIcon } from 'shared/util/icons'
-import { useActions, useAppState } from 'store'
+import { useActions } from 'store'
 import { v4 } from 'uuid'
 
 export const LandownerView: VFC = () => {
-  const {
-    atomic: { landAsset, ownedLandsAssets },
-  } = useAppState()
+  const landAsset = useMiningStore((state) => state.landAsset)
+  const ownedLandsAssets = useMiningStore((state) => state.ownedLandsAssets)
   const isDemoUser = useSessionStore((state) => state.isDemoUser)
   const {
     wax: { setLandId, setManagingLandDetails, loadManagingLandDetailsAndBoosts },

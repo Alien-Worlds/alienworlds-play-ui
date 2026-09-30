@@ -175,7 +175,6 @@ describe('getDefaultLandAssetsFilter', () => {
       x: null,
       y: null,
     })
-    // filterLandAssets compares ranges to these constants by identity (see landAssetsFilter.test.ts).
     expect(filter.recharge).toBe(DEFAULT_RECHARGE_RANGE)
     expect(filter.miningPower).toBe(DEFAULT_EASE_RANGE)
     expect(filter.pow).toBe(DEFAULT_POW_RANGE)

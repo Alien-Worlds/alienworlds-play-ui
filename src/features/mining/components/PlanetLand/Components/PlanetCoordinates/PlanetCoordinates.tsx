@@ -5,9 +5,9 @@ import { Button, FormField } from '@alien-worlds/uikit'
 import { Flex, Text, Box, HStack, Hide } from '@chakra-ui/react'
 import { Formik } from 'formik'
 import { debounce } from 'lodash'
+import { useMiningStore } from 'shared/store/miningStore'
 import { Colors } from 'shared/util/colors'
 import { useScreenSize } from 'shared/util/hooks'
-import { useActions, useAppState } from 'store'
 
 interface Props {
   setFilterbarIsOpen: (isOpen: boolean) => void
@@ -15,12 +15,9 @@ interface Props {
 }
 
 const PlanetCoordinates = ({ setFilterbarIsOpen, filterbarIsOpen }: Props) => {
-  const {
-    atomic: { setLandAssetsFilter, resetLandAssetsFilter },
-  } = useActions()
-  const {
-    atomic: { landAssetsFilter },
-  } = useAppState()
+  const setLandAssetsFilter = useMiningStore((state) => state.setLandAssetsFilter)
+  const resetLandAssetsFilter = useMiningStore((state) => state.resetLandAssetsFilter)
+  const landAssetsFilter = useMiningStore((state) => state.landAssetsFilter)
 
   const [isInputXFocused, setIsInputXFocused] = useState<boolean>(false)
   const [isInputYFocused, setIsInputYFocused] = useState<boolean>(false)

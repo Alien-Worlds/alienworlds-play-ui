@@ -4,17 +4,13 @@ import { LandIcon2, LightIcon2, MiningIcon, NFTOldIcon, ProfitsIcon } from '@ali
 import { SimpleGrid } from '@chakra-ui/react'
 import { PlanetFilterSlider } from 'features/mining/components/PlanetLand/Components/PlanetFilterSlider'
 import { isNil } from 'lodash'
+import { useMiningStore } from 'shared/store/miningStore'
 import { Colors } from 'shared/util/colors'
-import { useActions, useAppState } from 'store'
 
 const LandsFilterbarSwitches: VFC = () => {
-  const {
-    atomic: { landAssetsFilter },
-  } = useAppState()
+  const landAssetsFilter = useMiningStore((state) => state.landAssetsFilter)
 
-  const {
-    atomic: { setLandAssetsFilter },
-  } = useActions()
+  const setLandAssetsFilter = useMiningStore((state) => state.setLandAssetsFilter)
 
   const [recharge, setRecharge] = useState<number | number[]>(null)
   const [miningPower, setMiningPower] = useState<number | number[]>(null)

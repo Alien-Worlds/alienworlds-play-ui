@@ -2,7 +2,6 @@ import { IAsset, ITemplate } from 'atomicassets/build/API/Explorer/Objects'
 import { LooseObject } from 'features/inventory/utils/NFTCardHelper'
 import { LandBoost } from 'features/mining/types/LandownerTypes'
 import { BoostLevels } from 'features/mining/utils/constants'
-import { updateLandRating } from 'features/mining/utils/landownerUtils'
 import {
   CandidacyProposalType,
   ProposalExecutionPayload,
@@ -25,11 +24,12 @@ import {
 import { queryClient } from 'index'
 import { find, filter, map, join, get, split, last, lowerCase } from 'lodash'
 import { DateTime } from 'luxon'
-import { catchError, parallel, pipe, wait, waitUntil } from 'overmind'
+import { catchError, pipe, wait, waitUntil } from 'overmind'
 import { generatePath } from 'react-router'
 import { matchPath } from 'react-router-dom'
 import { router } from 'routes'
 import { LOAD_USER_POINTS_QUERY_KEY } from 'shared/hooks/queries/wax/useLoadUserPoints'
+import { useMiningStore } from 'shared/store/miningStore'
 import { useModalStore } from 'shared/store/modalStore'
 import { collectGAEvent } from 'shared/util/analytics'
 import { config } from 'shared/util/config'
@@ -119,11 +119,12 @@ export const setPlanetSelectedForMining = async ({ state }: Context) => {
   }
 
   if (state.wax.isOnboarded) {
-    if (!state.atomic.landAsset) {
+    const { landAsset } = useMiningStore.getState()
+    if (!landAsset) {
       state.wax.planetSelectedForMining = null
       return
     }
-    const res = last(split(state.atomic.landAsset.data.name, ' '))
+    const res = last(split(landAsset.data.name, ' '))
     let id = res ? lowerCase(res) : 'naron'
 
     // find current selectedPlanet
@@ -242,9 +243,8 @@ export const setBag = pipe(
       })
     )
 
-    state.atomic.bagAssets = assets
-
-    state.atomic.triggerFilterAndSortAssets = true
+    useMiningStore.getState().setBagAssets(assets)
+    useMiningStore.getState().setTriggerFilterAndSortAssets(true)
 
     executeAfter(state.main.syncAi.bag, DateTime.now().plus({ seconds: 5 }))
   },
@@ -265,7 +265,7 @@ export const setLand = pipe(
 
     toastMessage(`Mining Land updated successfully.`)
 
-    state.atomic.landAsset = await effects.atomic.api.getAssetById(landId)
+    useMiningStore.getState().setLandAsset(await effects.atomic.api.getAssetById(landId))
 
     actions.wax.setPlanetSelectedForMining()
 
@@ -328,7 +328,7 @@ export const setAvatar = pipe(
 
     toastMessage(`Avatar updated successfully.`)
 
-    state.atomic.avatarAsset = await effects.atomic.api.getAssetById(avatarId)
+    useMiningStore.getState().setAvatarAsset(await effects.atomic.api.getAssetById(avatarId))
 
     executeAfter(state.main.syncAi.avatar, DateTime.now().plus({ seconds: 15 }))
   },
@@ -704,7 +704,7 @@ export const executeOnboarding = pipe(
     state.missions.loadingMessage = null
     state.wax.isOnboardingPending = false
     router.navigate(PagePath.Tools)
-    state.atomic.triggerFilterAndSortAssets = true
+    useMiningStore.getState().setTriggerFilterAndSortAssets(true)
   },
 
   catchError(({ state, effects }: Context, error) => {
@@ -739,8 +739,10 @@ export const claimNftPts = pipe(
 )
 
 export const trySetInitialBag = pipe(
-  ({ state, actions }: Context) => {
-    const tools = state.atomic.assets.filter((asset) => asset.schema.schema_name === 'tool.worlds')
+  ({ actions }: Context) => {
+    const tools = useMiningStore
+      .getState()
+      .assets.filter((asset) => asset.schema.schema_name === 'tool.worlds')
     // Take first item from player's collection. Just first one (probably initial shovel), no more.
     actions.wax.setBag([tools[0]?.asset_id])
   },
@@ -1591,59 +1593,10 @@ export const setManagingLandDetails = pipe(
   })
 )
 
-/**
- * Synchronize atomic.assets with land details.
- * This is to update All assets
- */
-export const syncLandDetailsWithInventoryAssets = async ({ state }: Context) => {
-  const landDetails = state.wax.managingLandDetails
-
-  if (state.atomic.assets) {
-    state.atomic.assets = updateLandRating(state.atomic.assets, landDetails)
-  }
+/** Copies the managed land's latest rating onto the player's loaded assets. */
+export const syncLandDetailsWithAssets = ({ state }: Context) => {
+  useMiningStore.getState().syncLandRating(state.wax.managingLandDetails)
 }
-
-/**
- * Synchronize filteredAndSortedAssets with land details.
- * This is to update current filtered assets with the latest land rating
- * when the user is on inventory page with Land filter applied.
- * It is needed because filteredAndSortedAssets and assets works separately.
- */
-export const syncLandDetailsWithFilteredAsset = async ({ state }: Context) => {
-  const landDetails = state.wax.managingLandDetails
-
-  if (state.atomic?.filteredAndSortedAssets) {
-    state.atomic.filteredAndSortedAssets = updateLandRating(
-      state.atomic.filteredAndSortedAssets,
-      landDetails
-    )
-  }
-}
-
-/**
- * Update Land Assets Filter in Switch Land page with the latest land rating
- */
-export const syncLandDetailsWithLandAssets = async ({ state }: Context) => {
-  const landDetails = state.wax.managingLandDetails
-
-  if (state.atomic?.landAssetsFilter?.filteredLands) {
-    const updatedFilteredLands = updateLandRating(
-      state.atomic.landAssetsFilter.filteredLands,
-      landDetails
-    )
-
-    state.atomic.landAssetsFilter = {
-      ...state.atomic.landAssetsFilter,
-      filteredLands: updatedFilteredLands,
-    }
-  }
-}
-
-export const syncLandDetailsWithAssets = parallel(
-  syncLandDetailsWithInventoryAssets,
-  syncLandDetailsWithFilteredAsset,
-  syncLandDetailsWithLandAssets
-)
 
 export const loadManagingLandDetailsAndBoosts = pipe(
   async ({ state, actions }: Context) => {

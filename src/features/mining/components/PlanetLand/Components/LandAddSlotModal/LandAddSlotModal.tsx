@@ -8,6 +8,7 @@ import { LandBoostLevel } from 'features/mining/types/LandownerTypes'
 import { MainBoostLevels } from 'features/mining/utils/constants'
 import { filter, find } from 'lodash'
 import { useInterval } from 'react-use'
+import { useMiningStore } from 'shared/store/miningStore'
 import { useModalStore } from 'shared/store/modalStore'
 import { useSessionStore } from 'shared/store/sessionStore'
 import { Colors } from 'shared/util/colors'
@@ -25,9 +26,9 @@ export const LandAddSlotModal = ({ selectedBoost, onClose, selectedImg }: SlotMo
     wax: { boostSlot, applyMainBoost, loadManagingLandDetailsAndBoostsWithDelay },
   } = useActions()
   const {
-    atomic: { ownedLandBoostsAssets },
     wax: { managingLandId },
   } = useAppState()
+  const ownedLandBoostsAssets = useMiningStore((state) => state.ownedLandBoostsAssets)
   const isDemoUser = useSessionStore((state) => state.isDemoUser)
   const setPrimaryModalActive = useModalStore((state) => state.setPrimaryModalActive)
   const landOwnerDrawerPayload = useModalStore((state) => state.landOwnerDrawerPayload)

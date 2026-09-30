@@ -1,17 +1,13 @@
 import { useEffect, useState, VFC } from 'react'
 
 import { Flex, Input } from '@chakra-ui/react'
+import { useMiningStore } from 'shared/store/miningStore'
 import { Colors } from 'shared/util/colors'
-import { useActions, useAppState } from 'store'
 
 const FilterLandOwner: VFC = () => {
-  const {
-    atomic: { landAssetsFilter },
-  } = useAppState()
+  const landAssetsFilter = useMiningStore((state) => state.landAssetsFilter)
 
-  const {
-    atomic: { setLandAssetsFilter },
-  } = useActions()
+  const setLandAssetsFilter = useMiningStore((state) => state.setLandAssetsFilter)
 
   const [valueOwner, setValueOwner] = useState<string>('')
 

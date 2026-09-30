@@ -34,6 +34,7 @@ import {
 import { filter, toLower } from 'lodash'
 import { useNavigate, useParams } from 'react-router-dom'
 import { AppModal } from 'shared/layouts'
+import { useMiningStore } from 'shared/store/miningStore'
 import { useSessionStore } from 'shared/store/sessionStore'
 import { Colors } from 'shared/util/colors'
 import { landBoostValueByRarity, formatLandRating } from 'shared/util/helpers'
@@ -45,16 +46,18 @@ import { Constants } from '../../../shared/util/constants'
 
 const LandMgt: VFC = () => {
   const {
-    atomic: { landAsset: currentLand, ownedLandBoostsAssets, assetsFilter },
     wax: { managingLandId, nftLandCardProperties, managingLandDetails: landAsset },
   } = useAppState()
+  const currentLand = useMiningStore((state) => state.landAsset)
+  const ownedLandBoostsAssets = useMiningStore((state) => state.ownedLandBoostsAssets)
+  const assetsFilter = useMiningStore((state) => state.assetsFilter)
   const walletId = useSessionStore((state) => state.walletId)
 
   const {
-    atomic: { setAssetsFilter },
     wax: { setNftLandCardProperties },
     main: { showLandMgtPage },
   } = useActions()
+  const setAssetsFilter = useMiningStore((state) => state.setAssetsFilter)
 
   const navigate = useNavigate()
   const { id: currentLandId } = useParams()

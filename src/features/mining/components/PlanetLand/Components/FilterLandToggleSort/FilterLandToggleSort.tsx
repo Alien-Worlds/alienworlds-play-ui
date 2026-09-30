@@ -2,17 +2,13 @@ import { VFC } from 'react'
 
 import { ReverseSortingIcon, SortingIcon } from '@alien-worlds/icons'
 import { Flex, Button } from '@chakra-ui/react'
+import { useMiningStore } from 'shared/store/miningStore'
 import { Colors } from 'shared/util/colors'
-import { useActions, useAppState } from 'store'
 
 const FilterLandToggleSort: VFC = () => {
-  const {
-    atomic: { landAssetsFilter },
-  } = useAppState()
+  const landAssetsFilter = useMiningStore((state) => state.landAssetsFilter)
 
-  const {
-    atomic: { setLandAssetsFilter },
-  } = useActions()
+  const setLandAssetsFilter = useMiningStore((state) => state.setLandAssetsFilter)
   return (
     <Flex w="fit-content">
       <Button

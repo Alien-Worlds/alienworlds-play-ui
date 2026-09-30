@@ -28,13 +28,9 @@ let mockAssetsFilter: any = {
   },
 }
 
-jest.mock('store', () => ({
-  useAppState: () => ({
-    atomic: { assetsFilter: mockAssetsFilter },
-  }),
-  useActions: () => ({
-    atomic: { setAssetsFilter: mockSetAssetsFilter },
-  }),
+jest.mock('shared/store/miningStore', () => ({
+  useMiningStore: (selector: (state: unknown) => unknown) =>
+    selector({ assetsFilter: mockAssetsFilter, setAssetsFilter: mockSetAssetsFilter }),
 }))
 
 describe('AssetsFilterPanelMobile', () => {

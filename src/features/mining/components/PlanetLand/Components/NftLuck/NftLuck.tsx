@@ -4,14 +4,13 @@ import { NFTOldIcon } from '@alien-worlds/icons'
 import { Flex, Text } from '@chakra-ui/react'
 import { GlossaryInfoIcon } from 'features/glossary/components/GlossaryInfoIcon/GlossaryInfoIcon'
 import { TooltipLocations } from 'features/glossary/utils/glossaryConst'
+import { useMiningStore } from 'shared/store/miningStore'
 import { Colors } from 'shared/util/colors'
-import { useAppState } from 'store'
 import { calculateNftLuck } from 'store/main/helpers'
 
 const NftLuck: VFC = () => {
-  const {
-    atomic: { bagAssets, landAsset },
-  } = useAppState()
+  const bagAssets = useMiningStore((state) => state.bagAssets)
+  const landAsset = useMiningStore((state) => state.landAsset)
 
   const [luck, setLuck] = useState('')
 

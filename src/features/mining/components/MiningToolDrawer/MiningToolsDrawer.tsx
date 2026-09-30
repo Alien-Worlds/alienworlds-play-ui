@@ -26,10 +26,11 @@ import ScrollContainer from 'react-indiana-drag-scroll'
 import { matchPath } from 'react-router'
 import { router } from 'routes'
 import { SortBySelector } from 'shared/components/SortBySelector/SortBySelector'
+import { useMiningStore } from 'shared/store/miningStore'
 import { useModalStore } from 'shared/store/modalStore'
 import { useSessionStore } from 'shared/store/sessionStore'
 import { Colors } from 'shared/util/colors'
-import { useActions, useAppState } from 'store'
+import { useActions } from 'store'
 import { defaultSortByNameOption, defaultSortByRarityOption } from 'store/atomic/helpers'
 import { PagePath } from 'store/main/types'
 
@@ -37,13 +38,12 @@ export const MiningToolsDrawer = () => {
   const isToolsPage = matchPath(PagePath.Tools, router.state.location.pathname)
   const {
     wax: { setBag },
-    atomic: { setAssetsFilter },
   } = useActions()
+  const setAssetsFilter = useMiningStore((state) => state.setAssetsFilter)
   const closeMiningToolsDrawer = useModalStore((state) => state.closeMiningToolsDrawer)
   const miningToolsDrawer = useModalStore((state) => state.miningToolsDrawer)
-  const {
-    atomic: { bagAssets, assetsFilter },
-  } = useAppState()
+  const bagAssets = useMiningStore((state) => state.bagAssets)
+  const assetsFilter = useMiningStore((state) => state.assetsFilter)
   const walletId = useSessionStore((state) => state.walletId)
 
   const [currentBagAsset, setCurrentBagAsset] = useState<NFTCardTypes>()

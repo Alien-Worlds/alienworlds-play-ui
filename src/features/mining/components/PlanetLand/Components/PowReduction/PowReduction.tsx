@@ -3,14 +3,12 @@ import { useEffect, useState, VFC } from 'react'
 import { Flex, Text } from '@chakra-ui/react'
 import { GlossaryInfoIcon } from 'features/glossary/components/GlossaryInfoIcon/GlossaryInfoIcon'
 import { TooltipLocations } from 'features/glossary/utils/glossaryConst'
+import { useMiningStore } from 'shared/store/miningStore'
 import { calculatePow } from 'store/main/helpers'
 
-import { useAppState } from '../../../../../../store'
-
 const PowReduction: VFC = () => {
-  const {
-    atomic: { bagAssets, landAsset },
-  } = useAppState()
+  const bagAssets = useMiningStore((state) => state.bagAssets)
+  const landAsset = useMiningStore((state) => state.landAsset)
 
   const [difficulty, setDifficulty] = useState('')
 

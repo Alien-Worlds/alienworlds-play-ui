@@ -10,6 +10,7 @@ import { DateTime, Duration } from 'luxon'
 import { catchError, parallel, pipe, wait, filter as overmindFilter, waitUntil } from 'overmind'
 import { matchPath } from 'react-router'
 import { router } from 'routes'
+import { useMiningStore } from 'shared/store/miningStore'
 import { useModalStore } from 'shared/store/modalStore'
 import { useSessionStore } from 'shared/store/sessionStore'
 import { config } from 'shared/util/config'
@@ -448,18 +449,14 @@ export const getTransaction = async (transactionId: string) => {
 
 export const setMineDelay = pipe(
   ({ state }: Context) => {
-    if (
-      !state.atomic.bagAssets ||
-      !state.atomic.landAsset ||
-      !state.wax.miner ||
-      !state.wax.isLoggedIn
-    ) {
+    const { bagAssets, landAsset } = useMiningStore.getState()
+    if (!bagAssets || !landAsset || !state.wax.miner || !state.wax.isLoggedIn) {
       state.main.mineDelay = null
       return
     }
 
-    const bagParams = mapBagToMiningParams(state.atomic.bagAssets)
-    const landParams = mapLandToMiningParams(state.atomic.landAsset)
+    const bagParams = mapBagToMiningParams(bagAssets)
+    const landParams = mapLandToMiningParams(landAsset)
 
     const newMineDelay = calculateMineDelay(
       state.wax.miner.last_mine_tx,
@@ -527,15 +524,17 @@ export const notifyBountyFromLastMiningTransaction = pipe(
   })
 )
 
-export const presetAssetsFilter = ({ state, actions }: Context) => {
-  if (!state.atomic.assetsFilter) {
-    actions.atomic.setAssetsFilter(getDefaultAssetsFilter(router.state.location.pathname))
+export const presetAssetsFilter = () => {
+  const { assetsFilter, setAssetsFilter } = useMiningStore.getState()
+
+  if (!assetsFilter) {
+    setAssetsFilter(getDefaultAssetsFilter(router.state.location.pathname))
     return
   }
 
   // Inventory
   if (matchPath(PagePath.Inventory, router.state.location.pathname)) {
-    actions.atomic.setAssetsFilter({
+    setAssetsFilter({
       sortBy: SortBy.NAME,
       groupByTemplate: true,
       reversed: false,
@@ -547,7 +546,7 @@ export const presetAssetsFilter = ({ state, actions }: Context) => {
 
   // Mining - Tools
   if (matchPath(PagePath.Tools, router.state.location.pathname)) {
-    actions.atomic.setAssetsFilter({
+    setAssetsFilter({
       sortBy: SortBy.RARITY,
       groupByTemplate: true,
       reversed: false,
@@ -559,7 +558,7 @@ export const presetAssetsFilter = ({ state, actions }: Context) => {
 
   // Shining
   if (matchPath(PagePath.Shining, router.state.location.pathname)) {
-    actions.atomic.setAssetsFilter({
+    setAssetsFilter({
       sortBy: SortBy.NAME,
       groupByTemplate: true,
       reversed: false,
@@ -569,8 +568,8 @@ export const presetAssetsFilter = ({ state, actions }: Context) => {
     return
   }
 
-  actions.atomic.setAssetsFilter({
-    ...state.atomic.assetsFilter,
+  setAssetsFilter({
+    ...assetsFilter,
   })
 }
 
@@ -1021,14 +1020,13 @@ export const showPlanetPage = pipe(
 export const showLandPage = pipe(
   async ({ state, actions }: Context, input: { assetIds: string[]; planetName: string }) => {
     const { assetIds, planetName } = input
-    state.atomic.landAssetsFilter.filteredLands = null
-    state.atomic.landAssetsFilter.isLoading = true
+    useMiningStore.getState().setLandAssetsFilterLoading(true)
 
     if (!state.wax.whereToMine) {
       await actions.main.updateWorld()
     }
     await actions.main.bindLandsMap({ assetIds, planetTitle: planetName })
-    actions.atomic.resetLandAssetsFilter()
+    useMiningStore.getState().resetLandAssetsFilter()
   },
   async ({ actions }: Context) => {
     useModalStore.getState().toggleMainDrawer(false)
@@ -1179,10 +1177,10 @@ export const updateWorld = parallel(
 export const onInitializeOvermind = async ({ effects, actions, state }: Context) => {
   effects.main.api.initialize({
     getBagAssets() {
-      return state.atomic.bagAssets
+      return useMiningStore.getState().bagAssets
     },
     getLandAsset() {
-      return state.atomic.landAsset
+      return useMiningStore.getState().landAsset
     },
     getLastMineTx() {
       return state.wax.miner.last_mine_tx

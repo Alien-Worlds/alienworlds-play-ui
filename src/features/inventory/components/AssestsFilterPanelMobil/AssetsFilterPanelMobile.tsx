@@ -3,8 +3,8 @@ import { Switch } from '@headlessui/react'
 import { FilterBySelectorMobile } from 'features/inventory/components/FilterBySelectorMobil/FilterBySelectorMobile'
 import { useMatch } from 'react-router-dom'
 import { SortBySelectorMobile } from 'shared/components/SortBySelectorMobile/SortBySelectorMobile'
+import { useMiningStore } from 'shared/store/miningStore'
 import { Colors } from 'shared/util/colors'
-import { useAppState, useActions } from 'store'
 import { AssetType } from 'store/atomic/types'
 import { PagePath } from 'store/main/types'
 
@@ -34,13 +34,9 @@ const ToggleSwitch = ({
 )
 
 const AssetsFilterPanelMobile = () => {
-  const {
-    atomic: { assetsFilter },
-  } = useAppState()
+  const assetsFilter = useMiningStore((state) => state.assetsFilter)
 
-  const {
-    atomic: { setAssetsFilter },
-  } = useActions()
+  const setAssetsFilter = useMiningStore((state) => state.setAssetsFilter)
 
   const isInventoryPage = useMatch(PagePath.Inventory)
 

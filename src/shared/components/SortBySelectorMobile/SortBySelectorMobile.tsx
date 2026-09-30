@@ -3,25 +3,14 @@ import { useState, VFC, useEffect } from 'react'
 import { Dropdown, Option } from '@alien-worlds/uikit'
 import { Flex } from '@chakra-ui/react'
 import { debounce, map } from 'lodash'
+import { useMiningStore } from 'shared/store/miningStore'
 import { dropdownStyles } from 'shared/util/helpers'
-import { useAppState, useActions } from 'store'
 
 const SortBySelectorMobile: VFC = () => {
-  const {
-    atomic: { setAssetsFilter },
-  } = useActions()
+  const setAssetsFilter = useMiningStore((state) => state.setAssetsFilter)
 
-  const {
-    atomic: {
-      assetsFilter: {
-        view: { sortByOptions },
-      },
-    },
-  } = useAppState()
-
-  const {
-    atomic: { assetsFilter },
-  } = useAppState()
+  const assetsFilter = useMiningStore((state) => state.assetsFilter)
+  const sortByOptions = assetsFilter.view.sortByOptions
 
   const onSelectSortBy = (value) => {
     setAssetsFilter({

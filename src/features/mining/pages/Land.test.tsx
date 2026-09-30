@@ -67,8 +67,8 @@ jest.mock('features/inventory/utils/NFTCardHelper', () => ({
 }))
 
 const mockFilterAssets = jest.fn()
-jest.mock('features/lore/utils/utils', () => ({
-  filterAssets: (...args: any[]) => mockFilterAssets(...args),
+jest.mock('features/mining/utils/landFilter', () => ({
+  filterAndSortLands: (...args: any[]) => mockFilterAssets(...args),
 }))
 
 jest.mock('features/mining/components/MiningSelect/MiningSelect', () => ({
