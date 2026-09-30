@@ -11,7 +11,7 @@ import { WalletDetailsResponse } from 'graphql/types'
 import { get, toLower } from 'lodash'
 import { useNavigate } from 'react-router-dom'
 import { BadgesMap } from 'shared/components/UserLevelsBadges/UserLevelsBadges'
-import { useMiningStore } from 'shared/store/miningStore'
+import { useAssetsStore } from 'shared/store/assetsStore'
 import { useSessionStore } from 'shared/store/sessionStore'
 import { pageTransition } from 'shared/util/animations'
 import { Colors } from 'shared/util/colors'
@@ -31,7 +31,7 @@ const PlayerAvatar = ({
   showLevelRing?: boolean
   marginInline?: string
 }) => {
-  const avatarAsset = useMiningStore((state) => state.avatarAsset)
+  const avatarAsset = useAssetsStore((state) => state.avatarAsset)
   const walletId = useSessionStore((state) => state.walletId)
   const isLoggedIn = useSessionStore((state) => state.isLoggedIn)
   const isAuthenticating = useSessionStore((state) => state.isAuthenticating)

@@ -4,13 +4,13 @@ import { MiningIcon } from '@alien-worlds/icons'
 import { Flex, Text } from '@chakra-ui/react'
 import { GlossaryInfoIcon } from 'features/glossary/components/GlossaryInfoIcon/GlossaryInfoIcon'
 import { TooltipLocations } from 'features/glossary/utils/glossaryConst'
-import { useMiningStore } from 'shared/store/miningStore'
+import { useAssetsStore } from 'shared/store/assetsStore'
 import { Colors } from 'shared/util/colors'
 import { calculateMiningPower } from 'store/main/helpers'
 
 const MiningPower: VFC = () => {
-  const bagAssets = useMiningStore((state) => state.bagAssets)
-  const landAsset = useMiningStore((state) => state.landAsset)
+  const bagAssets = useAssetsStore((state) => state.bagAssets)
+  const landAsset = useAssetsStore((state) => state.landAsset)
 
   const [power, setPower] = useState('')
 

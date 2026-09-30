@@ -19,11 +19,12 @@ import {
 import { Button as UIButton } from '@alien-worlds/uikit'
 import { Flex, Grid, GridItem, HStack, Text, useMediaQuery, VStack, Button } from '@chakra-ui/react'
 import { IAsset } from 'atomicassets/build/API/Explorer/Objects'
+import { useInventoryStore } from 'features/inventory/store/inventoryStore'
 import { ELEMENTTYPES, LooseObject } from 'features/inventory/utils/NFTCardHelper'
 import { LandBoostsDay } from 'features/mining/types/LandownerTypes'
 import _, { find, map, toLower, toUpper } from 'lodash'
 import { useMatch, useNavigate } from 'react-router-dom'
-import { useMiningStore } from 'shared/store/miningStore'
+import { useAssetsStore } from 'shared/store/assetsStore'
 import { useModalStore } from 'shared/store/modalStore'
 import { Colors } from 'shared/util/colors'
 import { useActions, useAppState } from 'store'
@@ -665,9 +666,9 @@ const NFTCardLandActions = ({ asset }: LooseObject) => {
   const {
     wax: { isOnboarded, onboarding },
   } = useAppState()
-  const ownedLandsAssets = useMiningStore((state) => state.ownedLandsAssets)
-  const landAsset = useMiningStore((state) => state.landAsset)
-  const ownedLandsAssetsDayBoosts = useMiningStore((state) => state.ownedLandsAssetsDayBoosts)
+  const ownedLandsAssets = useAssetsStore((state) => state.ownedLandsAssets)
+  const landAsset = useAssetsStore((state) => state.landAsset)
+  const ownedLandsAssetsDayBoosts = useInventoryStore((state) => state.ownedLandsAssetsDayBoosts)
 
   const setLandOrOnboard = () => {
     if (isOnboarded) {
@@ -1028,7 +1029,7 @@ const NFTCardBottomPanelRender = ({ asset }: LooseObject) => {
 }
 
 const NFTShowAllRender = ({ asset }: LooseObject) => {
-  const assets = useMiningStore((state) => state.assets)
+  const assets = useAssetsStore((state) => state.assets)
   const [isLargerThanMobile] = useMediaQuery('(min-width: 640px)')
   const assetsRepeated =
     assets && assets.length

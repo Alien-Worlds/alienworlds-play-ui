@@ -1,11 +1,13 @@
 import mappings from 'assets/data/cardDescMappings.json'
 import { IAsset } from 'atomicassets/build/API/Explorer/Objects'
+import { useInventoryStore } from 'features/inventory/store/inventoryStore'
+import { useMiningStore } from 'features/mining/store/miningStore'
 import { LandBoost, LandBoostsDay } from 'features/mining/types/LandownerTypes'
 import { MainBoostLevels } from 'features/mining/utils/constants'
 import { find, forEach, map } from 'lodash'
 import { DateTime } from 'luxon'
 import { catchError, pipe } from 'overmind'
-import { useMiningStore } from 'shared/store/miningStore'
+import { useAssetsStore } from 'shared/store/assetsStore'
 import { today25hDay } from 'shared/util/helpers'
 import { AssetSchema, AssetType } from 'store/atomic/types'
 import { executeAfter, shouldExecute } from 'store/main/helpers'
@@ -23,10 +25,10 @@ export const onInitializeOvermind = async ({ state, effects }: Context) => {
 
 export const initializeOrReloadAssets = pipe(
   async ({ state, actions, effects }: Context) => {
-    const mining = useMiningStore.getState()
+    const assetsStore = useAssetsStore.getState()
 
     if (!state.wax.isLoggedIn) {
-      mining.setAssets(null)
+      assetsStore.setAssets(null)
     }
 
     if (
@@ -80,8 +82,8 @@ export const initializeOrReloadAssets = pipe(
             }
           }
         })
-        mining.setOwnedLandsAssets([...ownedLandsAssets])
-        mining.setOwnedLandBoostsAssets([...ownedLandBoostsAssets])
+        assetsStore.setOwnedLandsAssets([...ownedLandsAssets])
+        useMiningStore.getState().setOwnedLandBoostsAssets([...ownedLandBoostsAssets])
 
         page = assets.length < 1000 ? 0 : page + 1
       } else {
@@ -89,20 +91,20 @@ export const initializeOrReloadAssets = pipe(
       }
     }
 
-    const currentAssets = useMiningStore.getState().assets
+    const currentAssets = useAssetsStore.getState().assets
     if (!currentAssets || allAssets.some((v, i) => v.asset_id !== currentAssets[i]?.asset_id)) {
       if (currentAssets) {
-        mining.setTriggerFilterAndSortAssets(true)
+        assetsStore.setTriggerFilterAndSortAssets(true)
       }
 
-      mining.setAssets(allAssets)
+      assetsStore.setAssets(allAssets)
     } else {
       // Unchanged since the last poll. Clearing here makes the next poll (3s later) reload them.
-      mining.setAssets(null)
-      mining.setTriggerFilterAndSortAssets(false)
+      assetsStore.setAssets(null)
+      assetsStore.setTriggerFilterAndSortAssets(false)
     }
 
-    const { ownedLandsAssets: ownedLandsAtStart } = useMiningStore.getState()
+    const { ownedLandsAssets: ownedLandsAtStart } = useAssetsStore.getState()
     if (ownedLandsAtStart?.length > 0) {
       const boosts: LandBoostsDay[] = []
       const ownedLands: IAsset[] = [...ownedLandsAtStart]
@@ -121,14 +123,14 @@ export const initializeOrReloadAssets = pipe(
             boosts: dayBoosts,
           })
 
-          if (boosts?.length === useMiningStore.getState().ownedLandsAssets?.length) {
-            mining.setOwnedLandsAssetsDayBoosts(boosts)
+          if (boosts?.length === useAssetsStore.getState().ownedLandsAssets?.length) {
+            useInventoryStore.getState().setOwnedLandsAssetsDayBoosts(boosts)
           }
         })
       )
     }
 
-    if (!useMiningStore.getState().assets?.length) {
+    if (!useAssetsStore.getState().assets?.length) {
       executeAfter(state.main.syncAi.assets, DateTime.now().plus({ seconds: 3 }))
     } else {
       executeAfter(state.main.syncAi.assets, DateTime.now().plus({ minutes: 2 }))
@@ -144,12 +146,12 @@ export const initializeOrReloadAssets = pipe(
 // only watch Overmind state: like it, this holds the rest of updateWorld until assets exist.
 const assetsLoaded = () =>
   new Promise<void>((resolve) => {
-    if (useMiningStore.getState().assets?.length) {
+    if (useAssetsStore.getState().assets?.length) {
       resolve()
       return
     }
-    const unsubscribe = useMiningStore.subscribe((mining) => {
-      if (mining.assets?.length) {
+    const unsubscribe = useAssetsStore.subscribe((state) => {
+      if (state.assets?.length) {
         unsubscribe()
         resolve()
       }
@@ -160,11 +162,11 @@ export const initializeOrReloadTagAndAvatar = pipe(
   async ({ state, effects }: Context) => {
     await assetsLoaded()
 
-    const mining = useMiningStore.getState()
+    const assetsStore = useAssetsStore.getState()
 
     if (!state.wax.isLoggedIn) {
       state.wax.player = null
-      mining.setAvatarAsset(null)
+      assetsStore.setAvatarAsset(null)
     }
 
     if (
@@ -177,19 +179,19 @@ export const initializeOrReloadTagAndAvatar = pipe(
     state.wax.player = await effects.wax.api.getPlayer(state.wax.walletId)
 
     if (!state.wax.player) {
-      mining.setAvatarAsset(null)
+      assetsStore.setAvatarAsset(null)
       executeAfter(state.main.syncAi.avatar, DateTime.now().plus({ seconds: 1 }))
     } else {
       const currentAvatar = await effects.atomic.api.getAssetById(state.wax.player.avatar)
-      const { assets, avatarAsset } = useMiningStore.getState()
+      const { assets, avatarAsset } = useAssetsStore.getState()
       if (find(assets, (ob) => ob.asset_id === currentAvatar.asset_id)) {
-        mining.setAvatarAsset(currentAvatar)
+        assetsStore.setAvatarAsset(currentAvatar)
         executeAfter(state.main.syncAi.avatar, DateTime.now().plus({ minutes: 2 }))
       } else {
         if (state.wax.isDemoUser && avatarAsset === null) {
           executeAfter(state.main.syncAi.avatar, DateTime.now().plus({ seconds: 10 }))
         } else {
-          mining.setAvatarAsset(null)
+          assetsStore.setAvatarAsset(null)
           executeAfter(state.main.syncAi.avatar, DateTime.now().plus({ seconds: 10 }))
         }
       }
@@ -229,11 +231,11 @@ export const validateAccount = pipe(
 
 export const initializeOrReloadBag = pipe(
   async ({ state, effects }: Context) => {
-    const mining = useMiningStore.getState()
+    const assetsStore = useAssetsStore.getState()
 
     if (!state.wax.isLoggedIn) {
       state.wax.bag = null
-      mining.setBagAssets(null)
+      assetsStore.setBagAssets(null)
     }
 
     if (!shouldExecute(state.main.syncAi.bag, state.main.isFocusedWindow && state.wax.isLoggedIn)) {
@@ -252,7 +254,7 @@ export const initializeOrReloadBag = pipe(
     }
 
     if (!state.wax.bag) {
-      mining.setBagAssets(null)
+      assetsStore.setBagAssets(null)
       return
     }
 
@@ -262,13 +264,13 @@ export const initializeOrReloadBag = pipe(
       })
     )
 
-    const currentBag = useMiningStore.getState().bagAssets
+    const currentBag = useAssetsStore.getState().bagAssets
     if (!currentBag || bagAssets.some((v, i) => v.asset_id !== currentBag[i]?.asset_id)) {
       if (currentBag) {
-        mining.setTriggerFilterAndSortAssets(true)
+        assetsStore.setTriggerFilterAndSortAssets(true)
       }
 
-      mining.setBagAssets(bagAssets)
+      assetsStore.setBagAssets(bagAssets)
     }
 
     executeAfter(state.main.syncAi.bag, DateTime.now().plus({ minutes: 1 }))
@@ -281,11 +283,11 @@ export const initializeOrReloadBag = pipe(
 
 export const initializeOrReloadMiningLand = pipe(
   async ({ state, actions, effects }: Context) => {
-    const mining = useMiningStore.getState()
+    const assetsStore = useAssetsStore.getState()
 
     if (!state.wax.isLoggedIn) {
       state.wax.miner = null
-      mining.setLandAsset(null)
+      assetsStore.setLandAsset(null)
     }
 
     if (!shouldExecute(state.main.syncAi.land, state.wax.isLoggedIn)) {
@@ -296,13 +298,13 @@ export const initializeOrReloadMiningLand = pipe(
     state.wax.miner = await effects.wax.api.getMiner()
 
     if (!state.wax.miner) {
-      mining.setLandAsset(null)
-    } else if (!state.wax.isDemoUser || useMiningStore.getState().landAsset === null) {
+      assetsStore.setLandAsset(null)
+    } else if (!state.wax.isDemoUser || useAssetsStore.getState().landAsset === null) {
       // Demo users keep the first land they load, so switching land in demo mode sticks.
-      mining.setLandAsset(await effects.atomic.api.getAssetById(state.wax.miner.current_land))
+      assetsStore.setLandAsset(await effects.atomic.api.getAssetById(state.wax.miner.current_land))
     }
     if (!state.wax.isDemoUser) actions.wax.setPlanetSelectedForMining()
-    else if (state.wax.isDemoUser && useMiningStore.getState().landAsset === null) {
+    else if (state.wax.isDemoUser && useAssetsStore.getState().landAsset === null) {
       actions.wax.setPlanetSelectedForMining()
     }
 
@@ -317,5 +319,5 @@ export const initializeOrReloadMiningLand = pipe(
 )
 
 export const filterAndSortAssets = ({ state }: Context) => {
-  useMiningStore.getState().filterAndSortAssets({ isLoggedIn: state.wax.isLoggedIn })
+  useAssetsStore.getState().filterAndSortAssets({ isLoggedIn: state.wax.isLoggedIn })
 }

@@ -2,9 +2,9 @@ import { useRef, useState, VFC } from 'react'
 
 import { Dropdown, Option } from '@alien-worlds/uikit'
 import { Flex } from '@chakra-ui/react'
+import { useMiningStore } from 'features/mining/store/miningStore'
 import { find } from 'lodash'
 import { useClickAway } from 'react-use'
-import { useMiningStore } from 'shared/store/miningStore'
 import { filterTerrainsOptions } from 'store/atomic/types'
 
 const FilterLandTerrain: VFC = () => {

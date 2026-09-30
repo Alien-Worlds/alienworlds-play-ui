@@ -20,7 +20,7 @@ import {
   RingPositionHelper,
   RingPositions,
 } from 'shared/components/RingPositionHelper/RingPositionHelper'
-import { useMiningStore } from 'shared/store/miningStore'
+import { useAssetsStore } from 'shared/store/assetsStore'
 import { useModalStore } from 'shared/store/modalStore'
 import { Colors } from 'shared/util/colors'
 import { useActions, useAppState } from 'store'
@@ -37,7 +37,7 @@ const Planets = () => {
   const {
     wax: { planetSelectedForMining, isOnboarded },
   } = useAppState()
-  const landAsset = useMiningStore((state) => state.landAsset)
+  const landAsset = useAssetsStore((state) => state.landAsset)
 
   const navigate = useNavigate()
 

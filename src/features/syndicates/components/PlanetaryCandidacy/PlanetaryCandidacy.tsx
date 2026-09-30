@@ -11,7 +11,7 @@ import { PlanetaryVotePowerReceived } from 'features/syndicates/components/Plane
 import { useDaoDetails } from 'graphql/hooks/useDaoDetails'
 import { Candidate, DaoDetailsResponse } from 'graphql/types'
 import { find, get } from 'lodash'
-import { useMiningStore } from 'shared/store/miningStore'
+import { useAssetsStore } from 'shared/store/assetsStore'
 import { useSessionStore } from 'shared/store/sessionStore'
 import { useScreenSize } from 'shared/util/hooks'
 import { useAppState } from 'store'
@@ -20,7 +20,7 @@ export const PlanetaryCandidacy: VFC = () => {
   const {
     wax: { selectedDacId },
   } = useAppState()
-  const avatarAsset = useMiningStore((state) => state.avatarAsset)
+  const avatarAsset = useAssetsStore((state) => state.avatarAsset)
   const walletId = useSessionStore((state) => state.walletId)
 
   const { isLargeScreen, isMediumScreen, isNotDesktop } = useScreenSize()

@@ -1,14 +1,16 @@
+import { useInventoryStore } from 'features/inventory/store/inventoryStore'
+import { useMiningStore } from 'features/mining/store/miningStore'
 import { DateTime } from 'luxon'
 import { createOvermindMock } from 'overmind'
 import { namespaced } from 'overmind/config'
-import { getInitialMiningState, useMiningStore } from 'shared/store/miningStore'
+import { getInitialAssetsState, useAssetsStore } from 'shared/store/assetsStore'
 import * as atomic from 'store/atomic'
 import { getDefaultSyncAi } from 'store/main/helpers'
 
 // Runs the atomic loaders against stub wax/main namespaces (the full config pulls in the Wharf
-// wallet plugins, which don't run under jsdom) and checks what they write to useMiningStore.
+// wallet plugins, which don't run under jsdom) and checks what they write to the Zustand stores.
 
-const realStore = useMiningStore.getState()
+const realStore = useAssetsStore.getState()
 
 // Every loader due now, so shouldExecute lets it run.
 const dueSyncAi = () => {
@@ -58,11 +60,11 @@ const setup = ({
 }
 
 beforeEach(() => {
-  useMiningStore.setState({ ...realStore, ...getInitialMiningState() }, true)
+  useAssetsStore.setState({ ...realStore, ...getInitialAssetsState() }, true)
 })
 
 describe('atomic.initializeOrReloadAssets', () => {
-  it('loads the assets, owned lands and boost NFTs into the mining store', async () => {
+  it('loads the assets, owned lands, boost NFTs and land boosts into their stores', async () => {
     const land = asset('10', 'land.worlds')
     const boost = { ...asset('11', 'items.worlds'), name: 'MEGA Boost' }
     const getAssets = jest.fn(async (page: number) => (page === 1 ? [asset('1'), land, boost] : []))
@@ -70,11 +72,13 @@ describe('atomic.initializeOrReloadAssets', () => {
 
     await actions.initializeOrReloadAssets()
 
-    const mining = useMiningStore.getState()
-    expect(mining.assets.map((x) => x.asset_id)).toEqual(['1', '10', '11'])
-    expect(mining.ownedLandsAssets.map((x) => x.asset_id)).toEqual(['10'])
-    expect(mining.ownedLandBoostsAssets.map((x) => x.asset_id)).toEqual(['11'])
-    expect(mining.ownedLandsAssetsDayBoosts).toEqual([{ landId: '10', boosts: [] }])
+    const { assets, ownedLandsAssets } = useAssetsStore.getState()
+    expect(assets.map((x) => x.asset_id)).toEqual(['1', '10', '11'])
+    expect(ownedLandsAssets.map((x) => x.asset_id)).toEqual(['10'])
+    expect(useMiningStore.getState().ownedLandBoostsAssets.map((x) => x.asset_id)).toEqual(['11'])
+    expect(useInventoryStore.getState().ownedLandsAssetsDayBoosts).toEqual([
+      { landId: '10', boosts: [] },
+    ])
   })
 
   it('shows AlienAvatars NFTs as avatars', async () => {
@@ -84,70 +88,70 @@ describe('atomic.initializeOrReloadAssets', () => {
 
     await actions.initializeOrReloadAssets()
 
-    expect(useMiningStore.getState().assets[0].schema.schema_name).toBe('faces.worlds')
+    expect(useAssetsStore.getState().assets[0].schema.schema_name).toBe('faces.worlds')
   })
 
   it('asks for a re-sort when the assets change', async () => {
-    useMiningStore.setState({ assets: [asset('1')] as any })
+    useAssetsStore.setState({ assets: [asset('1')] as any })
     const { actions } = setup({ effects: { getAssets: async () => [asset('2')] } })
 
     await actions.initializeOrReloadAssets()
 
-    expect(useMiningStore.getState().assets.map((x) => x.asset_id)).toEqual(['2'])
-    expect(useMiningStore.getState().triggerFilterAndSortAssets).toBe(true)
+    expect(useAssetsStore.getState().assets.map((x) => x.asset_id)).toEqual(['2'])
+    expect(useAssetsStore.getState().triggerFilterAndSortAssets).toBe(true)
   })
 
   // Current behaviour: an unchanged poll clears the assets, so the next poll reloads them.
   it('clears unchanged assets so the next poll reloads them', async () => {
-    useMiningStore.setState({ assets: [asset('1')] as any, triggerFilterAndSortAssets: true })
+    useAssetsStore.setState({ assets: [asset('1')] as any, triggerFilterAndSortAssets: true })
     const { actions } = setup({ effects: { getAssets: async () => [asset('1')] } })
 
     await actions.initializeOrReloadAssets()
 
-    expect(useMiningStore.getState().assets).toBeNull()
-    expect(useMiningStore.getState().triggerFilterAndSortAssets).toBe(false)
+    expect(useAssetsStore.getState().assets).toBeNull()
+    expect(useAssetsStore.getState().triggerFilterAndSortAssets).toBe(false)
   })
 
   it('clears the assets when logged out', async () => {
-    useMiningStore.setState({ assets: [asset('1')] as any })
+    useAssetsStore.setState({ assets: [asset('1')] as any })
     const { actions } = setup({ wax: { isLoggedIn: false } })
 
     await actions.initializeOrReloadAssets()
 
-    expect(useMiningStore.getState().assets).toBeNull()
+    expect(useAssetsStore.getState().assets).toBeNull()
   })
 })
 
 describe('atomic.initializeOrReloadBag', () => {
-  it('loads the bag tools into the mining store', async () => {
+  it('loads the bag tools into the assets store', async () => {
     const { actions } = setup({ effects: { getAssetById: async (id: string) => asset(id) } })
 
     await actions.initializeOrReloadBag()
 
-    expect(useMiningStore.getState().bagAssets.map((x) => x.asset_id)).toEqual(['1', '2'])
+    expect(useAssetsStore.getState().bagAssets.map((x) => x.asset_id)).toEqual(['1', '2'])
   })
 
   it('asks for a re-sort when the bag changes', async () => {
-    useMiningStore.setState({ bagAssets: [asset('9')] as any })
+    useAssetsStore.setState({ bagAssets: [asset('9')] as any })
     const { actions } = setup({ effects: { getAssetById: async (id: string) => asset(id) } })
 
     await actions.initializeOrReloadBag()
 
-    expect(useMiningStore.getState().triggerFilterAndSortAssets).toBe(true)
+    expect(useAssetsStore.getState().triggerFilterAndSortAssets).toBe(true)
   })
 })
 
 describe('atomic.initializeOrReloadMiningLand', () => {
-  it('loads the mining land into the mining store', async () => {
+  it('loads the mining land into the assets store', async () => {
     const { actions } = setup({ effects: { getAssetById: async (id: string) => asset(id) } })
 
     await actions.initializeOrReloadMiningLand()
 
-    expect(useMiningStore.getState().landAsset.asset_id).toBe('42')
+    expect(useAssetsStore.getState().landAsset.asset_id).toBe('42')
   })
 
   it('keeps a demo user on the land they already have', async () => {
-    useMiningStore.setState({ landAsset: asset('5') as any })
+    useAssetsStore.setState({ landAsset: asset('5') as any })
     const { actions } = setup({
       wax: { isDemoUser: true },
       effects: { getAssetById: async (id: string) => asset(id) },
@@ -155,7 +159,7 @@ describe('atomic.initializeOrReloadMiningLand', () => {
 
     await actions.initializeOrReloadMiningLand()
 
-    expect(useMiningStore.getState().landAsset.asset_id).toBe('5')
+    expect(useAssetsStore.getState().landAsset.asset_id).toBe('5')
   })
 })
 
@@ -165,28 +169,28 @@ describe('atomic.initializeOrReloadTagAndAvatar', () => {
 
     const loading = actions.initializeOrReloadTagAndAvatar()
     await Promise.resolve()
-    expect(useMiningStore.getState().avatarAsset).toBeNull()
+    expect(useAssetsStore.getState().avatarAsset).toBeNull()
 
-    useMiningStore.getState().setAssets([asset('7')] as any)
+    useAssetsStore.getState().setAssets([asset('7')] as any)
     await loading
 
-    expect(useMiningStore.getState().avatarAsset.asset_id).toBe('7')
+    expect(useAssetsStore.getState().avatarAsset.asset_id).toBe('7')
   })
 
   it('clears an avatar the player no longer owns', async () => {
-    useMiningStore.setState({ assets: [asset('1')] as any, avatarAsset: asset('7') as any })
+    useAssetsStore.setState({ assets: [asset('1')] as any, avatarAsset: asset('7') as any })
     const { actions } = setup({ effects: { getAssetById: async (id: string) => asset(id) } })
 
     await actions.initializeOrReloadTagAndAvatar()
 
-    expect(useMiningStore.getState().avatarAsset).toBeNull()
+    expect(useAssetsStore.getState().avatarAsset).toBeNull()
   })
 })
 
 describe('atomic.filterAndSortAssets', () => {
   it('rebuilds the list with the Overmind login state', () => {
     const filterAndSortAssets = jest.fn()
-    useMiningStore.setState({ filterAndSortAssets })
+    useAssetsStore.setState({ filterAndSortAssets })
     const { actions } = setup({ wax: { isLoggedIn: false } })
 
     actions.filterAndSortAssets()

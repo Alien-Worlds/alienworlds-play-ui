@@ -4,13 +4,14 @@ import { WalletPluginAnchor } from '@wharfkit/wallet-plugin-anchor'
 import { WalletPluginCloudWallet } from '@wharfkit/wallet-plugin-cloudwallet'
 import { WalletPluginWombat } from '@wharfkit/wallet-plugin-wombat'
 import { IAsset } from 'atomicassets/build/API/Explorer/Objects'
+import { useMiningStore } from 'features/mining/store/miningStore'
 import { ProposalsSortBy } from 'features/syndicates/types/governanceTypes'
 import { filter, find, get, isNil } from 'lodash'
 import { DateTime, Duration } from 'luxon'
 import { catchError, parallel, pipe, wait, filter as overmindFilter, waitUntil } from 'overmind'
 import { matchPath } from 'react-router'
 import { router } from 'routes'
-import { useMiningStore } from 'shared/store/miningStore'
+import { useAssetsStore } from 'shared/store/assetsStore'
 import { useModalStore } from 'shared/store/modalStore'
 import { useSessionStore } from 'shared/store/sessionStore'
 import { config } from 'shared/util/config'
@@ -449,7 +450,7 @@ export const getTransaction = async (transactionId: string) => {
 
 export const setMineDelay = pipe(
   ({ state }: Context) => {
-    const { bagAssets, landAsset } = useMiningStore.getState()
+    const { bagAssets, landAsset } = useAssetsStore.getState()
     if (!bagAssets || !landAsset || !state.wax.miner || !state.wax.isLoggedIn) {
       state.main.mineDelay = null
       return
@@ -525,7 +526,7 @@ export const notifyBountyFromLastMiningTransaction = pipe(
 )
 
 export const presetAssetsFilter = () => {
-  const { assetsFilter, setAssetsFilter } = useMiningStore.getState()
+  const { assetsFilter, setAssetsFilter } = useAssetsStore.getState()
 
   if (!assetsFilter) {
     setAssetsFilter(getDefaultAssetsFilter(router.state.location.pathname))
@@ -1177,10 +1178,10 @@ export const updateWorld = parallel(
 export const onInitializeOvermind = async ({ effects, actions, state }: Context) => {
   effects.main.api.initialize({
     getBagAssets() {
-      return useMiningStore.getState().bagAssets
+      return useAssetsStore.getState().bagAssets
     },
     getLandAsset() {
-      return useMiningStore.getState().landAsset
+      return useAssetsStore.getState().landAsset
     },
     getLastMineTx() {
       return state.wax.miner.last_mine_tx

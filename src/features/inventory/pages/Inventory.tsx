@@ -36,7 +36,7 @@ import { usePlanetDetail } from 'graphql/hooks/usePlanetDetail'
 import { get, toLower } from 'lodash'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { useNavigate } from 'react-router-dom'
-import { useMiningStore } from 'shared/store/miningStore'
+import { useAssetsStore } from 'shared/store/assetsStore'
 import { useSessionStore } from 'shared/store/sessionStore'
 import { Colors } from 'shared/util/colors'
 import { useActions, useAppState, useEffects } from 'store'
@@ -55,9 +55,9 @@ const Inventory = () => {
   const {
     wax: { planetSelectedForMining },
   } = useAppState()
-  const filteredAndSortedAssets = useMiningStore((state) => state.filteredAndSortedAssets)
-  const bagAssets = useMiningStore((state) => state.bagAssets)
-  const landAsset = useMiningStore((state) => state.landAsset)
+  const filteredAndSortedAssets = useAssetsStore((state) => state.filteredAndSortedAssets)
+  const bagAssets = useAssetsStore((state) => state.bagAssets)
+  const landAsset = useAssetsStore((state) => state.landAsset)
   const walletId = useSessionStore((state) => state.walletId)
   const isDemoUser = useSessionStore((state) => state.isDemoUser)
   const { planetDetails, loading } = usePlanetDetail(planetSelectedForMining)

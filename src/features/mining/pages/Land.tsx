@@ -37,6 +37,7 @@ import { RarityPoolsBarChart } from 'features/mining/components/RarityPoolsBarCh
 import { usePlanetAssets } from 'features/mining/hooks/usePlanetAssets'
 import { useRarityPools } from 'features/mining/hooks/useRarityPools'
 import { PlanetDetailsDrawer } from 'features/mining/modals/PlanetDetailsDrawer'
+import { useMiningStore } from 'features/mining/store/miningStore'
 import { ASSET_TYPE_LAND } from 'features/mining/utils/constants'
 import { filterAndSortLands } from 'features/mining/utils/landFilter'
 import { getPlanetImage, PlanetImageSizes } from 'features/mining/utils/planet'
@@ -48,7 +49,7 @@ import {
   RingPositionHelper,
   RingPositions,
 } from 'shared/components/RingPositionHelper/RingPositionHelper'
-import { useMiningStore } from 'shared/store/miningStore'
+import { useAssetsStore } from 'shared/store/assetsStore'
 import { useModalStore } from 'shared/store/modalStore'
 import { useSessionStore } from 'shared/store/sessionStore'
 import { Colors } from 'shared/util/colors'
@@ -66,7 +67,7 @@ const Land: VFC = () => {
     wax: { whereToMine, planetSelectedForMining, isOnboarded },
   } = useAppState()
   const landAssetsFilter = useMiningStore((state) => state.landAssetsFilter)
-  const landAsset = useMiningStore((state) => state.landAsset)
+  const landAsset = useAssetsStore((state) => state.landAsset)
   const walletId = useSessionStore((state) => state.walletId)
 
   const {

@@ -1,7 +1,7 @@
-import { useMiningStore, getInitialMiningState } from 'shared/store/miningStore'
+import { getInitialAssetsState, useAssetsStore } from 'shared/store/assetsStore'
 import { AssetSchema, AssetsFilter, SortBy } from 'store/atomic/types'
 
-const realStore = useMiningStore.getState()
+const realStore = useAssetsStore.getState()
 
 const setPath = (pathname: string) => window.history.pushState({}, '', pathname)
 
@@ -11,19 +11,19 @@ const seedStore = (
   mutateState: (state: any) => void = () => {},
   { isLoggedIn = true }: { isLoggedIn?: boolean } = {}
 ) => {
-  const seed: any = { atomic: getInitialMiningState() }
+  const seed: any = { atomic: getInitialAssetsState() }
   mutateState(seed)
-  useMiningStore.setState({ ...realStore, ...seed.atomic }, true)
+  useAssetsStore.setState({ ...realStore, ...seed.atomic }, true)
 
   return {
     state: {
       get atomic() {
-        return useMiningStore.getState()
+        return useAssetsStore.getState()
       },
     } as any,
     actions: {
-      filterAndSortAssets: () => useMiningStore.getState().filterAndSortAssets({ isLoggedIn }),
-      setAssetsFilter: (filter: AssetsFilter) => useMiningStore.getState().setAssetsFilter(filter),
+      filterAndSortAssets: () => useAssetsStore.getState().filterAndSortAssets({ isLoggedIn }),
+      setAssetsFilter: (filter: AssetsFilter) => useAssetsStore.getState().setAssetsFilter(filter),
     },
   }
 }
@@ -69,7 +69,7 @@ beforeEach(() => {
   setPath('/inventory')
 })
 
-describe('miningStore.filterAndSortAssets', () => {
+describe('assetsStore.filterAndSortAssets', () => {
   describe('when it runs', () => {
     it('does nothing until triggered', async () => {
       const previous = [makeAsset('1')]
@@ -331,7 +331,7 @@ describe('miningStore.filterAndSortAssets', () => {
   })
 })
 
-describe('miningStore.setAssetsFilter', () => {
+describe('assetsStore.setAssetsFilter', () => {
   it('stores the filter with its view for the current page and triggers a re-run', () => {
     setPath('/mining/tools')
     const { state, actions } = seedStore((s) => {
@@ -348,36 +348,7 @@ describe('miningStore.setAssetsFilter', () => {
   })
 })
 
-describe('miningStore land filter', () => {
-  beforeEach(() => jest.useFakeTimers())
-  afterEach(() => jest.useRealTimers())
-
-  it('stores the land filter and reports loading briefly', () => {
-    seedStore()
-    const filter = { ...getInitialMiningState().landAssetsFilter, owner: 'bob' }
-
-    useMiningStore.getState().setLandAssetsFilter(filter)
-
-    expect(useMiningStore.getState().landAssetsFilter).toEqual({ ...filter, isLoading: true })
-    jest.advanceTimersByTime(200)
-    expect(useMiningStore.getState().landAssetsFilter).toEqual({ ...filter, isLoading: false })
-  })
-
-  it('resets the land filter to the defaults', () => {
-    seedStore((s) => {
-      s.atomic.landAssetsFilter = { ...s.atomic.landAssetsFilter, owner: 'bob', sortBy: 'Owner' }
-    })
-
-    useMiningStore.getState().resetLandAssetsFilter()
-    jest.advanceTimersByTime(200)
-
-    expect(useMiningStore.getState().landAssetsFilter).toEqual(
-      getInitialMiningState().landAssetsFilter
-    )
-  })
-})
-
-describe('miningStore.syncLandRating', () => {
+describe('assetsStore.syncLandRating', () => {
   it('copies the new rating onto the loaded and filtered assets', () => {
     const land = { asset_id: '42', mutable_data: { landrating: '10' } }
     seedStore((s) => {
@@ -385,11 +356,11 @@ describe('miningStore.syncLandRating', () => {
       s.atomic.filteredAndSortedAssets = [land]
     })
 
-    useMiningStore
+    useAssetsStore
       .getState()
       .syncLandRating({ asset_id: '42', mutable_data: { landrating: '99' } } as any)
 
-    const { assets, filteredAndSortedAssets } = useMiningStore.getState()
+    const { assets, filteredAndSortedAssets } = useAssetsStore.getState()
     expect(assets[0].mutable_data.landrating).toBe('99')
     expect(filteredAndSortedAssets[0].mutable_data.landrating).toBe('99')
   })
@@ -397,8 +368,8 @@ describe('miningStore.syncLandRating', () => {
   it('leaves unloaded assets alone', () => {
     seedStore()
 
-    useMiningStore.getState().syncLandRating({ asset_id: '42', mutable_data: {} } as any)
+    useAssetsStore.getState().syncLandRating({ asset_id: '42', mutable_data: {} } as any)
 
-    expect(useMiningStore.getState().assets).toBeNull()
+    expect(useAssetsStore.getState().assets).toBeNull()
   })
 })

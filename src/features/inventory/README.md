@@ -15,7 +15,7 @@ src/features/inventory/
 ├── hooks/
 │   └── useAssetProcessing.ts       # Transforms raw IAsset[] into display-ready NFTCardData
 ├── store/
-│   └── inventoryStore.ts           # Zustand store for the page's local "load more" pagination state
+│   └── inventoryStore.ts           # Zustand: "load more" pagination + owned lands' day boosts
 ├── utils/
 │   ├── assetTypeProcessor.ts       # Asset type/schema classification helpers
 │   ├── assetImageProcessor.ts      # Asset image URL resolution helpers
@@ -31,12 +31,13 @@ src/features/inventory/
 ## Where state lives
 
 - **Assets and filter** (the player's NFTs, the asset schema tab, sort field, reversed,
-  group-by-template) live in `shared/store/miningStore` (`assets`, `filteredAndSortedAssets`,
+  group-by-template) live in `shared/store/assetsStore` (`assets`, `filteredAndSortedAssets`,
   `assetsFilter` / `setAssetsFilter`), not in this feature's own store — they're shared with
   `features/mining` (e.g. the Shining page reuses `AssetsFilterPanel` and `InventoryFiltersDrawer`
   directly).
-- **Pagination** ("load more" visible count) is the one piece of state genuinely local to this
-  page, and lives in `store/inventoryStore.ts` (Zustand), mirroring the pattern used in
+- **Pagination** ("load more" visible count) and today's boosts on the player's lands
+  (`ownedLandsAssetsDayBoosts`, shown on land cards) are local to inventory and live in
+  `store/inventoryStore.ts` (Zustand), mirroring the pattern used in
   `features/profile/store/profileStore.ts`.
 - **Asset data transformation** (`useAssetProcessing`) is stateless — pure functions over whatever
   assets/config are passed in.

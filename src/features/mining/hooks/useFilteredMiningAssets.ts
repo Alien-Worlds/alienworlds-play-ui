@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useState } from 'react'
 
 import { NFTCardDataPreparation, NFTCardTypes } from 'features/inventory/utils/NFTCardHelper'
+import { useMiningStore } from 'features/mining/store/miningStore'
 import { filter, isNull } from 'lodash'
-import { useMiningStore } from 'shared/store/miningStore'
+import { useAssetsStore } from 'shared/store/assetsStore'
 import { ToolType } from 'store/atomic/types'
 
 import { useMiningUtils } from './useMiningUtils'
@@ -12,7 +13,7 @@ interface UseFilteredMiningAssetsArgs {
 }
 
 export function useFilteredMiningAssets({ currentBagAsset }: UseFilteredMiningAssetsArgs) {
-  const filteredAndSortedAssets = useMiningStore((state) => state.filteredAndSortedAssets)
+  const filteredAndSortedAssets = useAssetsStore((state) => state.filteredAndSortedAssets)
   const filterByToolType = useMiningStore((state) => state.filterByToolType)
 
   const { canEquipAsset } = useMiningUtils()

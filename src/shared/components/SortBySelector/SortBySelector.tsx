@@ -6,7 +6,7 @@ import { find, get, map } from 'lodash'
 import { matchPath } from 'react-router'
 import { useClickAway } from 'react-use'
 import { router } from 'routes'
-import { useMiningStore } from 'shared/store/miningStore'
+import { useAssetsStore } from 'shared/store/assetsStore'
 import { dropdownStyles } from 'shared/util/helpers'
 import { mapToSortByOptions } from 'store/atomic/helpers'
 import { AssetSchema, SortBy } from 'store/atomic/types'
@@ -21,9 +21,9 @@ export interface SortBySelectorProps {
 }
 
 const SortBySelector = ({ defaultValue, width }: SortBySelectorProps) => {
-  const setAssetsFilter = useMiningStore((state) => state.setAssetsFilter)
+  const setAssetsFilter = useAssetsStore((state) => state.setAssetsFilter)
 
-  const assetsFilter = useMiningStore((state) => state.assetsFilter)
+  const assetsFilter = useAssetsStore((state) => state.assetsFilter)
   const isToolsPage = matchPath(PagePath.GovernanceSelect, router.state.location.pathname)
   const [, setMenuVisible] = useState<boolean>(false)
   const [sortByOptions, setSortByOptions] = useState<Option[]>([])

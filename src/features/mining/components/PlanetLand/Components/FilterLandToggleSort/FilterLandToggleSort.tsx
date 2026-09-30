@@ -2,7 +2,7 @@ import { VFC } from 'react'
 
 import { ReverseSortingIcon, SortingIcon } from '@alien-worlds/icons'
 import { Flex, Button } from '@chakra-ui/react'
-import { useMiningStore } from 'shared/store/miningStore'
+import { useMiningStore } from 'features/mining/store/miningStore'
 import { Colors } from 'shared/util/colors'
 
 const FilterLandToggleSort: VFC = () => {

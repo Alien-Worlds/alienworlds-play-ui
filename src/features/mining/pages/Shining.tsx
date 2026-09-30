@@ -62,7 +62,7 @@ import {
 } from 'lodash'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { useNavigate } from 'react-router-dom'
-import { useMiningStore } from 'shared/store/miningStore'
+import { useAssetsStore } from 'shared/store/assetsStore'
 import { useModalStore } from 'shared/store/modalStore'
 import { useSessionStore } from 'shared/store/sessionStore'
 import { Colors } from 'shared/util/colors'
@@ -93,9 +93,9 @@ const Shining = () => {
   const {
     wax: { isShining },
   } = useAppState()
-  const filteredAndSortedAssets = useMiningStore((state) => state.filteredAndSortedAssets)
-  const assets = useMiningStore((state) => state.assets)
-  const triggerFilterAndSortAssets = useMiningStore((state) => state.triggerFilterAndSortAssets)
+  const filteredAndSortedAssets = useAssetsStore((state) => state.filteredAndSortedAssets)
+  const assets = useAssetsStore((state) => state.assets)
+  const triggerFilterAndSortAssets = useAssetsStore((state) => state.triggerFilterAndSortAssets)
   const { walletDetails, loading }: { walletDetails: WalletDetailsResponse; loading: boolean } =
     useWalletDetails(walletId)
   const navigate = useNavigate()

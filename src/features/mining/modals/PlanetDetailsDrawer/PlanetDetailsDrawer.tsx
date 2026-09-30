@@ -31,7 +31,7 @@ import {
   RingPositions,
 } from 'shared/components/RingPositionHelper/RingPositionHelper'
 import { useActivePath } from 'shared/hooks/useRouter'
-import { useMiningStore } from 'shared/store/miningStore'
+import { useAssetsStore } from 'shared/store/assetsStore'
 import { Colors } from 'shared/util/colors'
 import { useActions, useAppState } from 'store'
 import { PagePath } from 'store/main/types'
@@ -49,7 +49,7 @@ const PlanetDetailsDrawer: FC<PlanetDetailsDrawerProps> = ({ isOpen, onClose, pl
   const {
     wax: { planetSelectedForMining },
   } = useAppState()
-  const landAsset = useMiningStore((state) => state.landAsset)
+  const landAsset = useAssetsStore((state) => state.landAsset)
 
   const isLandsPage = useActivePath([PagePath.Land])
   const { planetDetails: currentPlanet, loading } = usePlanetDetail(planet)

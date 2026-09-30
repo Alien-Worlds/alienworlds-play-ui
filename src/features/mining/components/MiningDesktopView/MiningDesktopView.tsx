@@ -11,7 +11,7 @@ import { PlanetTitle } from 'features/mining/components/PlanetLand/Components/Pl
 import { PowReduction } from 'features/mining/components/PlanetLand/Components/PowReduction'
 import { PlanetImageSizes } from 'features/mining/utils/planet'
 import { ClaimMineRewardsBtn } from 'features/syndicates/components/PlanetaryActions/PlanetaryActions'
-import { useMiningStore } from 'shared/store/miningStore'
+import { useAssetsStore } from 'shared/store/assetsStore'
 import { useSessionStore } from 'shared/store/sessionStore'
 import { Colors } from 'shared/util/colors'
 import { useScreenSize } from 'shared/util/hooks'
@@ -21,7 +21,7 @@ export const MiningDesktopView: VFC = () => {
   const {
     wax: { planetSelectedForMining },
   } = useAppState()
-  const landAsset = useMiningStore((state) => state.landAsset)
+  const landAsset = useAssetsStore((state) => state.landAsset)
   const isDemoUser = useSessionStore((state) => state.isDemoUser)
   const { isMediumScreen, isNotDesktop } = useScreenSize()
 

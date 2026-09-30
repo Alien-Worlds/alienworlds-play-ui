@@ -29,7 +29,7 @@ import { generatePath } from 'react-router'
 import { matchPath } from 'react-router-dom'
 import { router } from 'routes'
 import { LOAD_USER_POINTS_QUERY_KEY } from 'shared/hooks/queries/wax/useLoadUserPoints'
-import { useMiningStore } from 'shared/store/miningStore'
+import { useAssetsStore } from 'shared/store/assetsStore'
 import { useModalStore } from 'shared/store/modalStore'
 import { collectGAEvent } from 'shared/util/analytics'
 import { config } from 'shared/util/config'
@@ -119,7 +119,7 @@ export const setPlanetSelectedForMining = async ({ state }: Context) => {
   }
 
   if (state.wax.isOnboarded) {
-    const { landAsset } = useMiningStore.getState()
+    const { landAsset } = useAssetsStore.getState()
     if (!landAsset) {
       state.wax.planetSelectedForMining = null
       return
@@ -243,8 +243,8 @@ export const setBag = pipe(
       })
     )
 
-    useMiningStore.getState().setBagAssets(assets)
-    useMiningStore.getState().setTriggerFilterAndSortAssets(true)
+    useAssetsStore.getState().setBagAssets(assets)
+    useAssetsStore.getState().setTriggerFilterAndSortAssets(true)
 
     executeAfter(state.main.syncAi.bag, DateTime.now().plus({ seconds: 5 }))
   },
@@ -265,7 +265,7 @@ export const setLand = pipe(
 
     toastMessage(`Mining Land updated successfully.`)
 
-    useMiningStore.getState().setLandAsset(await effects.atomic.api.getAssetById(landId))
+    useAssetsStore.getState().setLandAsset(await effects.atomic.api.getAssetById(landId))
 
     actions.wax.setPlanetSelectedForMining()
 
@@ -328,7 +328,7 @@ export const setAvatar = pipe(
 
     toastMessage(`Avatar updated successfully.`)
 
-    useMiningStore.getState().setAvatarAsset(await effects.atomic.api.getAssetById(avatarId))
+    useAssetsStore.getState().setAvatarAsset(await effects.atomic.api.getAssetById(avatarId))
 
     executeAfter(state.main.syncAi.avatar, DateTime.now().plus({ seconds: 15 }))
   },
@@ -704,7 +704,7 @@ export const executeOnboarding = pipe(
     state.missions.loadingMessage = null
     state.wax.isOnboardingPending = false
     router.navigate(PagePath.Tools)
-    useMiningStore.getState().setTriggerFilterAndSortAssets(true)
+    useAssetsStore.getState().setTriggerFilterAndSortAssets(true)
   },
 
   catchError(({ state, effects }: Context, error) => {
@@ -740,7 +740,7 @@ export const claimNftPts = pipe(
 
 export const trySetInitialBag = pipe(
   ({ actions }: Context) => {
-    const tools = useMiningStore
+    const tools = useAssetsStore
       .getState()
       .assets.filter((asset) => asset.schema.schema_name === 'tool.worlds')
     // Take first item from player's collection. Just first one (probably initial shovel), no more.
@@ -1595,7 +1595,7 @@ export const setManagingLandDetails = pipe(
 
 /** Copies the managed land's latest rating onto the player's loaded assets. */
 export const syncLandDetailsWithAssets = ({ state }: Context) => {
-  useMiningStore.getState().syncLandRating(state.wax.managingLandDetails)
+  useAssetsStore.getState().syncLandRating(state.wax.managingLandDetails)
 }
 
 export const loadManagingLandDetailsAndBoosts = pipe(

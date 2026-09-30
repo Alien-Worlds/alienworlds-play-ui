@@ -4,7 +4,7 @@ import { PlanetImage } from 'features/mining/components/PlanetLand/Components/Pl
 import { PlanetTitle } from 'features/mining/components/PlanetLand/Components/PlanetTitle'
 import { PlanetImageSizes } from 'features/mining/utils/planet'
 import { ClaimMineRewardsBtn } from 'features/syndicates/components/PlanetaryActions/PlanetaryActions'
-import { useMiningStore } from 'shared/store/miningStore'
+import { useAssetsStore } from 'shared/store/assetsStore'
 import { Colors } from 'shared/util/colors'
 import { useAppState } from 'store'
 import {
@@ -18,8 +18,8 @@ export const MiningMobileView = () => {
   const {
     wax: { planetSelectedForMining },
   } = useAppState()
-  const landAsset = useMiningStore((state) => state.landAsset)
-  const bagAssets = useMiningStore((state) => state.bagAssets)
+  const landAsset = useAssetsStore((state) => state.landAsset)
+  const bagAssets = useAssetsStore((state) => state.bagAssets)
   return (
     <Flex flexDirection="column" gap={6}>
       <Flex width="100%" justifyContent="space-around" gap={2}>

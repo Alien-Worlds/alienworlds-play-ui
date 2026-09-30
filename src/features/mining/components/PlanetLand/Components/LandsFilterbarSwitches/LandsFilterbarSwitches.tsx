@@ -3,8 +3,8 @@ import { useEffect, useState, VFC } from 'react'
 import { LandIcon2, LightIcon2, MiningIcon, NFTOldIcon, ProfitsIcon } from '@alien-worlds/icons'
 import { SimpleGrid } from '@chakra-ui/react'
 import { PlanetFilterSlider } from 'features/mining/components/PlanetLand/Components/PlanetFilterSlider'
+import { useMiningStore } from 'features/mining/store/miningStore'
 import { isNil } from 'lodash'
-import { useMiningStore } from 'shared/store/miningStore'
 import { Colors } from 'shared/util/colors'
 
 const LandsFilterbarSwitches: VFC = () => {

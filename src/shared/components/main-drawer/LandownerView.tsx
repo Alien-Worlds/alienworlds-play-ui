@@ -15,7 +15,7 @@ import {
 } from 'features/syndicates/components/PlanetaryActions/PlanetaryActions'
 import { filter, forEach } from 'lodash'
 import Carousel from 'react-spring-3d-carousel'
-import { useMiningStore } from 'shared/store/miningStore'
+import { useAssetsStore } from 'shared/store/assetsStore'
 import { useSessionStore } from 'shared/store/sessionStore'
 import { Colors } from 'shared/util/colors'
 import { useScreenSize } from 'shared/util/hooks'
@@ -24,8 +24,8 @@ import { useActions } from 'store'
 import { v4 } from 'uuid'
 
 export const LandownerView: VFC = () => {
-  const landAsset = useMiningStore((state) => state.landAsset)
-  const ownedLandsAssets = useMiningStore((state) => state.ownedLandsAssets)
+  const landAsset = useAssetsStore((state) => state.landAsset)
+  const ownedLandsAssets = useAssetsStore((state) => state.ownedLandsAssets)
   const isDemoUser = useSessionStore((state) => state.isDemoUser)
   const {
     wax: { setLandId, setManagingLandDetails, loadManagingLandDetailsAndBoosts },

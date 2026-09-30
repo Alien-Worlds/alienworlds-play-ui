@@ -34,8 +34,8 @@ const mockSetAssetsFilter = jest.fn()
 let mockAssetsFilter: any
 let mockFilteredAndSortedAssets: any[] = []
 
-jest.mock('shared/store/miningStore', () => ({
-  useMiningStore: (selector: (state: unknown) => unknown) =>
+jest.mock('shared/store/assetsStore', () => ({
+  useAssetsStore: (selector: (state: unknown) => unknown) =>
     selector({
       assetsFilter: mockAssetsFilter,
       filteredAndSortedAssets: mockFilteredAndSortedAssets,

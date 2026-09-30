@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 
 import { map } from 'lodash'
-import { useMiningStore } from 'shared/store/miningStore'
+import { useAssetsStore } from 'shared/store/assetsStore'
 import { useActions } from 'store'
 
 export const useMiningCardInteractions = () => {
@@ -9,7 +9,7 @@ export const useMiningCardInteractions = () => {
     wax: { setBag },
   } = useActions()
 
-  const bagAssets = useMiningStore((state) => state.bagAssets)
+  const bagAssets = useAssetsStore((state) => state.bagAssets)
 
   const addToolToBag = useCallback(
     (assetId: string, currentSlotAsset?: any) => {

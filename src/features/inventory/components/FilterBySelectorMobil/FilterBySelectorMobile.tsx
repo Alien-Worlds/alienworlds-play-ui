@@ -3,16 +3,16 @@ import { useState, VFC, useEffect } from 'react'
 import { Dropdown, Option } from '@alien-worlds/uikit'
 import { map, filter } from 'lodash'
 import { useNavigate } from 'react-router-dom'
-import { useMiningStore } from 'shared/store/miningStore'
+import { useAssetsStore } from 'shared/store/assetsStore'
 import { mapToSelectedSortByOption } from 'store/atomic/helpers'
 import { AssetSchema, AssetType, SortBy } from 'store/atomic/types'
 import { PagePath } from 'store/main/types'
 
 const FilterBySelectorMobile: VFC = () => {
-  const assetsFilter = useMiningStore((state) => state.assetsFilter)
-  const filteredAndSortedAssets = useMiningStore((state) => state.filteredAndSortedAssets)
+  const assetsFilter = useAssetsStore((state) => state.assetsFilter)
+  const filteredAndSortedAssets = useAssetsStore((state) => state.filteredAndSortedAssets)
 
-  const setAssetsFilter = useMiningStore((state) => state.setAssetsFilter)
+  const setAssetsFilter = useAssetsStore((state) => state.setAssetsFilter)
 
   const navigate = useNavigate()
 

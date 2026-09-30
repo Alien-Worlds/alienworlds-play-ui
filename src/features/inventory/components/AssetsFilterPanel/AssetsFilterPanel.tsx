@@ -9,7 +9,7 @@ import { matchPath } from 'react-router'
 import { useMatch, useNavigate } from 'react-router-dom'
 import { router } from 'routes'
 import { SortBySelector } from 'shared/components/SortBySelector/SortBySelector'
-import { useMiningStore } from 'shared/store/miningStore'
+import { useAssetsStore } from 'shared/store/assetsStore'
 import { Colors } from 'shared/util/colors'
 import {
   defaultSortByNameOption,
@@ -21,10 +21,10 @@ import { PagePath } from 'store/main/types'
 
 const AssetsFilterPanel: VFC = () => {
   const isToolsPage = matchPath(PagePath.Tools, router.state.location.pathname)
-  const assetsFilter = useMiningStore((state) => state.assetsFilter)
-  const filteredAndSortedAssets = useMiningStore((state) => state.filteredAndSortedAssets)
+  const assetsFilter = useAssetsStore((state) => state.assetsFilter)
+  const filteredAndSortedAssets = useAssetsStore((state) => state.filteredAndSortedAssets)
 
-  const setAssetsFilter = useMiningStore((state) => state.setAssetsFilter)
+  const setAssetsFilter = useAssetsStore((state) => state.setAssetsFilter)
 
   const isInventoryPage = useMatch(PagePath.Inventory)
 

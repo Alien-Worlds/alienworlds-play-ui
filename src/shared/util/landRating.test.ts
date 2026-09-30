@@ -1,4 +1,4 @@
-import { updateLandRating } from './landownerUtils'
+import { updateLandRating } from './landRating'
 
 const assets: any[] = [
   { asset_id: '1', mutable_data: { landrating: '10', commission: 500 } },

@@ -1,7 +1,7 @@
 import { useEffect, useState, VFC } from 'react'
 
 import { Flex, Input } from '@chakra-ui/react'
-import { useMiningStore } from 'shared/store/miningStore'
+import { useMiningStore } from 'features/mining/store/miningStore'
 import { Colors } from 'shared/util/colors'
 
 const FilterLandOwner: VFC = () => {

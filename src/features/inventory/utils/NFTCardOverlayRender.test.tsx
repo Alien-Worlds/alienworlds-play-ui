@@ -45,15 +45,14 @@ jest.mock('store', () => ({
   }),
 }))
 
-jest.mock('shared/store/miningStore', () => ({
-  useMiningStore: (selector: (state: unknown) => unknown) =>
-    selector({
-      ownedLandsAssets: [],
-      landAsset: null,
-      ownedLandsAssetsDayBoosts: [],
-      assets: [],
-      ...mockAtomicState,
-    }),
+jest.mock('shared/store/assetsStore', () => ({
+  useAssetsStore: (selector: (state: unknown) => unknown) =>
+    selector({ ownedLandsAssets: [], landAsset: null, assets: [], ...mockAtomicState }),
+}))
+
+jest.mock('features/inventory/store/inventoryStore', () => ({
+  useInventoryStore: (selector: (state: unknown) => unknown) =>
+    selector({ ownedLandsAssetsDayBoosts: [], ...mockAtomicState }),
 }))
 
 describe('NFTCardOverlayRender', () => {

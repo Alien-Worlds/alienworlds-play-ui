@@ -1,11 +1,11 @@
 import { useMemo } from 'react'
 
 import { NFTCardTypes } from 'features/inventory/utils/NFTCardHelper'
-import { useMiningStore } from 'shared/store/miningStore'
+import { useAssetsStore } from 'shared/store/assetsStore'
 import { useSessionStore } from 'shared/store/sessionStore'
 
 export const useMiningUtils = () => {
-  const bagAssets = useMiningStore((state) => state.bagAssets)
+  const bagAssets = useAssetsStore((state) => state.bagAssets)
   const walletId = useSessionStore((state) => state.walletId)
 
   const isAssetEquipped = useMemo(() => {

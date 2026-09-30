@@ -6,7 +6,7 @@ import { PlanetImage } from 'features/mining/components/PlanetLand/Components/Pl
 import { LoadingSpinner } from 'features/syndicates/components/LoadingSpinner/LoadingSpinner'
 import { usePlanetDetail } from 'graphql/hooks/usePlanetDetail'
 import { useNavigate } from 'react-router-dom'
-import { useMiningStore } from 'shared/store/miningStore'
+import { useAssetsStore } from 'shared/store/assetsStore'
 import { Colors } from 'shared/util/colors'
 import { getNftImage } from 'shared/util/nft'
 import { formatNumber } from 'shared/util/numbers'
@@ -17,7 +17,7 @@ const PlanetInfo: VFC = () => {
   const {
     wax: { planetSelectedForMining },
   } = useAppState()
-  const landAsset = useMiningStore((state) => state.landAsset)
+  const landAsset = useAssetsStore((state) => state.landAsset)
 
   const navigate = useNavigate()
   const { planetDetails: miningPlanet, loading } = usePlanetDetail(planetSelectedForMining)
