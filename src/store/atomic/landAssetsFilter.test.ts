@@ -145,22 +145,31 @@ describe('atomic.filterLandAssets', () => {
       expect(ids(state)).toEqual(['2', '1'])
     })
 
-    // Current behaviour, pinned so the store migration keeps it. Both look unintended:
-    // 'Rarity' looks the rarity string up in a list of option objects (always -1), and
-    // 'Recharge Multiplier' compares `a.data.delay` with itself.
-    it.each(['Rarity', 'Recharge Multiplier'])('leaves the order unchanged for %s', (sortBy) => {
+    it('sorts by rarity rank, not alphabetically', () => {
       const { state, actions } = setup(
         [
-          makeLand('1', { rarity: 'Epic', delay: 30 }),
-          makeLand('2', { rarity: 'Common', delay: 10 }),
-          makeLand('3', { rarity: 'Rare', delay: 20 }),
+          makeLand('legendary', { rarity: 'Legendary' }),
+          makeLand('common', { rarity: 'Common' }),
+          makeLand('epic', { rarity: 'Epic' }),
+          makeLand('rare', { rarity: 'Rare' }),
         ],
-        { sortBy }
+        { sortBy: 'Rarity' }
       )
 
       actions.filterLandAssets()
 
-      expect(ids(state)).toEqual(['1', '2', '3'])
+      expect(ids(state)).toEqual(['common', 'rare', 'epic', 'legendary'])
+    })
+
+    it('sorts by recharge multiplier', () => {
+      const { state, actions } = setup(
+        [makeLand('1', { delay: 30 }), makeLand('2', { delay: 10 }), makeLand('3', { delay: 20 })],
+        { sortBy: 'Recharge Multiplier' }
+      )
+
+      actions.filterLandAssets()
+
+      expect(ids(state)).toEqual(['2', '3', '1'])
     })
   })
 })

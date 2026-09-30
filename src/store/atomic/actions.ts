@@ -691,12 +691,12 @@ export const filterLandAssets = ({ state }: Context) => {
         bValue = v4()
         break
       case 'Rarity':
-        aValue = filterLandRarities.indexOf(a.data.rarity)
-        bValue = filterLandRarities.indexOf(b.data.rarity)
+        aValue = filterLandRarities.findIndex((r) => r.value === a.data.rarity)
+        bValue = filterLandRarities.findIndex((r) => r.value === b.data.rarity)
         break
       case 'Recharge Multiplier':
         aValue = a.data.delay
-        bValue = a.data.delay
+        bValue = b.data.delay
         break
       case 'Terrain':
         aValue = a.data.name.split(' on ')[0].toString()
