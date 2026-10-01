@@ -3,19 +3,16 @@ import { useState, VFC, useEffect } from 'react'
 import { Dropdown, Option } from '@alien-worlds/uikit'
 import { map, filter } from 'lodash'
 import { useNavigate } from 'react-router-dom'
-import { useAppState, useActions } from 'store'
+import { useAssetsStore } from 'shared/store/assetsStore'
 import { mapToSelectedSortByOption } from 'store/atomic/helpers'
 import { AssetSchema, AssetType, SortBy } from 'store/atomic/types'
 import { PagePath } from 'store/main/types'
 
 const FilterBySelectorMobile: VFC = () => {
-  const {
-    atomic: { assetsFilter, filteredAndSortedAssets },
-  } = useAppState()
+  const assetsFilter = useAssetsStore((state) => state.assetsFilter)
+  const filteredAndSortedAssets = useAssetsStore((state) => state.filteredAndSortedAssets)
 
-  const {
-    atomic: { setAssetsFilter },
-  } = useActions()
+  const setAssetsFilter = useAssetsStore((state) => state.setAssetsFilter)
 
   const navigate = useNavigate()
 

@@ -32,6 +32,7 @@ import {
 import { capitalize, get, replace, toNumber, trim } from 'lodash'
 import { useParams } from 'react-router'
 import { PlayerAvatar } from 'shared/components/topbar/PlayerAvatar'
+import { useAssetsStore } from 'shared/store/assetsStore'
 import { useModalStore } from 'shared/store/modalStore'
 import { useSessionStore } from 'shared/store/sessionStore'
 import { Colors } from 'shared/util/colors'
@@ -71,8 +72,8 @@ export const BecomeCandidate = () => {
   } = useActions()
   const {
     wax: { currentTag, selectedDacId },
-    atomic: { avatarAsset },
   } = useAppState()
+  const avatarAsset = useAssetsStore((state) => state.avatarAsset)
   const walletId = useSessionStore((state) => state.walletId)
   const isDemoUser = useSessionStore((state) => state.isDemoUser)
   const setPrimaryModalActive = useModalStore((state) => state.setPrimaryModalActive)

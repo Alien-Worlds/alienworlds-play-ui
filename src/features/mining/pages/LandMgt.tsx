@@ -23,6 +23,7 @@ import { MinimumBoostSetting } from 'features/mining/components/LandOwners/Compo
 import { NextBoostCountdown } from 'features/mining/components/LandOwners/Components/NextBoostCountdown'
 import { LandAddSlotModal } from 'features/mining/components/PlanetLand/Components/LandAddSlotModal'
 import { LandUnlockSlotModal } from 'features/mining/components/PlanetLand/Components/LandUnlockSlotModal'
+import { useMiningStore } from 'features/mining/store/miningStore'
 import { LandBoostLevel } from 'features/mining/types/LandownerTypes'
 import { MainBoostLevels } from 'features/mining/utils/constants'
 import { MEGA_BOOST_NFT_DESCRIPTION, SUPER_BOOST_NFT_DESCRIPTION } from 'features/mining/utils/land'
@@ -34,6 +35,7 @@ import {
 import { filter, toLower } from 'lodash'
 import { useNavigate, useParams } from 'react-router-dom'
 import { AppModal } from 'shared/layouts'
+import { useAssetsStore } from 'shared/store/assetsStore'
 import { useSessionStore } from 'shared/store/sessionStore'
 import { Colors } from 'shared/util/colors'
 import { landBoostValueByRarity, formatLandRating } from 'shared/util/helpers'
@@ -45,16 +47,18 @@ import { Constants } from '../../../shared/util/constants'
 
 const LandMgt: VFC = () => {
   const {
-    atomic: { landAsset: currentLand, ownedLandBoostsAssets, assetsFilter },
     wax: { managingLandId, nftLandCardProperties, managingLandDetails: landAsset },
   } = useAppState()
+  const currentLand = useAssetsStore((state) => state.landAsset)
+  const ownedLandBoostsAssets = useMiningStore((state) => state.ownedLandBoostsAssets)
+  const assetsFilter = useAssetsStore((state) => state.assetsFilter)
   const walletId = useSessionStore((state) => state.walletId)
 
   const {
-    atomic: { setAssetsFilter },
     wax: { setNftLandCardProperties },
     main: { showLandMgtPage },
   } = useActions()
+  const setAssetsFilter = useAssetsStore((state) => state.setAssetsFilter)
 
   const navigate = useNavigate()
   const { id: currentLandId } = useParams()

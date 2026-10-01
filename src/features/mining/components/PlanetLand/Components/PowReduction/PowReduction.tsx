@@ -3,14 +3,12 @@ import { useEffect, useState, VFC } from 'react'
 import { Flex, Text } from '@chakra-ui/react'
 import { GlossaryInfoIcon } from 'features/glossary/components/GlossaryInfoIcon/GlossaryInfoIcon'
 import { TooltipLocations } from 'features/glossary/utils/glossaryConst'
+import { useAssetsStore } from 'shared/store/assetsStore'
 import { calculatePow } from 'store/main/helpers'
 
-import { useAppState } from '../../../../../../store'
-
 const PowReduction: VFC = () => {
-  const {
-    atomic: { bagAssets, landAsset },
-  } = useAppState()
+  const bagAssets = useAssetsStore((state) => state.bagAssets)
+  const landAsset = useAssetsStore((state) => state.landAsset)
 
   const [difficulty, setDifficulty] = useState('')
 

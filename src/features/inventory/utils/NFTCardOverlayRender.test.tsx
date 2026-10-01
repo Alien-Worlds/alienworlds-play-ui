@@ -41,15 +41,18 @@ jest.mock('store', () => ({
     main: { setIsLandOwnerAddSlotDrawerOpen: jest.fn() },
   }),
   useAppState: () => ({
-    atomic: {
-      ownedLandsAssets: [],
-      landAsset: null,
-      ownedLandsAssetsDayBoosts: [],
-      assets: [],
-      ...mockAtomicState,
-    },
     wax: { isOnboarded: false, onboarding: {}, ...mockWaxState },
   }),
+}))
+
+jest.mock('shared/store/assetsStore', () => ({
+  useAssetsStore: (selector: (state: unknown) => unknown) =>
+    selector({ ownedLandsAssets: [], landAsset: null, assets: [], ...mockAtomicState }),
+}))
+
+jest.mock('features/inventory/store/inventoryStore', () => ({
+  useInventoryStore: (selector: (state: unknown) => unknown) =>
+    selector({ ownedLandsAssetsDayBoosts: [], ...mockAtomicState }),
 }))
 
 describe('NFTCardOverlayRender', () => {

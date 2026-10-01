@@ -2,20 +2,16 @@ import { useCallback, useMemo, useRef, VFC } from 'react'
 
 import { Dropdown, Option } from '@alien-worlds/uikit'
 import { Flex } from '@chakra-ui/react'
+import { useMiningStore } from 'features/mining/store/miningStore'
 import { find, get, map } from 'lodash'
 import { useClickAway } from 'react-use'
 import { dropdownStyles } from 'shared/util/helpers'
-import { useAppState, useActions } from 'store'
 import { FilterByOption, filterByToolTypeOptions, ToolType } from 'store/atomic/types'
 
 const FilterByToolTypeSelectorComponent: VFC = () => {
-  const {
-    atomic: { setFilterByToolType },
-  } = useActions()
+  const setFilterByToolType = useMiningStore((state) => state.setFilterByToolType)
 
-  const {
-    atomic: { filterByToolType },
-  } = useAppState()
+  const filterByToolType = useMiningStore((state) => state.filterByToolType)
 
   const sortByRef = useRef(null)
 

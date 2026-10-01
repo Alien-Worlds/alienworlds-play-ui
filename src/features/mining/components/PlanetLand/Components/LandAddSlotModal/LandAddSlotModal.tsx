@@ -4,6 +4,7 @@ import { TriliumIcon } from '@alien-worlds/icons'
 import { Button } from '@alien-worlds/uikit'
 import { Box, Center, Flex, Image, Text, useBreakpointValue } from '@chakra-ui/react'
 import { IAsset } from 'atomicassets/build/API/Explorer/Objects'
+import { useMiningStore } from 'features/mining/store/miningStore'
 import { LandBoostLevel } from 'features/mining/types/LandownerTypes'
 import { MainBoostLevels } from 'features/mining/utils/constants'
 import { filter, find } from 'lodash'
@@ -25,9 +26,9 @@ export const LandAddSlotModal = ({ selectedBoost, onClose, selectedImg }: SlotMo
     wax: { boostSlot, applyMainBoost, loadManagingLandDetailsAndBoostsWithDelay },
   } = useActions()
   const {
-    atomic: { ownedLandBoostsAssets },
     wax: { managingLandId },
   } = useAppState()
+  const ownedLandBoostsAssets = useMiningStore((state) => state.ownedLandBoostsAssets)
   const isDemoUser = useSessionStore((state) => state.isDemoUser)
   const setPrimaryModalActive = useModalStore((state) => state.setPrimaryModalActive)
   const landOwnerDrawerPayload = useModalStore((state) => state.landOwnerDrawerPayload)
