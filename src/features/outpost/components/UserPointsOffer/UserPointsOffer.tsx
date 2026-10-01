@@ -36,7 +36,6 @@ import {
   showExpireTimeLeft,
   showUpcomingTimeLeft,
 } from 'shared/util/helpers'
-import { useActions } from 'store'
 import { WaxPointsOfferWithTemplate } from 'store/wax/types'
 import { v4 as uuidv4 } from 'uuid'
 
@@ -159,9 +158,7 @@ const UserPointsOffer = ({
       break
   }
 
-  const {
-    main: { setOutPostModalsActive },
-  } = useActions()
+  const setOutPostModalsActive = useModalStore((state) => state.setOutPostModalsActive)
   const isDemoUser = useSessionStore((state) => state.isDemoUser)
   const setPrimaryModalActive = useModalStore((state) => state.setPrimaryModalActive)
   const [showZoomModal, setShowZoomModal] = useState(false)

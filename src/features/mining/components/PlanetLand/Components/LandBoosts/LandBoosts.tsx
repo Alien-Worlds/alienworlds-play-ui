@@ -1,13 +1,11 @@
 import { Flex, Text } from '@chakra-ui/react'
+import { useMiningStore } from 'features/mining/store/miningStore'
 import { LandSlot, SlotVariant } from 'features/mining/types/LandownerTypes'
 import { filter } from 'lodash'
 import { Colors } from 'shared/util/colors'
-import { useAppState } from 'store'
 
 const LandBoosts = ({ land }) => {
-  const {
-    wax: { managingLandBoostFullSlots },
-  } = useAppState()
+  const managingLandBoostFullSlots = useMiningStore((state) => state.managingLandBoostFullSlots)
 
   if (!land) return <></>
 

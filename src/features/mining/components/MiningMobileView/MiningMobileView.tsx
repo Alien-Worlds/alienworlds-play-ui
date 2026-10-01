@@ -5,8 +5,8 @@ import { PlanetTitle } from 'features/mining/components/PlanetLand/Components/Pl
 import { PlanetImageSizes } from 'features/mining/utils/planet'
 import { ClaimMineRewardsBtn } from 'features/syndicates/components/PlanetaryActions/PlanetaryActions'
 import { useAssetsStore } from 'shared/store/assetsStore'
+import { useMinerStore } from 'shared/store/minerStore'
 import { Colors } from 'shared/util/colors'
-import { useAppState } from 'store'
 import {
   calculateChargeTime,
   calculateMiningPower,
@@ -15,9 +15,7 @@ import {
 } from 'store/main/helpers'
 
 export const MiningMobileView = () => {
-  const {
-    wax: { planetSelectedForMining },
-  } = useAppState()
+  const planetSelectedForMining = useMinerStore((state) => state.planetSelectedForMining)
   const landAsset = useAssetsStore((state) => state.landAsset)
   const bagAssets = useAssetsStore((state) => state.bagAssets)
   return (

@@ -1,6 +1,3 @@
-import { IAsset } from 'atomicassets/build/API/Explorer/Objects'
-import { LooseObject } from 'features/inventory/utils/NFTCardHelper'
-import { LandBoost, LandSlot, SlotVariant } from 'features/mining/types/LandownerTypes'
 import {
   CandidacyProposalType,
   CustodianProposal,
@@ -8,15 +5,12 @@ import {
   ProposalType,
 } from 'features/syndicates/types/governanceTypes'
 import { Candidate } from 'graphql/types'
-import { forEach } from 'lodash'
 import { DateTime } from 'luxon'
 import { derived } from 'overmind'
 import { config } from 'shared/util/config'
 import {
   Planet,
   WaxResources,
-  WaxBag,
-  WaxMiner,
   WaxPlayer,
   WaxTerms,
   WaxRefundInProgress,
@@ -30,7 +24,6 @@ import {
 } from 'store/wax/types'
 
 import { VotersHistoryResponse } from './types'
-import { Constants } from '../../shared/util/constants'
 
 export type ProposalsFilter = {
   sortBy: ProposalsSortBy
@@ -53,14 +46,6 @@ type WaxState = {
   playersImageMap: { [walletId: string]: string }
   isSettingTag: boolean
   currentTag: string
-  selectedPlanetName: string
-  planetSelectedForMining: string
-  whereToMineIntent: string
-  whereToMine: string
-  planetLandsAssets: { [planetId: string]: IAsset[] }
-  bag: WaxBag
-  miner: WaxMiner
-  isOnboarded: boolean
   isOnboardingPending: boolean
   showOnboardingRetry: boolean
   onboarding: OnboardingData
@@ -71,15 +56,8 @@ type WaxState = {
   isStaking: boolean
   refundsInProgress: WaxRefundInProgress[]
   lastTransactionError: string
-  isShining: boolean
 
   // #region Landowner
-  managingLandId: string
-  managingLandDetails: IAsset | null
-  nftLandCardProperties: LooseObject
-  managingLandBoosts: LandBoost[] | []
-  managingLandBoostFullSlots: LandSlot[] | []
-  isLoadingManagingLandBoosts: boolean
   // #endregion
 
   selectedPlanet: Planet
@@ -133,23 +111,14 @@ export const defaultState: WaxState = {
   isSettingTag: false,
   currentTag: null,
   actionProgressState: null,
-  planetSelectedForMining: 'naron',
-  whereToMineIntent: null,
-  planetLandsAssets: {},
   maxStakeTime: 1,
   stakeReleaseTime: null,
   isStakesOnRelease: false,
   isSyndicatesSidebarOpen: true,
 
   dacCustodianProposalPayload: null,
-  nftLandCardProperties: null,
   selectedUnionDacInfo: null,
   currentDAOInfo: null,
-  whereToMine: derived((state: WaxState) => {
-    return state.whereToMineIntent !== null
-      ? state.whereToMineIntent
-      : state.planetSelectedForMining
-  }),
   selectedDacCandidates: null,
   votedCandidatesList: [],
   custodianVotersResponse: null,
@@ -178,9 +147,6 @@ export const defaultState: WaxState = {
    * @TODO get this data from API so we can drop the hardcoded list
    */
   selectedDacCandidateWalletId: null,
-  bag: undefined,
-  miner: null,
-  isOnboarded: derived((state: WaxState) => state.isLoggedIn && state.miner !== null),
   isOnboardingPending: false,
   showOnboardingRetry: false,
   onboarding: null,
@@ -194,7 +160,6 @@ export const defaultState: WaxState = {
   isStaking: false,
   refundsInProgress: null,
   lastTransactionError: null,
-  isShining: false,
 
   dacCandidacyProposalPayload: null,
   generatedCandidancyProposal: null,
@@ -209,53 +174,9 @@ export const defaultState: WaxState = {
   triggerFilterAndSortProposals: false,
 
   // #region Landowner
-  managingLandId: null,
-  managingLandDetails: null,
-  managingLandBoosts: [],
-  managingLandBoostFullSlots: derived((state: WaxState) => {
-    const totalSlots = 15
-    const { managingLandBoosts, managingLandDetails } = state
-
-    if (!managingLandDetails) return []
-
-    const openSlots = managingLandDetails?.data?.openslots ?? Constants.DEFAULT_LAND_OPENSLOTS
-    const landSlots = []
-
-    // Used slots
-    forEach(managingLandBoosts, (boost: LandBoost, index: number) => {
-      landSlots.push({
-        mod: SlotVariant.USED,
-        number: index + 1,
-        name: boost.name,
-        origin: boost.booster,
-        percentage: boost.percentage,
-      })
-    })
-
-    // Add slots - unlocked slot to be added
-    const addSlotsLength =
-      openSlots - managingLandBoosts.length > 0 ? openSlots - managingLandBoosts.length : 0
-    forEach(Array(addSlotsLength), () => {
-      landSlots.push({ mod: SlotVariant.ADD, number: landSlots.length + 1 })
-    })
-
-    // Add 1 Locked slot - to be unlocked
-    if (landSlots.length < totalSlots) {
-      landSlots.push({ mod: SlotVariant.LOCKED, number: landSlots.length + 1 })
-    }
-
-    const emptySlotsTotal = totalSlots - landSlots.length
-    forEach(Array(emptySlotsTotal), () => {
-      landSlots.push({ mod: SlotVariant.EMPTY, number: landSlots.length + 1 })
-    })
-
-    return landSlots
-  }),
-  isLoadingManagingLandBoosts: false,
   // #endregion
   selectedDrawerView: null,
 
-  selectedPlanetName: '',
   loreVoterInfo: {
     last_claim_time: '',
     staked_amount: '',

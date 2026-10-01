@@ -97,12 +97,23 @@ const makeAsset = (id: string, name: string, template: string, copies = 4) => ({
 const grouped = [makeAsset('1', 'Drill', 'drill'), makeAsset('9', 'Axe', 'axe', 2)]
 const drills = ['1', '2', '3', '4', '5'].map((id) => makeAsset(id, 'Drill', 'drill', 1))
 
-const showShiningPage = jest.fn()
+const collectEvent = jest.fn()
+// The real preset clears the sorted list until the sync loop rebuilds it.
+const presetAssetsFilter = jest.fn()
 const setShiningUrl = jest.fn()
 const setOutPostModalsActive = jest.fn()
 const tryShine = jest.fn()
-const getShineInfo = jest.fn()
-const getTemplateById = jest.fn()
+
+const mockGetShineInfo = jest.fn()
+jest.mock('features/mining/utils/chainReads', () => ({
+  getShineInfo: (templateId: string) => mockGetShineInfo(templateId),
+}))
+
+const mockGetTemplateById = jest.fn()
+jest.mock('shared/util/atomicassets', () => ({
+  getAssetById: jest.fn(),
+  getTemplateById: (id: string) => mockGetTemplateById(id),
+}))
 
 const setup = ({ atomic = {}, wax = {} }: { atomic?: any; wax?: any } = {}) => {
   mockStore({
@@ -116,12 +127,8 @@ const setup = ({ atomic = {}, wax = {} }: { atomic?: any; wax?: any } = {}) => {
       },
     },
     actions: {
-      wax: { tryShine },
-      main: { showShiningPage, setShiningUrl, setOutPostModalsActive },
-    },
-    effects: {
-      wax: { api: { getShineInfo } },
-      atomic: { api: { getAssetById: jest.fn(), getTemplateById } },
+      wax: { tryShine, collectEvent },
+      main: { setShiningUrl, setOutPostModalsActive, presetAssetsFilter },
     },
   })
   return render(<Shining />)
@@ -149,18 +156,22 @@ beforeEach(() => {
   jest.clearAllMocks()
   useSessionStore.getState().setWalletId('miner.wam')
   mockWalletDetails = { walletDetails: { tlm_balance: '100.0000 TLM' }, loading: false }
-  getShineInfo.mockResolvedValue({ to: 777, cost: '40.0000 TLM', qty: 4 })
-  getTemplateById.mockResolvedValue({
+  mockGetShineInfo.mockResolvedValue({ to: 777, cost: '40.0000 TLM', qty: 4 })
+  mockGetTemplateById.mockResolvedValue({
     immutable_data: { name: 'Drill', rarity: 'Common', img: 'gold-drill' },
   })
   tryShine.mockResolvedValue(true)
 })
 
 describe('Shining page', () => {
-  it('registers the page on mount', () => {
+  it('records the page visit on mount', () => {
     setup()
 
-    expect(showShiningPage).toHaveBeenCalledTimes(1)
+    expect(collectEvent).toHaveBeenCalledWith({
+      name: 'page_visit',
+      fields: { location: '/shining' },
+    })
+    expect(presetAssetsFilter).toHaveBeenCalledTimes(1)
   })
 
   it('shows a spinner while the wallet loads', () => {
@@ -200,8 +211,8 @@ describe('Shining page', () => {
 
     await pickDrill()
 
-    expect(getShineInfo).toHaveBeenCalledWith('drill')
-    expect(getTemplateById).toHaveBeenCalledWith('777')
+    expect(mockGetShineInfo).toHaveBeenCalledWith('drill')
+    expect(mockGetTemplateById).toHaveBeenCalledWith('777')
     expect(screen.getByText('40.0000 TLM')).toBeInTheDocument()
     expect(cardTitles()).toEqual([
       'Drill (stone)',
@@ -307,7 +318,7 @@ describe('Shining page', () => {
 
     await userEvent.click(screen.getByText('Drill (stone)'))
 
-    expect(getShineInfo).not.toHaveBeenCalled()
+    expect(mockGetShineInfo).not.toHaveBeenCalled()
   })
 
   it('goes back to the inventory', async () => {

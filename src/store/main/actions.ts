@@ -3,17 +3,16 @@ import SessionKit, { Session } from '@wharfkit/session'
 import { WalletPluginAnchor } from '@wharfkit/wallet-plugin-anchor'
 import { WalletPluginCloudWallet } from '@wharfkit/wallet-plugin-cloudwallet'
 import { WalletPluginWombat } from '@wharfkit/wallet-plugin-wombat'
-import { IAsset } from 'atomicassets/build/API/Explorer/Objects'
-import { useMiningStore } from 'features/mining/store/miningStore'
 import { ProposalsSortBy } from 'features/syndicates/types/governanceTypes'
-import { filter, find, get, isNil } from 'lodash'
+import { filter, find, get } from 'lodash'
 import { DateTime, Duration } from 'luxon'
 import { catchError, parallel, pipe, wait, filter as overmindFilter, waitUntil } from 'overmind'
-import { matchPath } from 'react-router'
 import { router } from 'routes'
 import { useAssetsStore } from 'shared/store/assetsStore'
+import { useMinerStore } from 'shared/store/minerStore'
 import { useModalStore } from 'shared/store/modalStore'
 import { useSessionStore } from 'shared/store/sessionStore'
+import { registerSyncScheduler } from 'shared/store/syncScheduler'
 import { config } from 'shared/util/config'
 import { padZero, isValidDacId, getUserRankInfo, sessionKitWallets } from 'shared/util/helpers'
 import { isMissionsRelatedPage } from 'shared/util/router'
@@ -26,8 +25,6 @@ import {
   initializeOrReloadMiningLand,
   initializeOrReloadTagAndAvatar,
 } from 'store/atomic/actions'
-import { getDefaultAssetsFilter } from 'store/atomic/helpers'
-import { AssetSchema, SortBy } from 'store/atomic/types'
 import {
   setSelectedMission,
   filterAndSortMissions,
@@ -41,7 +38,6 @@ import {
   filterAndSortProposals,
   initializeOrReloadTerms,
   initializeOrReloadResources,
-  loadManagingLandDetailsAndBoosts,
   initializeOrReloadRefundsInProgress,
 } from 'store/wax/actions'
 import { initializeOrReloadBscBalance } from 'store/web3/actions'
@@ -95,8 +91,8 @@ export const redirectAfterLoginOrLogout = pipe(
     let targetPage = pathname
 
     if (!pathname.startsWith(PagePath.Missions)) {
-      if (!state.wax.miner) {
-        state.wax.miner = await effects.wax.api.getMiner()
+      if (!useMinerStore.getState().miner) {
+        useMinerStore.getState().setMiner(await effects.wax.api.getMiner())
       }
 
       if (!state.wax.terms) {
@@ -104,7 +100,8 @@ export const redirectAfterLoginOrLogout = pipe(
       }
 
       // Show Onboarding page if user is not onboarded and Terms are not accepted yet
-      const showOnboarding = !state.wax.isOnboarded && !state.wax.termsAccepted
+      const isOnboarded = state.wax.isLoggedIn && useMinerStore.getState().miner !== null
+      const showOnboarding = !isOnboarded && !state.wax.termsAccepted
       // const userHasSubscribed = await effects.main.api.hasSubscribedWithEmail(state.wax.walletId)
 
       if (showOnboardingNewsletter()) {
@@ -144,9 +141,9 @@ export const tryAutoLogin = pipe(
       useSessionStore.getState().setCurrentWallet(state.main.currentWallet)
       state.wax.walletId = await effects.wax.api.tryAutoLogin()
       useSessionStore.getState().setWalletId(state.wax.walletId)
-      state.wax.miner = await effects.wax.api.getMiner()
+      useMinerStore.getState().setMiner(await effects.wax.api.getMiner())
 
-      if (state.wax.miner === null) {
+      if (useMinerStore.getState().miner === null) {
         router.navigate(PagePath.NewsletterJoin)
       }
       state.wax.isAuthenticating = false
@@ -169,8 +166,8 @@ export const signUp = pipe(
     if (result) state.main.isWaxLoggedIn = true
     state.wax.walletId = result
     useSessionStore.getState().setWalletId(state.wax.walletId)
-    state.wax.miner = await effects.wax.api.getMiner()
-    if (state.wax.miner === null) {
+    useMinerStore.getState().setMiner(await effects.wax.api.getMiner())
+    if (useMinerStore.getState().miner === null) {
       router.navigate(PagePath.NewsletterJoin)
     }
     state.main.syncAi = getDefaultSyncAi()
@@ -201,8 +198,8 @@ export const loginWombat = pipe(
     state.main.syncAi = getDefaultSyncAi()
     state.wax.isAuthenticating = false
     useSessionStore.getState().setIsAuthenticating(state.wax.isAuthenticating)
-    state.wax.miner = await effects.wax.api.getMiner()
-    if (state.wax.miner === null) {
+    useMinerStore.getState().setMiner(await effects.wax.api.getMiner())
+    if (useMinerStore.getState().miner === null) {
       router.navigate(PagePath.NewsletterJoin)
     }
     localStorage.setItem('aw_wallet', state.wax.walletId)
@@ -225,9 +222,9 @@ export const login = pipe(
     state.main.syncAi = getDefaultSyncAi()
     state.wax.isAuthenticating = false
     useSessionStore.getState().setIsAuthenticating(state.wax.isAuthenticating)
-    state.wax.miner = await effects.wax.api.getMiner()
+    useMinerStore.getState().setMiner(await effects.wax.api.getMiner())
 
-    if (state.wax.miner === null) {
+    if (useMinerStore.getState().miner === null) {
       router.navigate(PagePath.NewsletterJoin)
     }
     localStorage.setItem('aw_wallet', state.wax.walletId)
@@ -249,8 +246,8 @@ export const loginAnchor = pipe(
     state.main.syncAi = getDefaultSyncAi()
     state.wax.isAuthenticating = false
     useSessionStore.getState().setIsAuthenticating(state.wax.isAuthenticating)
-    state.wax.miner = await effects.wax.api.getMiner()
-    if (state.wax.miner === null) {
+    useMinerStore.getState().setMiner(await effects.wax.api.getMiner())
+    if (useMinerStore.getState().miner === null) {
       router.navigate(PagePath.NewsletterJoin)
     }
     localStorage.setItem('aw_wallet', state.wax.walletId)
@@ -283,8 +280,8 @@ export const loginWax = pipe(
     state.main.syncAi = getDefaultSyncAi()
     state.wax.isAuthenticating = false
     useSessionStore.getState().setIsAuthenticating(state.wax.isAuthenticating)
-    state.wax.miner = await effects.wax.api.getMiner()
-    if (state.wax.miner === null) {
+    useMinerStore.getState().setMiner(await effects.wax.api.getMiner())
+    if (useMinerStore.getState().miner === null) {
       router.navigate(PagePath.NewsletterJoin)
     }
     localStorage.setItem('aw_wallet', state.wax.walletId)
@@ -451,7 +448,7 @@ export const getTransaction = async (transactionId: string) => {
 export const setMineDelay = pipe(
   ({ state }: Context) => {
     const { bagAssets, landAsset } = useAssetsStore.getState()
-    if (!bagAssets || !landAsset || !state.wax.miner || !state.wax.isLoggedIn) {
+    if (!bagAssets || !landAsset || !useMinerStore.getState().miner || !state.wax.isLoggedIn) {
       state.main.mineDelay = null
       return
     }
@@ -460,8 +457,8 @@ export const setMineDelay = pipe(
     const landParams = mapLandToMiningParams(landAsset)
 
     const newMineDelay = calculateMineDelay(
-      state.wax.miner.last_mine_tx,
-      state.wax.miner.last_mine,
+      useMinerStore.getState().miner.last_mine_tx,
+      useMinerStore.getState().miner.last_mine,
       bagParams,
       landParams
     )
@@ -525,59 +522,6 @@ export const notifyBountyFromLastMiningTransaction = pipe(
   })
 )
 
-export const presetAssetsFilter = () => {
-  const { assetsFilter, setAssetsFilter } = useAssetsStore.getState()
-
-  if (!assetsFilter) {
-    setAssetsFilter(getDefaultAssetsFilter(router.state.location.pathname))
-    return
-  }
-
-  // Inventory
-  if (matchPath(PagePath.Inventory, router.state.location.pathname)) {
-    setAssetsFilter({
-      sortBy: SortBy.NAME,
-      groupByTemplate: true,
-      reversed: false,
-      assetSchema: null,
-      view: null,
-    })
-    return
-  }
-
-  // Mining - Tools
-  if (matchPath(PagePath.Tools, router.state.location.pathname)) {
-    setAssetsFilter({
-      sortBy: SortBy.RARITY,
-      groupByTemplate: true,
-      reversed: false,
-      assetSchema: AssetSchema.TOOL,
-      view: null,
-    })
-    return
-  }
-
-  // Shining
-  if (matchPath(PagePath.Shining, router.state.location.pathname)) {
-    setAssetsFilter({
-      sortBy: SortBy.NAME,
-      groupByTemplate: true,
-      reversed: false,
-      assetSchema: null,
-      view: null,
-    })
-    return
-  }
-
-  setAssetsFilter({
-    ...assetsFilter,
-  })
-}
-
-export const setShiningUrl = pipe(({ state }: Context, url: string) => {
-  state.main.shiningUrl = url
-})
-
 export const showOnboardingPage = pipe(
   ({ actions }: Context) => {
     actions.wax.collectEvent({
@@ -601,34 +545,6 @@ export const showHomePage = pipe(
     console.error(error)
   })
 )
-export const showInventoryPage = pipe(
-  ({ actions }: Context) => {
-    useModalStore.getState().toggleMainDrawer(false)
-    actions.main.presetAssetsFilter()
-    actions.wax.collectEvent({
-      name: Constants.GA_PAGE_VISIT,
-      fields: { location: PagePath.Inventory },
-    })
-  },
-  catchError((_: Context, error) => {
-    console.error(error)
-  })
-)
-
-export const showShiningPage = pipe(
-  ({ actions }: Context) => {
-    useModalStore.getState().toggleMainDrawer(false)
-    actions.main.presetAssetsFilter()
-    actions.wax.collectEvent({
-      name: Constants.GA_PAGE_VISIT,
-      fields: { location: PagePath.Shining },
-    })
-  },
-  catchError((_: Context, error) => {
-    console.error(error)
-  })
-)
-
 export const showGovernancePage = pipe(
   ({ state, actions }: Context) => {
     useModalStore.getState().toggleMainDrawer(false)
@@ -991,57 +907,6 @@ export const showMissionJoinPage = pipe(
   })
 )
 
-export const showMiningPage = pipe(
-  async ({ actions }: Context) => {
-    useModalStore.getState().toggleMainDrawer(false)
-    actions.main.presetAssetsFilter()
-    actions.wax.collectEvent({
-      name: Constants.GA_PAGE_VISIT,
-      fields: { location: PagePath.Tools },
-    })
-  },
-  catchError((_: Context, error) => {
-    console.error(error)
-  })
-)
-
-export const showPlanetPage = pipe(
-  async ({ actions }: Context) => {
-    useModalStore.getState().toggleMainDrawer(false)
-    actions.wax.collectEvent({
-      name: Constants.GA_PAGE_VISIT,
-      fields: { location: PagePath.Planet },
-    })
-  },
-  catchError((_: Context, error) => {
-    console.error(error)
-  })
-)
-
-export const showLandPage = pipe(
-  async ({ state, actions }: Context, input: { assetIds: string[]; planetName: string }) => {
-    const { assetIds, planetName } = input
-    useMiningStore.getState().setLandAssetsFilterLoading(true)
-
-    if (!state.wax.whereToMine) {
-      await actions.main.updateWorld()
-    }
-    await actions.main.bindLandsMap({ assetIds, planetTitle: planetName })
-    useMiningStore.getState().resetLandAssetsFilter()
-  },
-  async ({ actions }: Context) => {
-    useModalStore.getState().toggleMainDrawer(false)
-    actions.wax.collectEvent({
-      name: Constants.GA_PAGE_VISIT,
-      fields: { location: PagePath.Land },
-    })
-  },
-
-  catchError((_: Context, error) => {
-    console.error(error)
-  })
-)
-
 export const showErrorPage = pipe(
   async ({ actions }: Context) => {
     useModalStore.getState().toggleMainDrawer(false)
@@ -1094,62 +959,6 @@ export const showOutpostPage = pipe(
   })
 )
 
-export const showLandMgtPage = pipe(
-  ({ state, actions }: Context, id: string) => {
-    useModalStore.getState().toggleMainDrawer(false)
-    state.wax.managingLandId = id
-
-    actions.wax.collectEvent({
-      name: Constants.GA_PAGE_VISIT,
-      fields: { location: PagePath.LandMgtSubpage },
-    })
-    actions.main.presetAssetsFilter()
-  },
-  loadManagingLandDetailsAndBoosts,
-  ({ state }: Context) => {
-    const {
-      state: {
-        location: { pathname },
-      },
-      navigate,
-    } = router
-
-    const isMiningLandPage = pathname.startsWith(PagePath.Land)
-
-    if (!isMiningLandPage && !state.wax.nftLandCardProperties.isUserOwner) {
-      navigate(PagePath.Inventory)
-    }
-  },
-  catchError((_: Context, error) => {
-    console.error(error)
-  })
-)
-
-export const bindLandsMap = async (
-  { state, effects }: Context,
-  input: { assetIds: string[]; planetTitle: string }
-) => {
-  const { assetIds, planetTitle } = input
-  if (assetIds.length > 0) {
-    if (
-      isNil(state.wax.planetLandsAssets[planetTitle]) ||
-      state.wax.planetLandsAssets[planetTitle]?.length === 0
-    ) {
-      let landAssets: IAsset[] = []
-
-      while (assetIds.length) {
-        const currentIds = assetIds.splice(0, 100)
-
-        const assets = await effects.atomic.api.getAssetsByIds(currentIds)
-
-        landAssets = landAssets.concat(assets)
-      }
-
-      state.wax.planetLandsAssets[planetTitle] = landAssets
-    }
-  }
-}
-
 export const updateWorld = parallel(
   parallel(
     validateAccount,
@@ -1176,6 +985,10 @@ export const updateWorld = parallel(
 )
 
 export const onInitializeOvermind = async ({ effects, actions, state }: Context) => {
+  registerSyncScheduler((key, inSeconds) => {
+    executeAfter(state.main.syncAi[key], DateTime.now().plus({ seconds: inSeconds }))
+  })
+
   effects.main.api.initialize({
     getBagAssets() {
       return useAssetsStore.getState().bagAssets
@@ -1184,7 +997,7 @@ export const onInitializeOvermind = async ({ effects, actions, state }: Context)
       return useAssetsStore.getState().landAsset
     },
     getLastMineTx() {
-      return state.wax.miner.last_mine_tx
+      return useMinerStore.getState().miner.last_mine_tx
     },
     getWalletId() {
       return state.wax.walletId
@@ -1349,7 +1162,3 @@ export const storeOnboardingNewsletterWasShown = pipe(
     state.missions.newsletterOnboardingWasShown = shown
   }
 )
-
-export const setOutPostModalsActive = pipe(({ state }: Context, shown: boolean = false) => {
-  state.main.isOutPostModalsActive = shown
-})

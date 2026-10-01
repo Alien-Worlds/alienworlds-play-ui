@@ -5,6 +5,7 @@ import { LoadingTransactionOverlay } from 'features/missions/components/LoadingT
 import { Outlet } from 'react-router-dom'
 import { TopBar } from 'shared/components/topbar/TopBar'
 import MainContainer from 'shared/layouts/MainContainer'
+import { useMinerStore } from 'shared/store/minerStore'
 import { useAppState } from 'store'
 
 import { Constants } from '../util/constants'
@@ -22,8 +23,8 @@ const WithMainContainer: FC = () => (
 const SimpleLayout: FC<SimpleLayoutProps> = ({ withTopBar = false }) => {
   const {
     missions: { loadingMessage },
-    wax: { isOnboarded },
   } = useAppState()
+  const isOnboarded = useMinerStore((state) => state.isOnboarded)
 
   return (
     <>

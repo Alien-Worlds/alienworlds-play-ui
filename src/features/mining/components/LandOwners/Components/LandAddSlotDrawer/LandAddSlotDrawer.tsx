@@ -24,6 +24,7 @@ import boost5 from 'assets/images/boosts/boost5.jpg'
 import { BoostSlotsInline } from 'features/mining/components/LandOwners/Components/BoostSlotsInline/BoostSlotsInline'
 import { LandInfo } from 'features/mining/components/LandOwners/Components/LandInfo/LandInfo'
 import { LandAddSlotModal } from 'features/mining/components/PlanetLand/Components/LandAddSlotModal'
+import { useMiningStore } from 'features/mining/store/miningStore'
 import { LandBoostLevel } from 'features/mining/types/LandownerTypes'
 import { BoostLevels } from 'features/mining/utils/constants'
 import { find, map } from 'lodash'
@@ -31,7 +32,6 @@ import { useMatch } from 'react-router-dom'
 import { AppModal } from 'shared/layouts'
 import { useModalStore } from 'shared/store/modalStore'
 import { Colors } from 'shared/util/colors'
-import { useAppState } from 'store'
 import { PagePath } from 'store/main/types'
 
 import { Constants } from '../../../../../../shared/util/constants'
@@ -48,9 +48,7 @@ export const LandAddSlotDrawer = () => {
   const isLandOwnerAddSlotDrawerOpen = useModalStore((state) => state.isLandOwnerAddSlotDrawerOpen)
   const landOwnerDrawerPayload = useModalStore((state) => state.landOwnerDrawerPayload)
 
-  const {
-    wax: { managingLandDetails },
-  } = useAppState()
+  const managingLandDetails = useMiningStore((state) => state.managingLandDetails)
 
   const isLandMgtSubPage = useMatch(PagePath.LandMgtSubpage)
 

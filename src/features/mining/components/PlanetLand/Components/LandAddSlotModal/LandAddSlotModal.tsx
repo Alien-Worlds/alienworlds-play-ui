@@ -13,7 +13,6 @@ import { useModalStore } from 'shared/store/modalStore'
 import { useSessionStore } from 'shared/store/sessionStore'
 import { Colors } from 'shared/util/colors'
 import { getDiffToStartOfNext25hDay } from 'shared/util/helpers'
-import { useActions, useAppState } from 'store'
 
 type SlotModalType = {
   selectedBoost: LandBoostLevel
@@ -22,12 +21,12 @@ type SlotModalType = {
 }
 
 export const LandAddSlotModal = ({ selectedBoost, onClose, selectedImg }: SlotModalType) => {
-  const {
-    wax: { boostSlot, applyMainBoost, loadManagingLandDetailsAndBoostsWithDelay },
-  } = useActions()
-  const {
-    wax: { managingLandId },
-  } = useAppState()
+  const boostSlot = useMiningStore((state) => state.boostSlot)
+  const applyMainBoost = useMiningStore((state) => state.applyMainBoost)
+  const loadManagingLandDetailsAndBoostsWithDelay = useMiningStore(
+    (state) => state.loadManagingLandDetailsAndBoostsWithDelay
+  )
+  const managingLandId = useMiningStore((state) => state.managingLandId)
   const ownedLandBoostsAssets = useMiningStore((state) => state.ownedLandBoostsAssets)
   const isDemoUser = useSessionStore((state) => state.isDemoUser)
   const setPrimaryModalActive = useModalStore((state) => state.setPrimaryModalActive)

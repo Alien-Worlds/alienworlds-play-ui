@@ -180,3 +180,13 @@ describe('useModalStore', () => {
     expect(result.current.isMainDrawerOpen).toBe(false)
   })
 })
+
+describe('outpost modals flag', () => {
+  it('records whether an outpost-style modal is open', () => {
+    useModalStore.getState().setOutPostModalsActive(true)
+    expect(useModalStore.getState().isOutPostModalsActive).toBe(true)
+
+    useModalStore.getState().setOutPostModalsActive()
+    expect(useModalStore.getState().isOutPostModalsActive).toBe(false)
+  })
+})

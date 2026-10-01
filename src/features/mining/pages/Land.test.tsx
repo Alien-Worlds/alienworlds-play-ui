@@ -144,8 +144,9 @@ const planets = [
   { id: 'kavian', planet_details: { title: 'Kavian' }, land_maps: [{ asset_id: '3' }] },
 ]
 
-const showLandPage = jest.fn()
+const collectEvent = jest.fn()
 const setPlanetSelectedForMiningIntent = jest.fn()
+const resetLandAssetsFilter = jest.fn()
 
 const defaultFilter = { isLoading: false, sortBy: 'Random' }
 
@@ -165,8 +166,8 @@ const setup = ({
         },
       },
       actions: {
-        wax: { setPlanetSelectedForMiningIntent },
-        main: { showLandPage },
+        wax: { setPlanetSelectedForMiningIntent, collectEvent },
+        atomic: { resetLandAssetsFilter },
       },
     })
   store(atomic.landAssetsFilter)
@@ -281,7 +282,11 @@ describe('Land page', () => {
 
     expect(mockRefetch).toHaveBeenCalledWith('kavian.world')
     expect(setPlanetSelectedForMiningIntent).toHaveBeenCalledWith('kavian')
-    expect(showLandPage).toHaveBeenCalledWith({ assetIds: ['3'], planetName: 'kavian' })
+    expect(resetLandAssetsFilter).toHaveBeenCalled()
+    expect(collectEvent).toHaveBeenCalledWith({
+      name: 'page_visit',
+      fields: { location: '/mining/land' },
+    })
   })
 
   it('toggles the land filters', async () => {
