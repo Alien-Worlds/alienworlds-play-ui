@@ -3,15 +3,13 @@ import { useCallback, useMemo } from 'react'
 import { Box, Flex, Text, VStack } from '@chakra-ui/react'
 import { SlotNumber } from 'features/mining/components/LandOwners/Components/SlotNumber/SlotNumber'
 import { useLandBoostSlots } from 'features/mining/hooks/useLandBoostSlots'
+import { useMiningStore } from 'features/mining/store/miningStore'
 import { LandSlot, SlotSize, SlotVariant } from 'features/mining/types/LandownerTypes'
 import { map } from 'lodash'
 import { useModalStore } from 'shared/store/modalStore'
-import { useAppState } from 'store'
 
 const BoostSlotsInlineComponent = () => {
-  const {
-    wax: { managingLandBoostFullSlots },
-  } = useAppState()
+  const managingLandBoostFullSlots = useMiningStore((state) => state.managingLandBoostFullSlots)
 
   const setLandOwnerDrawerPayload = useModalStore((state) => state.setLandOwnerDrawerPayload)
 

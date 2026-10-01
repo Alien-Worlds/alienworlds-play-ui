@@ -50,11 +50,13 @@ import {
   RingPositions,
 } from 'shared/components/RingPositionHelper/RingPositionHelper'
 import { useAssetsStore } from 'shared/store/assetsStore'
+import { useMinerStore } from 'shared/store/minerStore'
 import { useModalStore } from 'shared/store/modalStore'
 import { useSessionStore } from 'shared/store/sessionStore'
 import { Colors } from 'shared/util/colors'
+import { Constants } from 'shared/util/constants'
 import { dacIdToDacTreasuryAccountList } from 'shared/util/helpers'
-import { useActions, useAppState } from 'store'
+import { useActions } from 'store'
 import { PagePath } from 'store/main/types'
 
 interface MiningPlanetOptionItem {
@@ -63,17 +65,20 @@ interface MiningPlanetOptionItem {
 }
 
 const Land: VFC = () => {
-  const {
-    wax: { whereToMine, planetSelectedForMining, isOnboarded },
-  } = useAppState()
+  const whereToMine = useMinerStore((state) => state.whereToMine)
+  const planetSelectedForMining = useMinerStore((state) => state.planetSelectedForMining)
+  const isOnboarded = useMinerStore((state) => state.isOnboarded)
   const landAssetsFilter = useMiningStore((state) => state.landAssetsFilter)
   const landAsset = useAssetsStore((state) => state.landAsset)
   const walletId = useSessionStore((state) => state.walletId)
 
   const {
-    wax: { setPlanetSelectedForMiningIntent },
-    main: { showLandPage },
+    wax: { collectEvent },
   } = useActions()
+  const resetLandAssetsFilter = useMiningStore((state) => state.resetLandAssetsFilter)
+  const setPlanetSelectedForMiningIntent = useMinerStore(
+    (state) => state.setPlanetSelectedForMiningIntent
+  )
   const setPrimaryModalActive = useModalStore((state) => state.setPrimaryModalActive)
   const planetDetailsDrawer = useModalStore((state) => state.planetDetailsDrawer)
   const openPlanetDetailsDrawer = useModalStore((state) => state.openPlanetDetailsDrawer)
@@ -162,11 +167,12 @@ const Land: VFC = () => {
 
     const planet = find(filteredPlanets, { id: toLower((option as MiningPlanetOptionItem).value) })
 
-    const assetIds = map(planet.land_maps, (p) => p.asset_id)
     const currentPlanet = dacIdToDacTreasuryAccountList[planet.id]
     refetch(currentPlanet)
     setPlanetSelectedForMiningIntent(planet.id)
-    showLandPage({ assetIds: assetIds, planetName: planet.id })
+    resetLandAssetsFilter()
+    useModalStore.getState().toggleMainDrawer(false)
+    collectEvent({ name: Constants.GA_PAGE_VISIT, fields: { location: PagePath.Land } })
 
     setSortedAssets([])
   }

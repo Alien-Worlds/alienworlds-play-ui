@@ -7,16 +7,14 @@ import { LoadingSpinner } from 'features/syndicates/components/LoadingSpinner/Lo
 import { usePlanetDetail } from 'graphql/hooks/usePlanetDetail'
 import { useNavigate } from 'react-router-dom'
 import { useAssetsStore } from 'shared/store/assetsStore'
+import { useMinerStore } from 'shared/store/minerStore'
 import { Colors } from 'shared/util/colors'
 import { getNftImage } from 'shared/util/nft'
 import { formatNumber } from 'shared/util/numbers'
-import { useAppState } from 'store'
 import { PagePath } from 'store/main/types'
 
 const PlanetInfo: VFC = () => {
-  const {
-    wax: { planetSelectedForMining },
-  } = useAppState()
+  const planetSelectedForMining = useMinerStore((state) => state.planetSelectedForMining)
   const landAsset = useAssetsStore((state) => state.landAsset)
 
   const navigate = useNavigate()

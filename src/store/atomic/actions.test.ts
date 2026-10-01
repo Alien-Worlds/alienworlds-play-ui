@@ -4,6 +4,7 @@ import { DateTime } from 'luxon'
 import { createOvermindMock } from 'overmind'
 import { namespaced } from 'overmind/config'
 import { getInitialAssetsState, useAssetsStore } from 'shared/store/assetsStore'
+import { getInitialMinerState, useMinerStore } from 'shared/store/minerStore'
 import * as atomic from 'store/atomic'
 import { getDefaultSyncAi } from 'store/main/helpers'
 
@@ -11,6 +12,12 @@ import { getDefaultSyncAi } from 'store/main/helpers'
 // wallet plugins, which don't run under jsdom) and checks what they write to the Zustand stores.
 
 const realStore = useAssetsStore.getState()
+const realMinerStore = useMinerStore.getState()
+
+const mockFetchLandBoostsByDay = jest.fn()
+jest.mock('features/mining/utils/landBoosts', () => ({
+  fetchLandBoostsByDay: (...args: unknown[]) => mockFetchLandBoostsByDay(...args),
+}))
 
 // Every loader due now, so shouldExecute lets it run.
 const dueSyncAi = () => {
@@ -44,10 +51,6 @@ const setup = ({
     atomic,
     wax: {
       state: { isLoggedIn: true, isDemoUser: false, walletId: 'miner.wam', ...wax },
-      actions: {
-        getLandBoostsByDay: async () => [],
-        setPlanetSelectedForMining: () => {},
-      },
       effects: { api: waxApi },
     },
     main: { state: { isFocusedWindow: true, syncAi: dueSyncAi() } },
@@ -61,6 +64,8 @@ const setup = ({
 
 beforeEach(() => {
   useAssetsStore.setState({ ...realStore, ...getInitialAssetsState() }, true)
+  useMinerStore.setState({ ...realMinerStore, ...getInitialMinerState() }, true)
+  mockFetchLandBoostsByDay.mockReset().mockResolvedValue([])
 })
 
 describe('atomic.initializeOrReloadAssets', () => {
@@ -76,6 +81,7 @@ describe('atomic.initializeOrReloadAssets', () => {
     expect(assets.map((x) => x.asset_id)).toEqual(['1', '10', '11'])
     expect(ownedLandsAssets.map((x) => x.asset_id)).toEqual(['10'])
     expect(useMiningStore.getState().ownedLandBoostsAssets.map((x) => x.asset_id)).toEqual(['11'])
+    expect(mockFetchLandBoostsByDay).toHaveBeenCalledWith('10', expect.any(Number))
     expect(useInventoryStore.getState().ownedLandsAssetsDayBoosts).toEqual([
       { landId: '10', boosts: [] },
     ])
@@ -128,6 +134,7 @@ describe('atomic.initializeOrReloadBag', () => {
 
     await actions.initializeOrReloadBag()
 
+    expect(useAssetsStore.getState().bag).toEqual({ items: ['1', '2'] })
     expect(useAssetsStore.getState().bagAssets.map((x) => x.asset_id)).toEqual(['1', '2'])
   })
 
@@ -147,6 +154,7 @@ describe('atomic.initializeOrReloadMiningLand', () => {
 
     await actions.initializeOrReloadMiningLand()
 
+    expect(useMinerStore.getState().miner).toEqual({ current_land: '42' })
     expect(useAssetsStore.getState().landAsset.asset_id).toBe('42')
   })
 

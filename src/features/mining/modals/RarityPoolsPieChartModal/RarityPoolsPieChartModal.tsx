@@ -1,17 +1,16 @@
 import { Modal, ModalBody, ModalCloseButton, ModalContent, ModalOverlay } from '@chakra-ui/react'
 import { RarityPoolsPieChart } from 'features/mining/components/RarityPoolsPieChart'
 import { useRarityPools } from 'features/mining/hooks/useRarityPools'
+import { useMinerStore } from 'shared/store/minerStore'
 import { useModalStore } from 'shared/store/modalStore'
 import { Colors } from 'shared/util/colors'
 import { dacIdToDacTreasuryAccountList } from 'shared/util/helpers'
-import { useAppState } from 'store'
 
 const RarityPoolsPieChartModal = () => {
   const setPrimaryModalActive = useModalStore((state) => state.setPrimaryModalActive)
   const primaryModals = useModalStore((state) => state.primaryModals)
-  const {
-    wax: { planetSelectedForMining, whereToMineIntent },
-  } = useAppState()
+  const planetSelectedForMining = useMinerStore((state) => state.planetSelectedForMining)
+  const whereToMineIntent = useMinerStore((state) => state.whereToMineIntent)
 
   const id = whereToMineIntent
     ? dacIdToDacTreasuryAccountList[whereToMineIntent]

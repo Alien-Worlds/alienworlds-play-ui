@@ -1,18 +1,15 @@
-import { formatNumber } from 'shared/util/numbers'
-
 import { VFC } from 'react'
 
 import { FillRateOldIcon } from '@alien-worlds/icons'
 import { Flex, Text } from '@chakra-ui/react'
-import { Colors } from 'shared/util/colors'
 import { LoadingSpinner } from 'features/syndicates/components/LoadingSpinner/LoadingSpinner'
 import { usePlanetDetail } from 'graphql/hooks/usePlanetDetail'
-import { useAppState } from 'store'
+import { useMinerStore } from 'shared/store/minerStore'
+import { Colors } from 'shared/util/colors'
+import { formatNumber } from 'shared/util/numbers'
 
 const PlanetFillrate: VFC = () => {
-  const {
-    wax: { planetSelectedForMining },
-  } = useAppState()
+  const planetSelectedForMining = useMinerStore((state) => state.planetSelectedForMining)
   const { planetDetails, loading } = usePlanetDetail(planetSelectedForMining)
   if (loading) return <LoadingSpinner />
   if (!planetDetails) return <></>

@@ -1,13 +1,11 @@
 import { useMemo } from 'react'
 
+import { useMiningStore } from 'features/mining/store/miningStore'
 import { LandSlot, SlotVariant } from 'features/mining/types/LandownerTypes'
 import { filter } from 'lodash'
-import { useAppState } from 'store'
 
 export const useLandBoostSlots = () => {
-  const {
-    wax: { managingLandBoostFullSlots },
-  } = useAppState()
+  const managingLandBoostFullSlots = useMiningStore((state) => state.managingLandBoostFullSlots)
 
   const firstAvailableSlot = useMemo(() => {
     const usedSlots = filter(

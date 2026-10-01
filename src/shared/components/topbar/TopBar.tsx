@@ -75,8 +75,8 @@ const TopBar = () => {
   } = useActions()
   const {
     wax: { selectedDrawerView, isSyndicatesSidebarOpen },
-    main: { isOutPostModalsActive },
   } = useAppState()
+  const isOutPostModalsActive = useModalStore((state) => state.isOutPostModalsActive)
   const ownedLandsAssets = useAssetsStore((state) => state.ownedLandsAssets)
   const walletId = useSessionStore((state) => state.walletId)
   const isDemoUser = useSessionStore((state) => state.isDemoUser)

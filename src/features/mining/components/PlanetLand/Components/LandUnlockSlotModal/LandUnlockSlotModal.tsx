@@ -3,9 +3,9 @@ import { VFC } from 'react'
 import { TriliumIcon } from '@alien-worlds/icons'
 import { Button } from '@alien-worlds/uikit'
 import { Box, Center, Flex, Text } from '@chakra-ui/react'
+import { useMiningStore } from 'features/mining/store/miningStore'
 import { Colors } from 'shared/util/colors'
 import { formatNumber } from 'shared/util/numbers'
-import { useActions, useAppState } from 'store'
 
 const slotPrices = {
   1: 0,
@@ -29,13 +29,12 @@ export const LandUnlockSlotModal: VFC<{ onClose: () => void; slotToUnlock: numbe
   onClose,
   slotToUnlock,
 }) => {
-  const {
-    wax: { managingLandId },
-  } = useAppState()
+  const managingLandId = useMiningStore((state) => state.managingLandId)
 
-  const {
-    wax: { unlockSlot, loadManagingLandDetailsAndBoostsWithDelay },
-  } = useActions()
+  const unlockSlot = useMiningStore((state) => state.unlockSlot)
+  const loadManagingLandDetailsAndBoostsWithDelay = useMiningStore(
+    (state) => state.loadManagingLandDetailsAndBoostsWithDelay
+  )
 
   const slotPrice: number = slotPrices[slotToUnlock]
 

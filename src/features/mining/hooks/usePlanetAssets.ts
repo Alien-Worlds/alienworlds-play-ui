@@ -1,12 +1,10 @@
 import { useQuery } from '@tanstack/react-query'
 import { IAsset } from 'atomicassets/build/API/Explorer/Objects'
-import { useEffects } from 'store'
+import { getAssetsByIds } from 'shared/util/atomicassets'
 
 const QUERY_KEY = 'asset-ids'
 
 export const usePlanetAssets = (assetIds: string[]) => {
-  const effects = useEffects()
-
   return useQuery({
     queryKey: [QUERY_KEY, assetIds], // include assetIds to properly cache
     queryFn: async () => {
@@ -15,7 +13,7 @@ export const usePlanetAssets = (assetIds: string[]) => {
 
       while (ids.length) {
         const currentIds = ids.splice(0, 100)
-        const assets = await effects.atomic.api.getAssetsByIds(currentIds)
+        const assets = await getAssetsByIds(currentIds)
         landAssets = landAssets.concat(assets)
       }
 

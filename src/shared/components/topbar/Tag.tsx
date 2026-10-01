@@ -11,6 +11,7 @@ import {
   Spinner,
 } from '@chakra-ui/react'
 import { motion } from 'framer-motion'
+import { useMinerStore } from 'shared/store/minerStore'
 import { useSessionStore } from 'shared/store/sessionStore'
 import { Colors } from 'shared/util/colors'
 import { useActions, useAppState } from 'store'
@@ -31,8 +32,9 @@ const Tag = ({
   color?: string
 }) => {
   const {
-    wax: { currentTag, player, isSettingTag, isOnboarded },
+    wax: { currentTag, player, isSettingTag },
   } = useAppState()
+  const isOnboarded = useMinerStore((state) => state.isOnboarded)
   const isDemoUser = useSessionStore((state) => state.isDemoUser)
   const isAuthenticating = useSessionStore((state) => state.isAuthenticating)
   const isLoggedIn = useSessionStore((state) => state.isLoggedIn)

@@ -77,7 +77,7 @@ jest.mock('graphql/hooks/usePlanetDetail', () => ({
   usePlanetDetail: () => mockPlanetDetail,
 }))
 
-const showMiningPage = jest.fn()
+const collectEvent = jest.fn()
 
 const land = {
   name: 'Mountains on Eyeke',
@@ -90,13 +90,13 @@ const setup = ({
 }: { landAsset?: any; planet?: string } = {}) => {
   mockStore({
     state: { atomic: { landAsset }, wax: { planetSelectedForMining: planet } },
-    actions: { main: { showMiningPage } },
+    actions: { wax: { collectEvent } },
   })
   return render(<Mining />)
 }
 
 beforeEach(() => {
-  showMiningPage.mockClear()
+  collectEvent.mockClear()
   mockRarityPools.mockReset().mockReturnValue({ data: [] })
   mockPlanetDetail = {
     planetDetails: { planet_details: { title: 'Eyeke', planet_name: 'eyeke.world' } },
@@ -109,10 +109,14 @@ beforeEach(() => {
 })
 
 describe('Mining page', () => {
-  it('registers the page on mount', () => {
+  it('records the page visit on mount', () => {
     setup()
 
-    expect(showMiningPage).toHaveBeenCalledTimes(1)
+    expect(collectEvent).toHaveBeenCalledTimes(1)
+    expect(collectEvent).toHaveBeenCalledWith({
+      name: 'page_visit',
+      fields: { location: '/mining/tools' },
+    })
   })
 
   it('shows a spinner while the planet loads', () => {

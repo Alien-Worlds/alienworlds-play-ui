@@ -1,5 +1,35 @@
 import { getInitialAssetsState, useAssetsStore } from 'shared/store/assetsStore'
+import { useMinerStore } from 'shared/store/minerStore'
+import { useModalStore } from 'shared/store/modalStore'
+import { useSessionStore } from 'shared/store/sessionStore'
+import {
+  buildSetAvatarActions,
+  buildSetBagActions,
+  buildSetLandActions,
+} from 'shared/wax/assetActions'
 import { AssetSchema, AssetsFilter, SortBy } from 'store/atomic/types'
+
+const mockTransact = jest.fn()
+jest.mock('shared/wax/transact', () => ({
+  transact: (actions: unknown) => mockTransact(actions),
+}))
+
+const mockGetAssetById = jest.fn()
+jest.mock('shared/util/atomicassets', () => ({
+  getAssetById: (id: string) => mockGetAssetById(id),
+}))
+
+const mockToastMessage = jest.fn()
+const mockToastErrorMessage = jest.fn()
+jest.mock('shared/util/toast', () => ({
+  toastMessage: (message: string) => mockToastMessage(message),
+  toastErrorMessage: (message: string) => mockToastErrorMessage(message),
+}))
+
+const mockScheduleSync = jest.fn()
+jest.mock('shared/store/syncScheduler', () => ({
+  scheduleSync: (...args: unknown[]) => mockScheduleSync(...args),
+}))
 
 const realStore = useAssetsStore.getState()
 
@@ -371,5 +401,146 @@ describe('assetsStore.syncLandRating', () => {
     useAssetsStore.getState().syncLandRating({ asset_id: '42', mutable_data: {} } as any)
 
     expect(useAssetsStore.getState().assets).toBeNull()
+  })
+})
+
+describe('assetsStore transactions', () => {
+  const realAssets = useAssetsStore.getState()
+
+  beforeEach(() => {
+    jest.clearAllMocks()
+    mockTransact.mockResolvedValue({})
+    mockGetAssetById.mockImplementation(async (id: string) => ({ asset_id: id, data: {} }))
+    useSessionStore.getState().setWalletId('miner.wam')
+    useAssetsStore.setState({ ...realAssets, ...getInitialAssetsState() }, true)
+    useModalStore.setState({ miningToolsDrawer: { isOpen: true, activeSlotIndex: 1 } })
+  })
+
+  describe('setBag', () => {
+    it('equips the tools, loads them and asks for a re-sort', async () => {
+      useAssetsStore.setState({ bag: { items: ['1'] } as any })
+
+      await useAssetsStore.getState().setBag(['1', '2'])
+
+      expect(mockTransact).toHaveBeenCalledWith(buildSetBagActions('miner.wam', ['1', '2']))
+      expect(mockToastMessage).toHaveBeenCalledWith('Tool Slot #2 equipped successfully.')
+      expect(useAssetsStore.getState().bag.items).toEqual(['1', '2'])
+      expect(useAssetsStore.getState().bagAssets.map((x) => x.asset_id)).toEqual(['1', '2'])
+      expect(useAssetsStore.getState().triggerFilterAndSortAssets).toBe(true)
+      expect(mockScheduleSync).toHaveBeenCalledWith(['bag'], 5)
+    })
+
+    it.each([
+      [['1', '2'], ['1', '3'], 'Tool Slot #2 updated successfully.'],
+      [['1', '2'], ['1'], 'Tool Slot #2 cleared successfully.'],
+    ])('says whether the slot was updated or cleared', async (before, after, message) => {
+      useAssetsStore.setState({ bag: { items: before } as any })
+
+      await useAssetsStore.getState().setBag(after)
+
+      expect(mockToastMessage).toHaveBeenCalledWith(message)
+    })
+
+    it('shows the chain error and changes nothing when the transaction fails', async () => {
+      mockTransact.mockRejectedValue(new Error('assertion failure: BAG_MUST_OWN'))
+      useAssetsStore.setState({ bag: { items: ['1'] } as any })
+
+      await useAssetsStore.getState().setBag(['1', '2'])
+
+      expect(mockToastErrorMessage).toHaveBeenCalledWith('Error: assertion failure: BAG_MUST_OWN')
+      expect(useAssetsStore.getState().bag.items).toEqual(['1'])
+      expect(mockScheduleSync).not.toHaveBeenCalled()
+    })
+
+    it('does nothing without a wallet', async () => {
+      useSessionStore.getState().setWalletId(null)
+
+      await useAssetsStore.getState().setBag(['1'])
+
+      expect(mockTransact).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('setLand', () => {
+    it('sets the mining land and its planet', async () => {
+      mockGetAssetById.mockResolvedValue({ asset_id: '42', data: { name: 'Plains on Kavian' } })
+      useMinerStore.getState().setMiner({} as any)
+
+      await useAssetsStore.getState().setLand('42')
+
+      expect(mockTransact).toHaveBeenCalledWith(buildSetLandActions('miner.wam', '42'))
+      expect(mockToastMessage).toHaveBeenCalledWith('Mining Land updated successfully.')
+      expect(useAssetsStore.getState().landAsset.asset_id).toBe('42')
+      expect(useMinerStore.getState().planetSelectedForMining).toBe('kavian')
+      expect(mockScheduleSync).toHaveBeenCalledWith(['land'], 15)
+    })
+
+    it('shows the chain error when the transaction fails', async () => {
+      mockTransact.mockRejectedValue(new Error('no'))
+
+      await useAssetsStore.getState().setLand('42')
+
+      expect(mockToastErrorMessage).toHaveBeenCalledWith('Error: no')
+      expect(useAssetsStore.getState().landAsset).toBeNull()
+    })
+  })
+
+  describe('setAvatar', () => {
+    it('sets the avatar', async () => {
+      await useAssetsStore.getState().setAvatar('1099')
+
+      expect(mockTransact).toHaveBeenCalledWith(buildSetAvatarActions('miner.wam', '1099'))
+      expect(mockToastMessage).toHaveBeenCalledWith('Avatar updated successfully.')
+      expect(useAssetsStore.getState().avatarAsset.asset_id).toBe('1099')
+      expect(mockScheduleSync).toHaveBeenCalledWith(['avatar'], 15)
+    })
+  })
+})
+
+describe('assetsStore.presetAssetsFilter', () => {
+  it.each([
+    ['/inventory', SortBy.NAME, null],
+    ['/mining/tools', SortBy.RARITY, AssetSchema.TOOL],
+    ['/shining', SortBy.NAME, null],
+  ])('sets the default filter for %s', (path, sortBy, assetSchema) => {
+    setPath(path)
+    seedStore((s) => {
+      s.atomic.assetsFilter = makeFilter({ sortBy: SortBy.LUCK, reversed: true })
+    })
+
+    useAssetsStore.getState().presetAssetsFilter()
+
+    expect(useAssetsStore.getState().assetsFilter).toMatchObject({
+      sortBy,
+      assetSchema,
+      groupByTemplate: true,
+      reversed: false,
+    })
+  })
+
+  it('starts from the page default when there is no filter yet', () => {
+    setPath('/mining/tools')
+    seedStore()
+
+    useAssetsStore.getState().presetAssetsFilter()
+
+    expect(useAssetsStore.getState().assetsFilter).toMatchObject({
+      sortBy: SortBy.RARITY,
+      assetSchema: AssetSchema.TOOL,
+    })
+  })
+
+  it('keeps the filter on other pages', () => {
+    setPath('/landMgt/42')
+    seedStore((s) => {
+      s.atomic.assetsFilter = makeFilter({ sortBy: SortBy.LUCK, reversed: true })
+    })
+
+    useAssetsStore.getState().presetAssetsFilter()
+
+    expect(useAssetsStore.getState().assetsFilter).toMatchObject({
+      sortBy: SortBy.LUCK,
+      reversed: true,
+    })
   })
 })

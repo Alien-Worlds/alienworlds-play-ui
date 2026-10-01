@@ -24,10 +24,10 @@ import {
   RingPositionHelper,
   RingPositions,
 } from 'shared/components/RingPositionHelper/RingPositionHelper'
+import { useMinerStore } from 'shared/store/minerStore'
 import { Colors } from 'shared/util/colors'
 import { convertPlanetIdToName, DaoIdToNameFinder } from 'shared/util/helpers'
 import { PlanetIcon } from 'shared/util/icons'
-import { useAppState } from 'store'
 import { v4 as uuidv4 } from 'uuid'
 
 interface PlanetImageProps {
@@ -74,9 +74,7 @@ const PlanetImage: React.FC<PlanetImageProps & FlexProps> = ({
   justifyContent = 'center',
   ...props
 }) => {
-  const {
-    wax: { planetSelectedForMining },
-  } = useAppState()
+  const planetSelectedForMining = useMinerStore((state) => state.planetSelectedForMining)
   const { planetDetails, loading } = usePlanetDetail(planetSelectedForMining)
   const { data: rarityPools } = useRarityPools(planet?.planet_details?.planet_name)
 

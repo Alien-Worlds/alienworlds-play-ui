@@ -36,9 +36,7 @@ import { useActions } from 'store'
 export const ProfileInfo = () => {
   const walletId = useSessionStore((state) => state.walletId)
   const isDemoUser = useSessionStore((state) => state.isDemoUser)
-  const {
-    main: { setOutPostModalsActive },
-  } = useActions()
+  const setOutPostModalsActive = useModalStore((state) => state.setOutPostModalsActive)
   const setPrimaryModalActive = useModalStore((state) => state.setPrimaryModalActive)
 
   const { walletDetails, loading }: { walletDetails: WalletDetailsResponse; loading: boolean } =

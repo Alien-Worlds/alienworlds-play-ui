@@ -25,11 +25,13 @@ import { MiningToolsActiveSlotNumber } from 'features/mining/types/MiningTypes'
 import { LoadingSpinner } from 'features/syndicates/components/LoadingSpinner/LoadingSpinner'
 import { usePlanetDetail } from 'graphql/hooks/usePlanetDetail'
 import { RingPositionHelper } from 'shared/components/RingPositionHelper/RingPositionHelper'
+import { usePageVisit } from 'shared/hooks/usePageVisit'
 import { useAssetsStore } from 'shared/store/assetsStore'
+import { useMinerStore } from 'shared/store/minerStore'
 import { useModalStore } from 'shared/store/modalStore'
 import { Colors } from 'shared/util/colors'
 import { config } from 'shared/util/config'
-import { useActions, useAppState } from 'store'
+import { PagePath } from 'store/main/types'
 
 import { RingPositions } from '../../../shared/components/RingPositionHelper/RingPositionHelper'
 
@@ -153,14 +155,9 @@ const CardCharge: VFC<{ land: IAsset }> = ({ land }) => {
 }
 
 const Mining: VFC = () => {
-  const {
-    wax: { planetSelectedForMining },
-  } = useAppState()
+  const planetSelectedForMining = useMinerStore((state) => state.planetSelectedForMining)
   const landAsset = useAssetsStore((state) => state.landAsset)
 
-  const {
-    main: { showMiningPage },
-  } = useActions()
   const setPrimaryModalActive = useModalStore((state) => state.setPrimaryModalActive)
   const miningToolsDrawer = useModalStore((state) => state.miningToolsDrawer)
   const planetDetailsDrawer = useModalStore((state) => state.planetDetailsDrawer)
@@ -179,9 +176,7 @@ const Mining: VFC = () => {
     }
   }, [landAsset, planetSelectedForMining])
 
-  useEffect(() => {
-    showMiningPage()
-  }, [])
+  usePageVisit(PagePath.Tools, { presetAssetsFilter: true })
   if (loading) return <LoadingSpinner />
   return (
     <Flex

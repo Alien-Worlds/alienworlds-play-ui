@@ -1,16 +1,18 @@
 import { renderHook, waitFor } from '@testing-library/react'
-import { createQueryWrapper, mockStore } from 'features/mining/testUtils/mockStore'
+import { createQueryWrapper } from 'features/mining/testUtils/mockStore'
 
 import { usePlanetAssets } from './usePlanetAssets'
 
-jest.mock('store', () => jest.requireActual('features/mining/testUtils/mockStore').storeMock)
-
-const getAssetsByIds = jest.fn()
+const mockGetAssetsByIds = jest.fn()
+jest.mock('shared/util/atomicassets', () => ({
+  getAssetsByIds: (ids: string[]) => mockGetAssetsByIds(ids),
+}))
 
 beforeEach(() => {
-  getAssetsByIds.mockReset()
-  getAssetsByIds.mockImplementation(async (ids: string[]) => ids.map((id) => ({ asset_id: id })))
-  mockStore({ effects: { atomic: { api: { getAssetsByIds } } } })
+  mockGetAssetsByIds.mockReset()
+  mockGetAssetsByIds.mockImplementation(async (ids: string[]) =>
+    ids.map((id) => ({ asset_id: id }))
+  )
 })
 
 describe('usePlanetAssets', () => {
@@ -20,7 +22,7 @@ describe('usePlanetAssets', () => {
     const { result } = renderHook(() => usePlanetAssets(ids), { wrapper: createQueryWrapper() })
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true))
-    expect(getAssetsByIds.mock.calls.map(([batch]) => batch.length)).toEqual([100, 100, 50])
+    expect(mockGetAssetsByIds.mock.calls.map(([batch]) => batch.length)).toEqual([100, 100, 50])
     expect(result.current.data).toHaveLength(250)
     expect(ids).toHaveLength(250)
   })
@@ -29,6 +31,6 @@ describe('usePlanetAssets', () => {
     const { result } = renderHook(() => usePlanetAssets([]), { wrapper: createQueryWrapper() })
 
     expect(result.current.fetchStatus).toBe('idle')
-    expect(getAssetsByIds).not.toHaveBeenCalled()
+    expect(mockGetAssetsByIds).not.toHaveBeenCalled()
   })
 })

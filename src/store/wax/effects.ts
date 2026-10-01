@@ -2,11 +2,8 @@ import { Buffer } from 'buffer'
 
 import { WaxJS } from '@waxio/waxjs/dist'
 import { APIClient, Serializer } from '@wharfkit/session'
-import { IAsset } from 'atomicassets/build/API/Explorer/Objects'
 import { JsonRpc } from 'eosjs'
 import { TransactResult } from 'eosjs/dist/eosjs-api-interfaces'
-import { RarityPoolsResponse } from 'features/mining/types/RarityPoolTypes'
-import { MainBoostLevels } from 'features/mining/utils/constants'
 import {
   EosioAction,
   ProposalExec,
@@ -30,13 +27,11 @@ import { WalletType } from 'store/main/types'
 import {
   WaxBag,
   WaxLand,
-  WaxShine,
   WaxMiner,
   WaxTerms,
   WaxQuery,
   WaxPlayer,
   WaxResult,
-  ShineData,
   ActionType,
   WaxResponse,
   PremintOffer,
@@ -552,31 +547,6 @@ export const api = (() => {
         return null
       }
     },
-    async getShineInfo(templateId: string) {
-      if (!options || !options?.getWalletId() || !templateId) return null
-
-      const query: WaxQuery = {
-        table: Constants.CONTRACT_TABLE_LOOKUPS,
-        scope: Constants.CONTRACT_S_FEDERATION,
-        code: Constants.CONTRACT_S_FEDERATION,
-        upper_bound: templateId,
-        lower_bound: templateId,
-        index_position: 1,
-        show_payer: false,
-        reverse: false,
-        key_type: ' ',
-        json: true,
-        limit: 1,
-      }
-      let result: WaxResult
-
-      const rpc = new JsonRpc(config.WaxFetchApiUrl, { fetch })
-      if (rpc) result = await rpc.get_table_rows(query)
-      else if (waxClient?.api) result = await waxClient.api.rpc.get_table_rows(query)
-      else if (wharfClient) result = await wharfClient.v1.chain.get_table_rows(query)
-
-      return <WaxShine>result?.rows?.[0] ?? null
-    },
     async getUserPoints() {
       if (!options || !options?.getWalletId()) return null
 
@@ -760,27 +730,6 @@ export const api = (() => {
       return null
     },
 
-    async getLandBoosts(landId: string) {
-      if (!options || !options?.getWalletId()) return null
-
-      const query: WaxQuery = {
-        table: Constants.CONTRACT_TABLE_LANDBOOSTS,
-        scope: Constants.CONTRACT_LAND_RATINGS,
-        code: Constants.CONTRACT_LAND_RATINGS,
-        upper_bound: landId,
-        lower_bound: landId,
-        limit: 1, // limit to the last day boosts added
-      }
-
-      let result: WaxResult
-
-      const rpc = new JsonRpc(config.WaxFetchApiUrl, { fetch })
-      if (rpc) result = await rpc.get_table_rows(query)
-      else if (waxClient?.api) result = await waxClient.api.rpc.get_table_rows(query)
-      else if (wharfClient) result = await wharfClient.v1.chain.get_table_rows(query)
-
-      return result?.rows ?? null
-    },
     async getVotingHistory(
       candidateId: string,
       dacId: string,
@@ -801,49 +750,7 @@ export const api = (() => {
 
       return null
     },
-    async getRarityPools(dacTreasuryAccount: string) {
-      if (!options || !options?.getWalletId()) return null
-
-      const query: WaxQuery = {
-        table: Constants.CONTRACT_TABLE_POOLS,
-        code: Constants.CONTRACT_M_FEDERATION,
-        scope: dacTreasuryAccount,
-        limit: 1,
-      }
-
-      let result: WaxResult
-
-      const rpc = new JsonRpc(config.WaxFetchApiUrl, { fetch })
-      if (rpc) result = await rpc.get_table_rows(query)
-      else if (waxClient?.api) result = await waxClient.api.rpc.get_table_rows(query)
-      else if (wharfClient) result = await wharfClient.v1.chain.get_table_rows(query)
-
-      return <RarityPoolsResponse>result?.rows?.[0] ?? null
-    },
-
     ///////////////////////// WRITE ////////////////////////////////////
-    async setBag(items: string[]) {
-      if (!options || !options?.getWalletId()) return
-
-      const request: WaxRequest = [
-        {
-          account: Constants.CONTRACT_M_FEDERATION,
-          name: Constants.CONTRACT_FEDERATION_ACTION_SETBAG,
-          authorization: [
-            {
-              actor: options.getWalletId(),
-              permission: 'active',
-            },
-          ],
-          data: {
-            account: options.getWalletId(),
-            items,
-          },
-        },
-      ]
-
-      await this.executeTransactFinal(request)
-    },
     async setTag(tag: string) {
       if (!options || !options?.getWalletId()) return
 
@@ -860,93 +767,6 @@ export const api = (() => {
           data: {
             account: options.getWalletId(),
             tag,
-          },
-        },
-      ]
-
-      await this.executeTransactFinal(request)
-    },
-    async setAvatar(avatarId: string) {
-      if (!options || !options?.getWalletId()) return
-
-      const requests: WaxRequest = []
-
-      const setAvatarRequest = {
-        account: Constants.CONTRACT_FEDERATION,
-        name: Constants.CONTRACT_FEDERATION_ACTION_SETAVATAR,
-        authorization: [
-          {
-            actor: options.getWalletId(),
-            permission: 'active',
-          },
-        ],
-        data: {
-          account: options.getWalletId(),
-          avatar_id: avatarId,
-        },
-      }
-
-      if (Number(avatarId) === 1 || Number(avatarId) === 2) {
-        requests.push({
-          account: Constants.CONTRACT_EOSIO,
-          name: Constants.CONTRACT_EOSIO_BUY_RAM_BYTES,
-          authorization: [
-            {
-              actor: options.getWalletId(),
-              permission: 'active',
-            },
-          ],
-          data: {
-            payer: options.getWalletId(),
-            receiver: 'mint.worlds',
-            bytes: 152,
-          },
-        })
-      }
-      requests.push(setAvatarRequest)
-
-      await this.executeTransactFinal(requests)
-    },
-    async setLand(landId: string) {
-      if (!options || !options?.getWalletId()) return
-
-      const request: WaxRequest = [
-        {
-          account: Constants.CONTRACT_M_FEDERATION,
-          name: Constants.CONTRACT_FEDERATION_ACTION_SETLAND,
-          authorization: [
-            {
-              actor: options.getWalletId(),
-              permission: 'active',
-            },
-          ],
-          data: {
-            account: options.getWalletId(),
-            land_id: landId,
-          },
-        },
-      ]
-
-      await this.executeTransactFinal(request)
-    },
-
-    async setCommission(landId: string, commission: string) {
-      if (!options || !options?.getWalletId()) return
-
-      const request: WaxRequest = [
-        {
-          account: Constants.CONTRACT_LAND_RATINGS,
-          name: Constants.CONTRACT_FEDERATION_ACTION_SETPROFITSHR,
-          authorization: [
-            {
-              actor: options.getWalletId(),
-              permission: 'active',
-            },
-          ],
-          data: {
-            owner: options.getWalletId(),
-            land_id: landId,
-            profit_share: commission,
           },
         },
       ]
@@ -998,47 +818,6 @@ export const api = (() => {
       ]
 
       await this.executeTransactFinal(request)
-    },
-    async submitShine(shineIds: string[], shineData: ShineData) {
-      if (!options || !options?.getWalletId()) return null
-      const request: WaxRequest = [
-        {
-          account: Constants.CONTRACT_ALIEN_WORLDS,
-          name: Constants.CONTRACT_TABLE_TRANSFER,
-          authorization: [
-            {
-              actor: options.getWalletId(),
-              permission: 'active',
-            },
-          ],
-          data: {
-            from: options.getWalletId(),
-            to: Constants.CONTRACT_S_FEDERATION,
-            quantity: shineData.info.cost,
-            memo: 'Shining',
-          },
-        },
-        {
-          account: Constants.CONTRACT_ATOMIC_ASSETS,
-          name: Constants.CONTRACT_TABLE_TRANSFER,
-          authorization: [
-            {
-              actor: options.getWalletId(),
-              permission: 'active',
-            },
-          ],
-          data: {
-            from: options.getWalletId(),
-            to: Constants.CONTRACT_S_FEDERATION,
-            asset_ids: shineIds,
-            memo: 'Shining',
-          },
-        },
-      ]
-
-      const result = await this.executeTransactFinal(request)
-
-      return result as TransactResult
     },
     async executeOnboarding(onboarding: OnboardingData) {
       if (!options || !options?.getWalletId()) return
@@ -2208,151 +1987,6 @@ export const api = (() => {
         },
       ]
       await this.executeTransactFinal(request)
-    },
-    async applyMainBoost(landId: string, boost: IAsset) {
-      if (!options || !options?.getWalletId()) return
-
-      const request: WaxRequest = [
-        {
-          account: Constants.CONTRACT_ATOMIC_ASSETS,
-          name: Constants.CONTRACT_TABLE_TRANSFER,
-          authorization: [
-            {
-              actor: options.getWalletId(),
-              permission: 'active',
-            },
-          ],
-          data: {
-            from: options.getWalletId(),
-            to: Constants.CONTRACT_LAND_RATINGS,
-            asset_ids: [boost.asset_id],
-            memo: `<${boost.name}> for land id ${landId}`,
-          },
-        },
-        {
-          account: Constants.CONTRACT_LAND_RATINGS,
-          name:
-            boost.name === MainBoostLevels[0].name
-              ? Constants.CONTRACT_LAND_RATINGS_ACTION_MEGABOOST
-              : Constants.CONTRACT_LAND_RATINGS_ACTION_SUPERBOOST,
-          authorization: [
-            {
-              actor: options.getWalletId(),
-              permission: 'active',
-            },
-          ],
-          data: {
-            land_id: landId,
-          },
-        },
-      ]
-
-      const result = await this.executeTransactFinal(request)
-
-      return result as TransactResult
-    },
-    async setMinBoost(landId: string, minBoost: string) {
-      if (!options || !options?.getWalletId()) return
-
-      const request: WaxRequest = [
-        {
-          account: Constants.CONTRACT_LAND_RATINGS,
-          name: Constants.CONTRACT_LAND_RATINGS_ACTION_SETMINBOOST,
-          authorization: [
-            {
-              actor: options.getWalletId(),
-              permission: 'active',
-            },
-          ],
-          data: {
-            owner: options.getWalletId(),
-            land_id: landId,
-            minboost: minBoost,
-          },
-        },
-      ]
-
-      const result = await this.executeTransactFinal(request)
-      return result as TransactResult
-    },
-    async boostSlot(landId: string, cost: string) {
-      if (!options || !options?.getWalletId()) return
-
-      const request: WaxRequest = [
-        {
-          account: Constants.CONTRACT_ALIEN_WORLDS,
-          name: Constants.CONTRACT_TABLE_TRANSFER,
-          authorization: [
-            {
-              actor: options.getWalletId(),
-              permission: 'active',
-            },
-          ],
-          data: {
-            from: options.getWalletId(),
-            to: Constants.CONTRACT_BOOST_WORLDS,
-            quantity: cost,
-            memo: `landrating - boostslot for ${landId}`,
-          },
-        },
-        {
-          account: Constants.CONTRACT_LAND_RATINGS,
-          name: Constants.CONTRACT_LAND_RATINGS_ACTION_BOOST,
-          authorization: [
-            {
-              actor: options.getWalletId(),
-              permission: 'active',
-            },
-          ],
-          data: {
-            payer: options.getWalletId(),
-            land_id: landId,
-            amount: cost,
-          },
-        },
-      ]
-
-      const result = await this.executeTransactFinal(request)
-      return result as TransactResult
-    },
-    async unlockSlot(landId: string, cost: string) {
-      if (!options || !options?.getWalletId()) return
-
-      const request: WaxRequest = [
-        {
-          account: Constants.CONTRACT_ALIEN_WORLDS,
-          name: Constants.CONTRACT_TABLE_TRANSFER,
-          authorization: [
-            {
-              actor: options.getWalletId(),
-              permission: 'active',
-            },
-          ],
-          data: {
-            from: options.getWalletId(),
-            to: Constants.CONTRACT_BOOST_WORLDS,
-            quantity: cost,
-            memo: `landrating - openslot for ${landId}`,
-          },
-        },
-        {
-          account: Constants.CONTRACT_LAND_RATINGS,
-          name: Constants.CONTRACT_LAND_RATINGS_ACTION_OPENSLOT,
-          authorization: [
-            {
-              actor: options.getWalletId(),
-              permission: 'active',
-            },
-          ],
-          data: {
-            owner: options.getWalletId(),
-            land_id: landId,
-          },
-        },
-      ]
-
-      const result = await this.executeTransactFinal(request)
-      return result as TransactResult
     },
   }
 })()
