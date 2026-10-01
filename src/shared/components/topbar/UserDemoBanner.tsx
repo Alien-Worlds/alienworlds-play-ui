@@ -7,7 +7,6 @@ import { theme } from 'shared/styles/theme'
 import { Colors } from 'shared/util/colors'
 import { config } from 'shared/util/config'
 import { useScreenSize } from 'shared/util/hooks'
-import { useAppState } from 'store'
 
 import { Constants } from '../../util/constants'
 
@@ -20,9 +19,7 @@ const UserDemoBanner = () => {
   const isLandOwnerAddSlotDrawerOpen = useModalStore((state) => state.isLandOwnerAddSlotDrawerOpen)
   const glossaryDrawer = useGlossaryStore((state) => state.glossaryDrawer)
   const { isMobile } = useScreenSize()
-  const {
-    main: { isOutPostModalsActive },
-  } = useAppState()
+  const isOutPostModalsActive = useModalStore((state) => state.isOutPostModalsActive)
   const walletId = useSessionStore((state) => state.walletId)
   const isAuthenticating = useSessionStore((state) => state.isAuthenticating)
 

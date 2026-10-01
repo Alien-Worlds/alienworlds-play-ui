@@ -6,8 +6,8 @@ import { find, get, map } from 'lodash'
 import { matchPath } from 'react-router'
 import { useClickAway } from 'react-use'
 import { router } from 'routes'
+import { useAssetsStore } from 'shared/store/assetsStore'
 import { dropdownStyles } from 'shared/util/helpers'
-import { useAppState, useActions } from 'store'
 import { mapToSortByOptions } from 'store/atomic/helpers'
 import { AssetSchema, SortBy } from 'store/atomic/types'
 import { PagePath } from 'store/main/types'
@@ -21,13 +21,9 @@ export interface SortBySelectorProps {
 }
 
 const SortBySelector = ({ defaultValue, width }: SortBySelectorProps) => {
-  const {
-    atomic: { setAssetsFilter },
-  } = useActions()
+  const setAssetsFilter = useAssetsStore((state) => state.setAssetsFilter)
 
-  const {
-    atomic: { assetsFilter },
-  } = useAppState()
+  const assetsFilter = useAssetsStore((state) => state.assetsFilter)
   const isToolsPage = matchPath(PagePath.GovernanceSelect, router.state.location.pathname)
   const [, setMenuVisible] = useState<boolean>(false)
   const [sortByOptions, setSortByOptions] = useState<Option[]>([])

@@ -12,11 +12,11 @@ import {
 } from '@chakra-ui/react'
 import { IAsset } from 'atomicassets/build/API/Explorer/Objects'
 import { LooseObject } from 'features/inventory/utils/NFTCardHelper'
+import { useMiningStore } from 'features/mining/store/miningStore'
 import { LoadingSpinner } from 'features/syndicates/components/LoadingSpinner/LoadingSpinner'
 import { usePlanetDetail } from 'graphql/hooks/usePlanetDetail'
 import { get, last, split, toLower, toUpper } from 'lodash'
 import { Colors } from 'shared/util/colors'
-import { useActions } from 'store'
 
 interface NFTLandOwnerCommissionProps {
   asset: LooseObject
@@ -48,9 +48,7 @@ const NFTLandOwnerCommission = ({ asset, landAsset }: NFTLandOwnerCommissionProp
       ? 25
       : maxCommissionValue / 100
 
-  const {
-    wax: { trySetCommission },
-  } = useActions()
+  const trySetCommission = useMiningStore((state) => state.trySetCommission)
 
   function setValue(valueAsString: string, valueAsNumber?: number) {
     setError(null)

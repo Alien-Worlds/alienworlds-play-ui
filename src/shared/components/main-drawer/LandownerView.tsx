@@ -7,6 +7,7 @@ import { LandBoosts } from 'features/mining/components/PlanetLand/Components/Lan
 import { LandCommission } from 'features/mining/components/PlanetLand/Components/LandCommission'
 import { LandCoordinates } from 'features/mining/components/PlanetLand/Components/LandCoordinates'
 import { LandRating } from 'features/mining/components/PlanetLand/Components/LandRating'
+import { useMiningStore } from 'features/mining/store/miningStore'
 import {
   SetLandBtn,
   ManageLandBtn,
@@ -15,21 +16,21 @@ import {
 } from 'features/syndicates/components/PlanetaryActions/PlanetaryActions'
 import { filter, forEach } from 'lodash'
 import Carousel from 'react-spring-3d-carousel'
+import { useAssetsStore } from 'shared/store/assetsStore'
 import { useSessionStore } from 'shared/store/sessionStore'
 import { Colors } from 'shared/util/colors'
 import { useScreenSize } from 'shared/util/hooks'
 import { PlanetLandIcon } from 'shared/util/icons'
-import { useActions, useAppState } from 'store'
 import { v4 } from 'uuid'
 
 export const LandownerView: VFC = () => {
-  const {
-    atomic: { landAsset, ownedLandsAssets },
-  } = useAppState()
+  const landAsset = useAssetsStore((state) => state.landAsset)
+  const ownedLandsAssets = useAssetsStore((state) => state.ownedLandsAssets)
   const isDemoUser = useSessionStore((state) => state.isDemoUser)
-  const {
-    wax: { setLandId, setManagingLandDetails, loadManagingLandDetailsAndBoosts },
-  } = useActions()
+  const setLandId = useMiningStore((state) => state.setLandId)
+  const loadManagingLandDetailsAndBoosts = useMiningStore(
+    (state) => state.loadManagingLandDetailsAndBoosts
+  )
   const { isMediumScreen, isTablet, isNotDesktop } = useScreenSize()
   const [currentSlide, setCurrentSlide] = useState<number>(0)
   const [currentLand, setCurrentLand] = useState<IAsset>(null)
@@ -65,7 +66,6 @@ export const LandownerView: VFC = () => {
     if (ownedLandsAssets && ownedLandsAssets[0]) {
       setCurrentLand(ownedLandsAssets[0])
       setLandId(ownedLandsAssets[0].asset_id)
-      setManagingLandDetails()
       loadManagingLandDetailsAndBoosts()
     }
   }, [ownedLandsAssets])
@@ -84,7 +84,6 @@ export const LandownerView: VFC = () => {
               ownedLand={ownedLand}
               onClick={() => {
                 setLandId(ownedLand.asset_id)
-                setManagingLandDetails()
                 loadManagingLandDetailsAndBoosts()
                 setCurrentLand(ownedLand)
                 setCurrentSlide(index)
@@ -104,7 +103,6 @@ export const LandownerView: VFC = () => {
             ownedLand={ownedLandsAssets[0]}
             onClick={() => {
               setLandId(ownedLandsAssets[0].asset_id)
-              setManagingLandDetails()
               loadManagingLandDetailsAndBoosts()
               setCurrentLand(ownedLandsAssets[0])
               setCurrentSlide(2)
@@ -120,7 +118,6 @@ export const LandownerView: VFC = () => {
             ownedLand={ownedLandsAssets[1]}
             onClick={async () => {
               setLandId(ownedLandsAssets[1].asset_id)
-              setManagingLandDetails()
               loadManagingLandDetailsAndBoosts()
               setCurrentLand(ownedLandsAssets[1])
               setCurrentSlide(3)

@@ -22,7 +22,6 @@ import {
   NFTCardOverlayRender,
   NFTCardTopRightPanelRender,
 } from 'features/inventory/utils/NFTCardOverlayRender'
-import { filterAssets } from 'features/lore/utils/utils'
 import { MiningSelect } from 'features/mining/components/MiningSelect/MiningSelect'
 import { MiningTabPanelMotion } from 'features/mining/components/MiningTabs'
 import { OptionalMiningTabs } from 'features/mining/components/OptionalMiningTabs'
@@ -38,7 +37,9 @@ import { RarityPoolsBarChart } from 'features/mining/components/RarityPoolsBarCh
 import { usePlanetAssets } from 'features/mining/hooks/usePlanetAssets'
 import { useRarityPools } from 'features/mining/hooks/useRarityPools'
 import { PlanetDetailsDrawer } from 'features/mining/modals/PlanetDetailsDrawer'
+import { useMiningStore } from 'features/mining/store/miningStore'
 import { ASSET_TYPE_LAND } from 'features/mining/utils/constants'
+import { filterAndSortLands } from 'features/mining/utils/landFilter'
 import { getPlanetImage, PlanetImageSizes } from 'features/mining/utils/planet'
 import { LoadingSpinner } from 'features/syndicates/components/LoadingSpinner/LoadingSpinner'
 import { usePlanets } from 'graphql/hooks/usePlanets'
@@ -48,11 +49,14 @@ import {
   RingPositionHelper,
   RingPositions,
 } from 'shared/components/RingPositionHelper/RingPositionHelper'
+import { useAssetsStore } from 'shared/store/assetsStore'
+import { useMinerStore } from 'shared/store/minerStore'
 import { useModalStore } from 'shared/store/modalStore'
 import { useSessionStore } from 'shared/store/sessionStore'
 import { Colors } from 'shared/util/colors'
+import { Constants } from 'shared/util/constants'
 import { dacIdToDacTreasuryAccountList } from 'shared/util/helpers'
-import { useActions, useAppState } from 'store'
+import { useActions } from 'store'
 import { PagePath } from 'store/main/types'
 
 interface MiningPlanetOptionItem {
@@ -61,16 +65,20 @@ interface MiningPlanetOptionItem {
 }
 
 const Land: VFC = () => {
-  const {
-    atomic: { landAssetsFilter, landAsset },
-    wax: { whereToMine, planetSelectedForMining, isOnboarded },
-  } = useAppState()
+  const whereToMine = useMinerStore((state) => state.whereToMine)
+  const planetSelectedForMining = useMinerStore((state) => state.planetSelectedForMining)
+  const isOnboarded = useMinerStore((state) => state.isOnboarded)
+  const landAssetsFilter = useMiningStore((state) => state.landAssetsFilter)
+  const landAsset = useAssetsStore((state) => state.landAsset)
   const walletId = useSessionStore((state) => state.walletId)
 
   const {
-    wax: { setPlanetSelectedForMiningIntent },
-    main: { showLandPage },
+    wax: { collectEvent },
   } = useActions()
+  const resetLandAssetsFilter = useMiningStore((state) => state.resetLandAssetsFilter)
+  const setPlanetSelectedForMiningIntent = useMinerStore(
+    (state) => state.setPlanetSelectedForMiningIntent
+  )
   const setPrimaryModalActive = useModalStore((state) => state.setPrimaryModalActive)
   const planetDetailsDrawer = useModalStore((state) => state.planetDetailsDrawer)
   const openPlanetDetailsDrawer = useModalStore((state) => state.openPlanetDetailsDrawer)
@@ -92,7 +100,7 @@ const Land: VFC = () => {
 
   useEffect(() => {
     if (landAssetsFilter && assets) {
-      const filteredAssets = filterAssets(assets, landAssetsFilter)
+      const filteredAssets = filterAndSortLands(assets, landAssetsFilter)
       setSortedAssets(NFTCardDataPreparation(filteredAssets, walletId))
     }
   }, [landAssetsFilter])
@@ -159,11 +167,12 @@ const Land: VFC = () => {
 
     const planet = find(filteredPlanets, { id: toLower((option as MiningPlanetOptionItem).value) })
 
-    const assetIds = map(planet.land_maps, (p) => p.asset_id)
     const currentPlanet = dacIdToDacTreasuryAccountList[planet.id]
     refetch(currentPlanet)
     setPlanetSelectedForMiningIntent(planet.id)
-    showLandPage({ assetIds: assetIds, planetName: planet.id })
+    resetLandAssetsFilter()
+    useModalStore.getState().toggleMainDrawer(false)
+    collectEvent({ name: Constants.GA_PAGE_VISIT, fields: { location: PagePath.Land } })
 
     setSortedAssets([])
   }

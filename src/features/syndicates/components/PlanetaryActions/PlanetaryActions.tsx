@@ -19,6 +19,7 @@ import { useWalletDetails } from 'graphql/hooks/useWalletDetails'
 import { DaoDetailsResponse, WalletDetailsResponse } from 'graphql/types'
 import { capitalize, get, lowerCase } from 'lodash'
 import { useNavigate } from 'react-router-dom'
+import { useAssetsStore } from 'shared/store/assetsStore'
 import { useModalStore } from 'shared/store/modalStore'
 import { useSessionStore } from 'shared/store/sessionStore'
 import { Colors } from 'shared/util/colors'
@@ -258,9 +259,7 @@ export const SetLandBtn = ({
   isActive?: boolean
   currentLand: IAsset
 }) => {
-  const {
-    wax: { setLand },
-  } = useActions()
+  const setLand = useAssetsStore((state) => state.setLand)
 
   const { isNotDesktop } = useScreenSize()
   return (

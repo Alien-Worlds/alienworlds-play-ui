@@ -38,16 +38,13 @@ const baseAssetsFilter = {
 let mockAssetsFilter = baseAssetsFilter
 let mockFilteredAndSortedAssets: any[] = []
 
-jest.mock('store', () => ({
-  useAppState: () => ({
-    atomic: {
+jest.mock('shared/store/assetsStore', () => ({
+  useAssetsStore: (selector: (state: unknown) => unknown) =>
+    selector({
       assetsFilter: mockAssetsFilter,
       filteredAndSortedAssets: mockFilteredAndSortedAssets,
-    },
-  }),
-  useActions: () => ({
-    atomic: { setAssetsFilter: mockSetAssetsFilter },
-  }),
+      setAssetsFilter: mockSetAssetsFilter,
+    }),
 }))
 
 jest.mock('store/atomic/helpers', () => ({

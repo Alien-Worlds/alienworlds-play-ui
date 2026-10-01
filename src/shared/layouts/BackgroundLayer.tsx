@@ -11,6 +11,7 @@ import { DaoDetailsResponse } from 'graphql/types'
 import { includes } from 'lodash'
 import { useLocation } from 'react-router-dom'
 import { useCurrentPath } from 'shared/hooks/useRouter'
+import { useMinerStore } from 'shared/store/minerStore'
 import { useSessionStore } from 'shared/store/sessionStore'
 import { config } from 'shared/util/config'
 import { dacList } from 'shared/util/helpers'
@@ -98,9 +99,12 @@ const BackgroundImage: VFC = () => {
   const updateAccountCenter = useAccountCenter()
   const [{ wallet }, connect] = useConnectWallet()
   const {
-    wax: { selectedDacId, whereToMine, whereToMineIntent, planetSelectedForMining },
+    wax: { selectedDacId },
     missions: { selectedMission },
   } = useAppState()
+  const whereToMine = useMinerStore((state) => state.whereToMine)
+  const whereToMineIntent = useMinerStore((state) => state.whereToMineIntent)
+  const planetSelectedForMining = useMinerStore((state) => state.planetSelectedForMining)
   const isLoggedIn = useSessionStore((state) => state.isLoggedIn)
 
   const [opacityOverride, setOpacityOverride] = useState(1)

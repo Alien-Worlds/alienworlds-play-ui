@@ -19,10 +19,14 @@ import {
 import { Button as UIButton } from '@alien-worlds/uikit'
 import { Flex, Grid, GridItem, HStack, Text, useMediaQuery, VStack, Button } from '@chakra-ui/react'
 import { IAsset } from 'atomicassets/build/API/Explorer/Objects'
+import { useInventoryStore } from 'features/inventory/store/inventoryStore'
 import { ELEMENTTYPES, LooseObject } from 'features/inventory/utils/NFTCardHelper'
+import { useMiningStore } from 'features/mining/store/miningStore'
 import { LandBoostsDay } from 'features/mining/types/LandownerTypes'
 import _, { find, map, toLower, toUpper } from 'lodash'
 import { useMatch, useNavigate } from 'react-router-dom'
+import { useAssetsStore } from 'shared/store/assetsStore'
+import { useMinerStore } from 'shared/store/minerStore'
 import { useModalStore } from 'shared/store/modalStore'
 import { Colors } from 'shared/util/colors'
 import { useActions, useAppState } from 'store'
@@ -648,23 +652,24 @@ const NFTCardLandActions = ({ asset }: LooseObject) => {
   const assetId = _.get(asset, 'assetId.name', null)
   const isCardOwner = _.get(asset, 'isUserOwner')
   const {
-    wax: {
-      setLand,
-      setLandId,
-      setNftLandCardProperties,
-      executeOnboarding,
-      setOnboarding,
-      collectEvent,
-      loadManagingLandDetailsAndBoosts,
-    },
+    wax: { executeOnboarding, setOnboarding, collectEvent },
   } = useActions()
+  const setLand = useAssetsStore((state) => state.setLand)
+  const setLandId = useMiningStore((state) => state.setLandId)
+  const setNftLandCardProperties = useMiningStore((state) => state.setNftLandCardProperties)
+  const loadManagingLandDetailsAndBoosts = useMiningStore(
+    (state) => state.loadManagingLandDetailsAndBoosts
+  )
   const setIsLandOwnerAddSlotDrawerOpen = useModalStore(
     (state) => state.setIsLandOwnerAddSlotDrawerOpen
   )
   const {
-    atomic: { ownedLandsAssets, landAsset, ownedLandsAssetsDayBoosts },
-    wax: { isOnboarded, onboarding },
+    wax: { onboarding },
   } = useAppState()
+  const isOnboarded = useMinerStore((state) => state.isOnboarded)
+  const ownedLandsAssets = useAssetsStore((state) => state.ownedLandsAssets)
+  const landAsset = useAssetsStore((state) => state.landAsset)
+  const ownedLandsAssetsDayBoosts = useInventoryStore((state) => state.ownedLandsAssetsDayBoosts)
 
   const setLandOrOnboard = () => {
     if (isOnboarded) {
@@ -787,9 +792,7 @@ export const NFTCardSetAvatar = ({ asset }: LooseObject) => {
 
   const assetId = _.get(asset, 'assetId.name', null)
 
-  const {
-    wax: { setAvatar },
-  } = useActions()
+  const setAvatar = useAssetsStore((state) => state.setAvatar)
 
   if (type !== 'AVATAR') return null
   return (
@@ -1025,9 +1028,7 @@ const NFTCardBottomPanelRender = ({ asset }: LooseObject) => {
 }
 
 const NFTShowAllRender = ({ asset }: LooseObject) => {
-  const {
-    atomic: { assets },
-  } = useAppState()
+  const assets = useAssetsStore((state) => state.assets)
   const [isLargerThanMobile] = useMediaQuery('(min-width: 640px)')
   const assetsRepeated =
     assets && assets.length

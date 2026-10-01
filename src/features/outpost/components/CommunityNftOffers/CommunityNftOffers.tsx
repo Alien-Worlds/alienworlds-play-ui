@@ -118,9 +118,7 @@ const CommunityNftCard: FC<{
 }
 
 const CommunityNft: FC<CommunityNftProps> = ({ premintOffer, redeem }) => {
-  const {
-    main: { setOutPostModalsActive },
-  } = useActions()
+  const setOutPostModalsActive = useModalStore((state) => state.setOutPostModalsActive)
   const isDemoUser = useSessionStore((state) => state.isDemoUser)
   const setPrimaryModalActive = useModalStore((state) => state.setPrimaryModalActive)
   const [showZoomModal, setShowZoomModal] = useState(false)

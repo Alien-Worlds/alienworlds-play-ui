@@ -1,8 +1,4 @@
 import { IAsset, ITemplate } from 'atomicassets/build/API/Explorer/Objects'
-import { LooseObject } from 'features/inventory/utils/NFTCardHelper'
-import { LandBoost } from 'features/mining/types/LandownerTypes'
-import { BoostLevels } from 'features/mining/utils/constants'
-import { updateLandRating } from 'features/mining/utils/landownerUtils'
 import {
   CandidacyProposalType,
   ProposalExecutionPayload,
@@ -23,14 +19,15 @@ import {
   DaoWalletDetailsResponse,
 } from 'graphql/types'
 import { queryClient } from 'index'
-import { find, filter, map, join, get, split, last, lowerCase } from 'lodash'
+import { find, map, join, get } from 'lodash'
 import { DateTime } from 'luxon'
-import { catchError, parallel, pipe, wait, waitUntil } from 'overmind'
+import { catchError, pipe, wait, waitUntil } from 'overmind'
 import { generatePath } from 'react-router'
 import { matchPath } from 'react-router-dom'
 import { router } from 'routes'
 import { LOAD_USER_POINTS_QUERY_KEY } from 'shared/hooks/queries/wax/useLoadUserPoints'
-import { useModalStore } from 'shared/store/modalStore'
+import { useAssetsStore } from 'shared/store/assetsStore'
+import { useMinerStore } from 'shared/store/minerStore'
 import { collectGAEvent } from 'shared/util/analytics'
 import { config } from 'shared/util/config'
 import {
@@ -40,7 +37,6 @@ import {
   PrepareDacTokenAmountWithPrecision,
   PrepareTlmAmountWithPrecision,
   processElectionGlobals,
-  today25hDay,
   unionDAOFinder,
 } from 'shared/util/helpers'
 import { getNftImage } from 'shared/util/nft'
@@ -53,7 +49,6 @@ import { ProposalsFilter } from 'store/wax/state'
 
 import {
   OnboardingData,
-  ShineData,
   RequestState,
   TryUnstakeProps,
   PlanetCandidateType,
@@ -74,9 +69,9 @@ export const collectEvent = pipe(
 
     const stateInfo = {
       ...data.fields,
-      bag: state.wax.bag?.items,
+      bag: useAssetsStore.getState().bag?.items,
       wallet: state.wax.walletId,
-      lastMine: state.wax.miner?.last_mine,
+      lastMine: useMinerStore.getState().miner?.last_mine,
       username: state.wax.player?.tag ?? 'null',
 
       nftPoints: nftPoints?.total_points,
@@ -110,26 +105,6 @@ export const onInitializeOvermind = async ({ state, effects }: Context) => {
       state.wax.lastTransactionError = error?.toString()
     },
   })
-}
-
-export const setPlanetSelectedForMining = async ({ state }: Context) => {
-  if (!state.wax.isLoggedIn || !state.wax.isOnboarded) {
-    state.wax.planetSelectedForMining = null
-    return
-  }
-
-  if (state.wax.isOnboarded) {
-    if (!state.atomic.landAsset) {
-      state.wax.planetSelectedForMining = null
-      return
-    }
-    const res = last(split(state.atomic.landAsset.data.name, ' '))
-    let id = res ? lowerCase(res) : 'naron'
-
-    // find current selectedPlanet
-    if (id === 'neri') id = 'nerix'
-    state.wax.planetSelectedForMining = id
-  }
 }
 
 export const initializeOrReloadResources = pipe(
@@ -212,89 +187,6 @@ export const initializeOrReloadRefundsInProgress = pipe(
   })
 )
 
-export const setBag = pipe(
-  async ({ state, effects }: Context, asssetIds: string[]) => {
-    await effects.wax.api.setBag(asssetIds)
-
-    if (state.wax.lastTransactionError) {
-      toastErrorMessage(state.wax.lastTransactionError)
-      state.wax.lastTransactionError = null
-      return
-    }
-
-    const activeSlotIndex = useModalStore.getState().miningToolsDrawer.activeSlotIndex
-
-    if (state.wax.bag?.items?.length < asssetIds?.length) {
-      toastMessage(`Tool Slot #${activeSlotIndex + 1} equipped successfully.`)
-    } else if (state.wax.bag?.items?.length === asssetIds?.length) {
-      toastMessage(`Tool Slot #${activeSlotIndex + 1} updated successfully.`)
-    } else if (state.wax.bag?.items?.length > asssetIds?.length) {
-      toastMessage(`Tool Slot #${activeSlotIndex + 1} cleared successfully.`)
-    }
-
-    if (state.wax.bag) {
-      state.wax.bag.items = asssetIds
-    }
-
-    const assets = await Promise.all(
-      asssetIds.map((item) => {
-        return effects.atomic.api.getAssetById(item)
-      })
-    )
-
-    state.atomic.bagAssets = assets
-
-    state.atomic.triggerFilterAndSortAssets = true
-
-    executeAfter(state.main.syncAi.bag, DateTime.now().plus({ seconds: 5 }))
-  },
-  catchError((_: Context, error) => {
-    console.error(error)
-  })
-)
-
-export const setLand = pipe(
-  async ({ state, actions, effects }: Context, landId: string) => {
-    await effects.wax.api.setLand(landId)
-
-    if (state.wax.lastTransactionError) {
-      toastErrorMessage(state.wax.lastTransactionError)
-      state.wax.lastTransactionError = null
-      return
-    }
-
-    toastMessage(`Mining Land updated successfully.`)
-
-    state.atomic.landAsset = await effects.atomic.api.getAssetById(landId)
-
-    actions.wax.setPlanetSelectedForMining()
-
-    executeAfter(state.main.syncAi.land, DateTime.now().plus({ seconds: 15 }))
-  },
-  catchError((_: Context, error) => {
-    console.error(error)
-  })
-)
-
-export const setPlanetSelectedForMiningIntent = pipe(
-  ({ state }: Context, planetName: string) => {
-    state.wax.whereToMineIntent = planetName
-    router.navigate(PagePath.Land)
-  },
-  catchError((_: Context, error) => {
-    console.error(error)
-  })
-)
-export const setPlanetNameForMiningIntent = pipe(
-  ({ state }: Context, planetName: string) => {
-    state.wax.selectedPlanetName = planetName
-    router.navigate(PagePath.Land)
-  },
-  catchError((_: Context, error) => {
-    console.error(error)
-  })
-)
-
 export const setTag = pipe(
   async ({ state, effects }: Context, tag: string) => {
     state.wax.isSettingTag = true
@@ -312,27 +204,6 @@ export const setTag = pipe(
   },
   catchError(({ state }: Context, error) => {
     state.wax.isSettingTag = false
-    console.error(error)
-  })
-)
-
-export const setAvatar = pipe(
-  async ({ state, effects }: Context, avatarId: string) => {
-    await effects.wax.api.setAvatar(avatarId)
-
-    if (state.wax.lastTransactionError) {
-      toastErrorMessage(state.wax.lastTransactionError)
-      state.wax.lastTransactionError = null
-      return
-    }
-
-    toastMessage(`Avatar updated successfully.`)
-
-    state.atomic.avatarAsset = await effects.atomic.api.getAssetById(avatarId)
-
-    executeAfter(state.main.syncAi.avatar, DateTime.now().plus({ seconds: 15 }))
-  },
-  catchError((_: Context, error) => {
     console.error(error)
   })
 )
@@ -546,55 +417,6 @@ export const checkWhitelist = pipe(
   })
 )
 
-export const trySetCommission = pipe(
-  async ({ state, effects }: Context, input: { landId: string; commission: string }) => {
-    await effects.wax.api.setCommission(input.landId, input.commission)
-
-    if (state.wax.lastTransactionError) {
-      toastErrorMessage(state.wax.lastTransactionError)
-      state.wax.lastTransactionError = null
-      return
-    }
-
-    toastMessage(`Land Commission updated successfully.`)
-
-    executeAfter(state.main.syncAi.planets, DateTime.now().plus({ seconds: 15 }))
-    executeAfter(state.main.syncAi.land, DateTime.now().plus({ seconds: 15 }))
-    executeAfter(state.main.syncAi.assets, DateTime.now().plus({ seconds: 15 }))
-  },
-  catchError((_: Context, error) => {
-    console.error(error)
-  })
-)
-
-export const tryShine = pipe(
-  async ({ state, effects }: Context, input: { itemIds: string[]; shineData: ShineData }) => {
-    state.wax.isShining = true
-    toastMessage('Shining in progress..')
-
-    await effects.wax.api.submitShine(input.itemIds, input.shineData)
-
-    if (state.wax.lastTransactionError) {
-      toastErrorMessage(state.wax.lastTransactionError)
-      state.wax.lastTransactionError = null
-      return false
-    }
-
-    executeAfter(state.main.syncAi.assets, DateTime.now().plus({ seconds: 15 }))
-    executeAfter(state.main.syncAi.avatar, DateTime.now().plus({ seconds: 15 }))
-    executeAfter(state.main.syncAi.bag, DateTime.now().plus({ seconds: 15 }))
-
-    state.wax.isShining = false
-    return true
-  },
-  catchError(({ state }: Context, error) => {
-    state.wax.isShining = false
-    toastErrorMessage(error?.message ?? 'Shining has failed')
-    console.error(error)
-    return false
-  })
-)
-
 export const setOnboarding = pipe(
   ({ state }: Context, onboarding: OnboardingData) => {
     state.wax.onboarding = onboarding
@@ -704,7 +526,7 @@ export const executeOnboarding = pipe(
     state.missions.loadingMessage = null
     state.wax.isOnboardingPending = false
     router.navigate(PagePath.Tools)
-    state.atomic.triggerFilterAndSortAssets = true
+    useAssetsStore.getState().setTriggerFilterAndSortAssets(true)
   },
 
   catchError(({ state, effects }: Context, error) => {
@@ -739,10 +561,12 @@ export const claimNftPts = pipe(
 )
 
 export const trySetInitialBag = pipe(
-  ({ state, actions }: Context) => {
-    const tools = state.atomic.assets.filter((asset) => asset.schema.schema_name === 'tool.worlds')
+  () => {
+    const tools = useAssetsStore
+      .getState()
+      .assets.filter((asset) => asset.schema.schema_name === 'tool.worlds')
     // Take first item from player's collection. Just first one (probably initial shovel), no more.
-    actions.wax.setBag([tools[0]?.asset_id])
+    useAssetsStore.getState().setBag([tools[0]?.asset_id])
   },
   catchError((_: Context, error) => {
     console.error(error)
@@ -797,99 +621,6 @@ export const loadPremintOffersAction = async (
 export const resetLastTransactionError = ({ state }: Context) => {
   state.wax.lastTransactionError = null
 }
-
-export const unlockSlot = pipe(
-  async ({ effects }: Context, { landId, cost }: { landId: string; cost: number }) => {
-    const amount = PrepareTlmAmountWithPrecision(cost)
-    const result = await effects.wax.api.unlockSlot(landId, amount)
-
-    if (result) {
-      toastMessage(
-        'Executing transaction on the chain. This process may take a few seconds to complete..'
-      )
-      return true
-    }
-
-    return false
-  },
-  catchError((_: Context, error) => {
-    toastErrorMessage(error?.message ?? 'Unlock Slot failed')
-    console.error(error)
-    return null
-  })
-)
-
-export const applyMainBoost = pipe(
-  async ({ effects, state }: Context, { landId, boost }: { landId: string; boost: IAsset }) => {
-    const result = await effects.wax.api.applyMainBoost(landId, boost)
-
-    if (result) {
-      toastMessage(
-        'Executing transaction on the chain. This process may take a few seconds to complete..'
-      )
-      return true
-    }
-
-    if (state.wax.lastTransactionError) {
-      toastErrorMessage(state.wax.lastTransactionError)
-      state.wax.lastTransactionError = null
-      return false
-    }
-    return false
-  },
-  catchError((_: Context, error) => {
-    toastErrorMessage(error?.message ?? 'Apply Boost failed')
-    console.error(error)
-    return null
-  })
-)
-
-export const boostSlot = pipe(
-  async ({ effects, state }: Context, { landId, price }: { landId: string; price: number }) => {
-    const amount = PrepareTlmAmountWithPrecision(price)
-    const result = await effects.wax.api.boostSlot(landId, amount)
-
-    if (result) {
-      toastMessage(
-        'Executing transaction on the chain. This process may take a few seconds to complete..'
-      )
-      return true
-    }
-
-    if (state.wax.lastTransactionError) {
-      toastErrorMessage(state.wax.lastTransactionError)
-      state.wax.lastTransactionError = null
-      return false
-    }
-    return false
-  },
-  catchError((_: Context, error) => {
-    toastErrorMessage(error?.message ?? 'Boost Slot failed')
-    console.error(error)
-    return null
-  })
-)
-
-export const setMinBoost = pipe(
-  async ({ effects }: Context, { landId, levelPrice }: { landId: string; levelPrice: number }) => {
-    const level = PrepareTlmAmountWithPrecision(levelPrice)
-    const result = await effects.wax.api.setMinBoost(landId, level)
-
-    if (result) {
-      toastMessage(
-        'Executing transaction on the chain. This process may take a few seconds to complete..'
-      )
-      return true
-    }
-
-    return false
-  },
-  catchError((_: Context, error) => {
-    toastErrorMessage(error?.message ?? 'Update public minimum boosts failed')
-    console.error(error)
-    return null
-  })
-)
 
 export const reloadSyncAiPlanetCandidatesAndCustodians = pipe(async ({ state }: Context) => {
   state.main.syncAi.selectedDacCandidatesCustodians.isInProgress = false
@@ -1536,135 +1267,6 @@ export const tryClaimLandownerCommissions = pipe(
   })
 )
 
-export const setLandId = pipe(({ state }, id: string) => {
-  state.wax.managingLandId = id
-})
-export const setNftLandCardProperties = pipe(({ state }, payload: LooseObject) => {
-  state.wax.nftLandCardProperties = payload
-})
-
-export const getLandBoostsByDay = pipe(
-  async (
-    { effects, state }: Context,
-    { landId, day, isManagingLand }: { landId: string; day: number; isManagingLand?: boolean }
-  ) => {
-    const result = await effects.wax.api.getLandBoosts(landId)
-    let boosts: LandBoost[] = []
-
-    if (result) {
-      // Filter by day
-      const filteredBoosts = filter(result, (boost) => boost.day === day)
-
-      if (filteredBoosts.length > 0) {
-        const boostByDay = filteredBoosts[0]
-        boosts = map(boostByDay.boosts_used, (boost: { booster: string; level: number }) => {
-          const { level, ...rest } = boost
-          const boostDetails = find(BoostLevels, (l) => l.price === level / 10000)
-          return { ...rest, ...boostDetails }
-        })
-      }
-      if (isManagingLand) {
-        state.wax.managingLandBoosts = boosts
-      }
-    }
-    return boosts
-  },
-  catchError((_: Context, error) => {
-    toastErrorMessage(error?.message ?? 'Load Land Boosts has failed.')
-    console.error(error)
-    return null
-  })
-)
-
-export const setManagingLandDetails = pipe(
-  async ({ state, effects, actions }: Context) => {
-    if (state.wax.managingLandId) {
-      const result = await effects.atomic.api.getAssetById(state.wax.managingLandId)
-
-      state.wax.managingLandDetails = result
-
-      actions.wax.syncLandDetailsWithAssets()
-    }
-  },
-  catchError((_: Context, error) => {
-    console.error(error)
-  })
-)
-
-/**
- * Synchronize atomic.assets with land details.
- * This is to update All assets
- */
-export const syncLandDetailsWithInventoryAssets = async ({ state }: Context) => {
-  const landDetails = state.wax.managingLandDetails
-
-  if (state.atomic.assets) {
-    state.atomic.assets = updateLandRating(state.atomic.assets, landDetails)
-  }
-}
-
-/**
- * Synchronize filteredAndSortedAssets with land details.
- * This is to update current filtered assets with the latest land rating
- * when the user is on inventory page with Land filter applied.
- * It is needed because filteredAndSortedAssets and assets works separately.
- */
-export const syncLandDetailsWithFilteredAsset = async ({ state }: Context) => {
-  const landDetails = state.wax.managingLandDetails
-
-  if (state.atomic?.filteredAndSortedAssets) {
-    state.atomic.filteredAndSortedAssets = updateLandRating(
-      state.atomic.filteredAndSortedAssets,
-      landDetails
-    )
-  }
-}
-
-/**
- * Update Land Assets Filter in Switch Land page with the latest land rating
- */
-export const syncLandDetailsWithLandAssets = async ({ state }: Context) => {
-  const landDetails = state.wax.managingLandDetails
-
-  if (state.atomic?.landAssetsFilter?.filteredLands) {
-    const updatedFilteredLands = updateLandRating(
-      state.atomic.landAssetsFilter.filteredLands,
-      landDetails
-    )
-
-    state.atomic.landAssetsFilter = {
-      ...state.atomic.landAssetsFilter,
-      filteredLands: updatedFilteredLands,
-    }
-  }
-}
-
-export const syncLandDetailsWithAssets = parallel(
-  syncLandDetailsWithInventoryAssets,
-  syncLandDetailsWithFilteredAsset,
-  syncLandDetailsWithLandAssets
-)
-
-export const loadManagingLandDetailsAndBoosts = pipe(
-  async ({ state, actions }: Context) => {
-    state.wax.isLoadingManagingLandBoosts = true
-    if (state.wax.managingLandId) {
-      await actions.wax.setManagingLandDetails()
-      await actions.wax.getLandBoostsByDay({
-        landId: state.wax.managingLandId,
-        isManagingLand: true,
-        day: today25hDay(),
-      })
-    }
-
-    state.wax.isLoadingManagingLandBoosts = false
-  },
-  catchError(({ state }: Context, error) => {
-    state.wax.isLoadingManagingLandBoosts = false
-    console.error(error)
-  })
-)
-
 /**
  * Loads the avatar image URL given a user walletId and
  * saves it into "store.wax.playersImageMap"
@@ -1709,9 +1311,4 @@ export const getCandidateVotersHistory = pipe(
   catchError((_: Context, error) => {
     console.error(error)
   })
-)
-
-export const loadManagingLandDetailsAndBoostsWithDelay = pipe(
-  wait(6000),
-  loadManagingLandDetailsAndBoosts
 )

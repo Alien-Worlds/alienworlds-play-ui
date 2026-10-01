@@ -25,17 +25,15 @@ import {
 } from 'features/mining/utils/constants'
 import { motion } from 'framer-motion'
 import { get } from 'lodash'
+import { useAssetsStore } from 'shared/store/assetsStore'
 import { useModalStore } from 'shared/store/modalStore'
 import { useSessionStore } from 'shared/store/sessionStore'
 import { Colors } from 'shared/util/colors'
-import { useAppState } from 'store'
 
 const AnimatedFlex = motion(Flex)
 
 const BagItemChooserComponent = ({ index }: { index: MiningToolsActiveSlotNumber }) => {
-  const {
-    atomic: { bagAssets },
-  } = useAppState()
+  const bagAssets = useAssetsStore((state) => state.bagAssets)
   const walletId = useSessionStore((state) => state.walletId)
 
   const openMiningToolsDrawer = useModalStore((state) => state.openMiningToolsDrawer)

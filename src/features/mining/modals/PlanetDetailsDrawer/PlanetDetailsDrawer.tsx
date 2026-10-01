@@ -26,13 +26,15 @@ import { PowReduction } from 'features/mining/components/PlanetLand/Components/P
 import { RarityPoolsGrid } from 'features/mining/components/RarityPoolsGrid'
 import { LoadingSpinner } from 'features/syndicates/components/LoadingSpinner/LoadingSpinner'
 import { usePlanetDetail } from 'graphql/hooks/usePlanetDetail'
+import { useNavigate } from 'react-router-dom'
 import {
   RingPositionHelper,
   RingPositions,
 } from 'shared/components/RingPositionHelper/RingPositionHelper'
 import { useActivePath } from 'shared/hooks/useRouter'
+import { useAssetsStore } from 'shared/store/assetsStore'
+import { useMinerStore } from 'shared/store/minerStore'
 import { Colors } from 'shared/util/colors'
-import { useActions, useAppState } from 'store'
 import { PagePath } from 'store/main/types'
 
 export interface PlanetDetailsDrawerProps {
@@ -42,15 +44,14 @@ export interface PlanetDetailsDrawerProps {
 }
 
 const PlanetDetailsDrawer: FC<PlanetDetailsDrawerProps> = ({ isOpen, onClose, planet }) => {
-  const {
-    wax: { setPlanetSelectedForMiningIntent },
-  } = useActions()
-  const {
-    wax: { planetSelectedForMining },
-    atomic: { landAsset },
-  } = useAppState()
+  const setPlanetSelectedForMiningIntent = useMinerStore(
+    (state) => state.setPlanetSelectedForMiningIntent
+  )
+  const planetSelectedForMining = useMinerStore((state) => state.planetSelectedForMining)
+  const landAsset = useAssetsStore((state) => state.landAsset)
 
   const isLandsPage = useActivePath([PagePath.Land])
+  const navigate = useNavigate()
   const { planetDetails: currentPlanet, loading } = usePlanetDetail(planet)
   if (loading) return <LoadingSpinner />
   return (
@@ -189,6 +190,7 @@ const PlanetDetailsDrawer: FC<PlanetDetailsDrawerProps> = ({ isOpen, onClose, pl
                         onClick={() => {
                           onClose()
                           setPlanetSelectedForMiningIntent(currentPlanet.dac_id)
+                          navigate(PagePath.Land)
                         }}
                       >
                         Explore

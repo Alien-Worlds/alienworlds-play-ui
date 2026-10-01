@@ -4,6 +4,7 @@ import { TriliumIcon } from '@alien-worlds/icons'
 import { Button } from '@alien-worlds/uikit'
 import { Box, Center, Flex, Image, Text, useBreakpointValue } from '@chakra-ui/react'
 import { IAsset } from 'atomicassets/build/API/Explorer/Objects'
+import { useMiningStore } from 'features/mining/store/miningStore'
 import { LandBoostLevel } from 'features/mining/types/LandownerTypes'
 import { MainBoostLevels } from 'features/mining/utils/constants'
 import { filter, find } from 'lodash'
@@ -12,7 +13,6 @@ import { useModalStore } from 'shared/store/modalStore'
 import { useSessionStore } from 'shared/store/sessionStore'
 import { Colors } from 'shared/util/colors'
 import { getDiffToStartOfNext25hDay } from 'shared/util/helpers'
-import { useActions, useAppState } from 'store'
 
 type SlotModalType = {
   selectedBoost: LandBoostLevel
@@ -21,13 +21,13 @@ type SlotModalType = {
 }
 
 export const LandAddSlotModal = ({ selectedBoost, onClose, selectedImg }: SlotModalType) => {
-  const {
-    wax: { boostSlot, applyMainBoost, loadManagingLandDetailsAndBoostsWithDelay },
-  } = useActions()
-  const {
-    atomic: { ownedLandBoostsAssets },
-    wax: { managingLandId },
-  } = useAppState()
+  const boostSlot = useMiningStore((state) => state.boostSlot)
+  const applyMainBoost = useMiningStore((state) => state.applyMainBoost)
+  const loadManagingLandDetailsAndBoostsWithDelay = useMiningStore(
+    (state) => state.loadManagingLandDetailsAndBoostsWithDelay
+  )
+  const managingLandId = useMiningStore((state) => state.managingLandId)
+  const ownedLandBoostsAssets = useMiningStore((state) => state.ownedLandBoostsAssets)
   const isDemoUser = useSessionStore((state) => state.isDemoUser)
   const setPrimaryModalActive = useModalStore((state) => state.setPrimaryModalActive)
   const landOwnerDrawerPayload = useModalStore((state) => state.landOwnerDrawerPayload)

@@ -2,15 +2,15 @@ import { useState } from 'react'
 
 import { InfoIcon2 } from '@alien-worlds/icons'
 import { Flex, Text, Show } from '@chakra-ui/react'
+import { useMiningStore } from 'features/mining/store/miningStore'
 import { useInterval } from 'react-use'
 import { Colors } from 'shared/util/colors'
 import { getDiffToStartOfNext25hDay, next25hDayDiffNow } from 'shared/util/helpers'
-import { useActions } from 'store'
 
 const NextBoostCountdown = () => {
-  const {
-    wax: { loadManagingLandDetailsAndBoostsWithDelay },
-  } = useActions()
+  const loadManagingLandDetailsAndBoostsWithDelay = useMiningStore(
+    (state) => state.loadManagingLandDetailsAndBoostsWithDelay
+  )
   const [timer, setTimer] = useState(getDiffToStartOfNext25hDay())
 
   useInterval(() => {

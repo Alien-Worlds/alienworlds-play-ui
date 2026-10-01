@@ -1,11 +1,9 @@
 import { Box } from '@chakra-ui/react'
 import { MiningTabs } from 'features/mining/components/MiningTabs/MiningTabs'
-import { useAppState } from 'store'
+import { useMinerStore } from 'shared/store/minerStore'
 
 export const OptionalMiningTabs = () => {
-  const {
-    wax: { isOnboarded },
-  } = useAppState()
+  const isOnboarded = useMinerStore((state) => state.isOnboarded)
 
   return (
     <Box w="full" textAlign="start" mb={5}>

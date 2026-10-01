@@ -4,14 +4,13 @@ import { LightIcon } from '@alien-worlds/icons'
 import { Box, Flex, Text } from '@chakra-ui/react'
 import { GlossaryInfoIcon } from 'features/glossary/components/GlossaryInfoIcon/GlossaryInfoIcon'
 import { TooltipLocations } from 'features/glossary/utils/glossaryConst'
+import { useAssetsStore } from 'shared/store/assetsStore'
 import { Colors } from 'shared/util/colors'
-import { useAppState } from 'store'
 import { calculateChargeTime } from 'store/main/helpers'
 
 const ChargeTime: VFC = () => {
-  const {
-    atomic: { bagAssets, landAsset },
-  } = useAppState()
+  const bagAssets = useAssetsStore((state) => state.bagAssets)
+  const landAsset = useAssetsStore((state) => state.landAsset)
 
   const [chargeTime, setChargeTime] = useState(-1)
   useEffect(() => {

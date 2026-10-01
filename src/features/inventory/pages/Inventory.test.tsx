@@ -79,28 +79,35 @@ const makeAsset = (id: number) => ({
 })
 
 let mockFilteredAndSortedAssets: any[] = [makeAsset(1), makeAsset(2)]
-const mockShowInventoryPage = jest.fn()
+const mockUsePageVisit = jest.fn()
 const mockSetOutPostModalsActive = jest.fn()
 const mockGetAssetById = jest.fn()
 
-jest.mock('store', () => ({
-  useActions: () => ({
-    main: {
-      showInventoryPage: mockShowInventoryPage,
-      setOutPostModalsActive: mockSetOutPostModalsActive,
-    },
-  }),
-  useAppState: () => ({
-    wax: { planetSelectedForMining: null },
-    atomic: {
+jest.mock('shared/hooks/usePageVisit', () => ({
+  usePageVisit: (...args: unknown[]) => mockUsePageVisit(...args),
+}))
+
+jest.mock('shared/store/minerStore', () => ({
+  useMinerStore: (selector: (state: unknown) => unknown) =>
+    selector({ planetSelectedForMining: null }),
+}))
+
+jest.mock('shared/store/modalStore', () => ({
+  useModalStore: (selector: (state: unknown) => unknown) =>
+    selector({ setOutPostModalsActive: mockSetOutPostModalsActive }),
+}))
+
+jest.mock('shared/util/atomicassets', () => ({
+  getAssetById: (id: string) => mockGetAssetById(id),
+}))
+
+jest.mock('shared/store/assetsStore', () => ({
+  useAssetsStore: (selector: (state: unknown) => unknown) =>
+    selector({
       filteredAndSortedAssets: mockFilteredAndSortedAssets,
       bagAssets: [],
       landAsset: null,
-    },
-  }),
-  useEffects: () => ({
-    atomic: { api: { getAssetById: mockGetAssetById } },
-  }),
+    }),
 }))
 
 jest.mock('shared/store/sessionStore', () => ({
@@ -149,7 +156,7 @@ describe('Inventory page', () => {
 
   it('tracks the page visit on mount', () => {
     renderInventory()
-    expect(mockShowInventoryPage).toHaveBeenCalled()
+    expect(mockUsePageVisit).toHaveBeenCalledWith('/inventory', { presetAssetsFilter: true })
   })
 
   it('shows a loading spinner while planet details are loading', () => {

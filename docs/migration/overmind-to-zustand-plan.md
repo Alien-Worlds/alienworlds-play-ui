@@ -71,23 +71,66 @@ logically isolated, or shared with another feature."
   belongs to mining (see inventory below), not lore.
 - `octokit` is now unused in `src/`; it can be removed from `package.json` separately.
 
-### inventory — large, not self-contained
-- No dedicated namespace. Depends on real slices of `atomic`, `wax`, and `main`:
-  - `atomic`: `ownedLandsAssets`, `landAsset`, `ownedLandsAssetsDayBoosts`,
-    `filteredAndSortedAssets`, `bagAssets`, `assetsFilter` / `setAssetsFilter`
-  - `wax`: `isOnboarded`, `onboarding`, `walletId`, `isDemoUser`, `planetSelectedForMining`
-  - `main`: `showInventoryPage`, `setOutPostModalsActive`
-- Verified: of the `atomic` fields above, only `ownedLandsAssetsDayBoosts` is inventory-exclusive.
-  `landAsset`, `filteredAndSortedAssets`, `bagAssets`, `assetsFilter`/`setAssetsFilter` are core
-  state for **mining** (~25 consumer files: `PlanetLand`, `MiningDesktopView`, `BagItemChooser`,
-  etc.) plus shared components (`TopBar`, `LandownerView`, `PlanetInfo`, `SortBySelector`,
-  `SortBySelectorMobile`).
-- Consequence: this slice cannot be finished in isolation. Either migrate the shared `atomic`
-  fields together with mining (much bigger, cross-feature effort), or stand up a temporary
-  Zustand↔Overmind bridge so inventory reads from a new store while mining still reads Overmind
-  (adds complexity, but unblocks inventory without dragging mining in immediately).
-- Effort: 1-2+ weeks if done properly; treat as its own initiative rather than folding it into "the
-  four features," since its actual boundary is `atomic`/mining, not inventory.
+### inventory + mining (`atomic`) — done (`feature/mining-store-zustand-migration`)
+- Inventory had no namespace of its own; its real boundary was Overmind's `atomic` state, shared
+  with mining, so the two were migrated together. Mining got characterisation tests first
+  (`feature/mining-testing`) so the move could be checked against them.
+- `atomic` state is split by who uses it, so removing a feature doesn't touch the others:
+  - **Shared** — `src/shared/store/assetsStore.ts` (`useAssetsStore`): `assets`, `bagAssets`,
+    `landAsset`, `avatarAsset`, `ownedLandsAssets`, `assetsFilter` + `filteredAndSortedAssets`
+    (the filter/sort is `filterAndSortAssetList`). Read by mining, inventory, syndicates and
+    shared UI (`TopBar`, `LandownerView`, `PlanetInfo`, `SortBySelector*`). Imports nothing from
+    `features/`.
+  - **Mining only** — `src/features/mining/store/miningStore.ts` (`useMiningStore`):
+    `landAssetsFilter`, `filterByToolType`, `ownedLandBoostsAssets`.
+  - **Inventory only** — `src/features/inventory/store/inventoryStore.ts`:
+    `ownedLandsAssetsDayBoosts`, next to the page's pagination state.
+  - Neither feature imports the other's store. The one coupling left is the Overmind loader,
+    which writes the two feature-only fields; it goes when the loaders move.
+- Still in Overmind (`store/atomic/actions.ts`): the loaders (`initializeOrReloadAssets`, `…Bag`,
+  `…MiningLand`, `…TagAndAvatar`) and the `atomic` API effects. They run on `main.updateWorld`'s
+  1s tick and need `wax`/`main` state, so they move with that; meanwhile they write to the store
+  through its setters. `atomic.filterAndSortAssets` is a one-line wrapper passing `wax.isLoggedIn`.
+  The avatar loader's `waitUntil(state.atomic.assets)` became a store subscription
+  (`assetsLoaded`), which still holds the rest of `updateWorld` until assets exist.
+- The land list filter moved from lore (`filterAssets`) to `features/mining/utils/landFilter.ts`
+  (`filterAndSortLands`). Overmind's own `filterLandAssets` was deleted: it filled
+  `landAssetsFilter.filteredLands`, which nothing displayed.
+- Behaviour kept on purpose:
+  - Default land ranges still filter. They used to be skipped by identity against the `DEFAULT_*`
+    constants, which never matched through Overmind's proxies; with plain objects it would have,
+    so the range checks now always apply.
+  - An unchanged asset poll still clears `assets` so the next poll (3s) reloads them.
+- Tests: `features/mining/testUtils/mockStore` seeds `useAssetsStore` and `useMiningStore` from
+  `state.atomic` / `actions.atomic` (each store gets the fields it owns), so the mining tests ran
+  unchanged. Inventory tests mock `shared/store/assetsStore` like they mock `sessionStore`.
+- **Mining's `wax`/`main` state and transactions** followed on the same branch, so the mining and
+  inventory files are only touched (and smoke-tested) once:
+  - `src/shared/store/minerStore.ts` (`useMinerStore`, shared): `miner`, `planetSelectedForMining`,
+    `whereToMineIntent`, and `whereToMine` / `isOnboarded` kept as fields (recomputed on change;
+    `isOnboarded` follows `sessionStore.isLoggedIn`). Read by the layouts, top bar and onboarding.
+  - `useAssetsStore` adds the raw `bag` and the `setBag` / `setLand` / `setAvatar` transactions
+    (builders in `shared/wax/assetActions.ts`).
+  - `useMiningStore` adds land management (`managingLand*`, boost slots, `nftLandCardProperties`),
+    shining (`isShining`, `shiningUrl`) and their transactions: `tryShine`, `trySetCommission`,
+    `boostSlot`, `unlockSlot`, `applyMainBoost`, `setMinBoost`, `loadManagingLandDetailsAndBoosts`
+    (builders in `features/mining/utils/miningActions.ts`).
+  - Chain reads: `shared/wax/tables.ts` (`getTableRows`), `features/mining/utils/chainReads.ts`
+    (shine info, rarity pools), `features/mining/utils/landBoosts.ts`; NFT reads in
+    `shared/util/atomicassets.ts`.
+  - `isOutPostModalsActive` moved to `modalStore`. The `main.show*Page` actions became
+    `shared/hooks/usePageVisit` (drawer, asset-filter preset, analytics).
+  - Transactions still ask Overmind's sync loop for early reloads through
+    `shared/store/syncScheduler.ts`, which `store/main` registers on start-up.
+- Still Overmind in mining/inventory: `wax.collectEvent` (analytics, app-wide) and the onboarding
+  flow (`onboarding`, `setOnboarding`, `executeOnboarding`) used by inventory's land cards. Overmind
+  itself still runs the loaders (assets, bag, mining land, avatar) and login, which write `miner`,
+  `bag` etc. into the stores.
+- Behaviour changes in this step:
+  - A rejected shine no longer leaves the Shining page locked (`isShining` stayed true).
+  - `unlockSlot` / `setMinBoost` failures now show the chain error; before they failed silently
+    and left the error to appear on the next transaction.
+  - Dead state removed: `wax.selectedPlanetName`, `wax.planetLandsAssets` / `main.bindLandsMap`.
 
 ## Shared session & transactions
 
@@ -110,9 +153,10 @@ away in the final phase below.
 
 1. `arena` and `competitions` — quick, nearly independent, do first. (done)
 2. `lore` — contained but real; needs care around the blockchain-action ports and tests. (done)
-3. `inventory` — decide bridge-vs-full-atomic-migration before starting; likely needs its own
-   scoping pass with mining in view, not just this doc.
-4. **Final: session/auth** — once features no longer read session state from Overmind:
+3. `inventory` + mining's `atomic` state — split into a shared `useAssetsStore` plus mining and
+   inventory stores. (done)
+4. Mining transactions and mining `wax` state — onto `shared/wax/transact`, like lore. (done)
+5. **Final: session/auth** — once features no longer read session state from Overmind:
    - Move login / logout / `switchWallet` / session restore out of `main/actions.ts` into Zustand,
      writing `sessionStore` directly.
    - Point the wax API's `getCurrentSession` at `sessionStore`, or move the remaining transactions

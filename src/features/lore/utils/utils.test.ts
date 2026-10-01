@@ -1,7 +1,7 @@
 import { LoreSortBy, LoreStatus } from 'features/lore/types/loreTypes'
 import { LoreProposal } from 'graphql/types'
 
-import { filterAssets, removeLastDecimalDigit, sortLores } from './utils'
+import { removeLastDecimalDigit, sortLores } from './utils'
 
 const makeLore = (overrides: Record<string, any> = {}): LoreProposal =>
   ({
@@ -98,76 +98,5 @@ describe('removeLastDecimalDigit', () => {
 
   it('returns whole numbers unchanged', () => {
     expect(removeLastDecimalDigit(42)).toBe('42')
-  })
-})
-
-const makeAsset = (overrides: any = {}) => ({
-  owner: 'alice',
-  data: { name: 'Rocky on Neri', rarity: 'Common', delay: 10, ease: 10, difficulty: 1, luck: 10 },
-  mutable_data: { commission: 500 },
-  immutable_data: {},
-  ...overrides,
-})
-
-describe('filterAssets', () => {
-  const baseFilter = {
-    owner: '',
-    terrain: 'ALL',
-    rarity: 'ALL',
-    commission: [0, 25],
-    recharge: [0.7, 5],
-    miningPower: [0.6, 2.5],
-    pow: [0, 2],
-    luck: [0.5, 2.5],
-  } as any
-
-  it('returns all assets when the filter has no constraints', () => {
-    const assets = [makeAsset(), makeAsset({ owner: 'bob' })]
-    expect(filterAssets(assets, baseFilter)).toHaveLength(2)
-  })
-
-  it('filters by owner substring', () => {
-    const assets = [makeAsset({ owner: 'alice' }), makeAsset({ owner: 'bob' })]
-    const result = filterAssets(assets, { ...baseFilter, owner: 'ali' })
-    expect(result).toHaveLength(1)
-    expect(result[0].owner).toBe('alice')
-  })
-
-  it('filters by terrain', () => {
-    const assets = [
-      makeAsset({ data: { ...makeAsset().data, name: 'Rocky on Neri' } }),
-      makeAsset({ data: { ...makeAsset().data, name: 'Barren on Magor' } }),
-    ]
-    const result = filterAssets(assets, { ...baseFilter, terrain: 'Rocky' })
-    expect(result).toHaveLength(1)
-    expect(result[0].data.name).toBe('Rocky on Neri')
-  })
-
-  it('filters by rarity', () => {
-    const assets = [
-      makeAsset({ data: { ...makeAsset().data, rarity: 'Common' } }),
-      makeAsset({ data: { ...makeAsset().data, rarity: 'Rare' } }),
-    ]
-    const result = filterAssets(assets, { ...baseFilter, rarity: 'Rare' })
-    expect(result).toHaveLength(1)
-    expect(result[0].data.rarity).toBe('Rare')
-  })
-
-  it('sorts by rarity using the canonical rarity order', () => {
-    const assets = [
-      makeAsset({ owner: 'legendary-owner', data: { ...makeAsset().data, rarity: 'Legendary' } }),
-      makeAsset({ owner: 'common-owner', data: { ...makeAsset().data, rarity: 'Common' } }),
-    ]
-    const result = filterAssets(assets, { ...baseFilter, sortBy: 'Rarity' })
-    expect(result.map((a) => a.data.rarity)).toEqual(['Common', 'Legendary'])
-  })
-
-  it('reverses the sorted result when reversed is true', () => {
-    const assets = [
-      makeAsset({ data: { ...makeAsset().data, rarity: 'Common' } }),
-      makeAsset({ data: { ...makeAsset().data, rarity: 'Legendary' } }),
-    ]
-    const result = filterAssets(assets, { ...baseFilter, sortBy: 'Rarity', reversed: true })
-    expect(result.map((a) => a.data.rarity)).toEqual(['Legendary', 'Common'])
   })
 })

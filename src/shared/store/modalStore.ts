@@ -134,6 +134,8 @@ export interface ModalStore {
   planetDetailsDrawer: PlanetDetailsDrawerState
   syndicatesProposalDrawer: SyndicatesProposalDrawerState
   miningToolsDrawer: MiningToolsDrawerState
+  /** An outpost-style full-screen modal (e.g. NFT zoom) is open; hides the top bar. */
+  isOutPostModalsActive: boolean
   setSecondaryModalActive: (input: SetSecondaryModalActiveInput) => void
   resetAllSecondaryModals: () => void
   setPrimaryModalActive: (input: SetPrimaryModalActiveInput) => void
@@ -147,6 +149,7 @@ export interface ModalStore {
   closeSyndicatesProposalDrawer: () => void
   openMiningToolsDrawer: (activeSlotIndex: MiningToolsActiveSlotNumber) => void
   closeMiningToolsDrawer: () => void
+  setOutPostModalsActive: (shown?: boolean) => void
 }
 
 export const useModalStore = create<ModalStore>((set, get) => ({
@@ -160,6 +163,7 @@ export const useModalStore = create<ModalStore>((set, get) => ({
   planetDetailsDrawer: { isOpen: false },
   syndicatesProposalDrawer: { isOpen: false },
   miningToolsDrawer: { isOpen: false, activeSlotIndex: MiningToolsActiveSlotNumber.SLOT_ONE },
+  isOutPostModalsActive: false,
 
   resetAllSecondaryModals: () => {
     const secondaryModals: SecondaryModalState = {
@@ -256,5 +260,9 @@ export const useModalStore = create<ModalStore>((set, get) => ({
 
   closeMiningToolsDrawer: () => {
     set({ miningToolsDrawer: { ...get().miningToolsDrawer, isOpen: false } })
+  },
+
+  setOutPostModalsActive: (shown = false) => {
+    set({ isOutPostModalsActive: shown })
   },
 }))

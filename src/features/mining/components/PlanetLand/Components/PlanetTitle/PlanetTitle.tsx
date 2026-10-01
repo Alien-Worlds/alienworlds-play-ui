@@ -2,13 +2,11 @@ import { HStack, Text, VStack } from '@chakra-ui/react'
 import { IAsset } from 'atomicassets/build/API/Explorer/Objects'
 import { LoadingSpinner } from 'features/syndicates/components/LoadingSpinner/LoadingSpinner'
 import { usePlanetDetail } from 'graphql/hooks/usePlanetDetail'
+import { useMinerStore } from 'shared/store/minerStore'
 import { Colors } from 'shared/util/colors'
-import { useAppState } from 'store'
 
 export const PlanetTitle = ({ land }: { land: IAsset }) => {
-  const {
-    wax: { planetSelectedForMining },
-  } = useAppState()
+  const planetSelectedForMining = useMinerStore((state) => state.planetSelectedForMining)
   const { planetDetails, loading } = usePlanetDetail(planetSelectedForMining)
   if (loading) return <LoadingSpinner />
   if (!planetSelectedForMining) return <></>

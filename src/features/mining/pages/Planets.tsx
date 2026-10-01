@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 import { ForwardIcon } from '@alien-worlds/icons'
 import { Box, Flex, SimpleGrid, Text, Link, Hide } from '@chakra-ui/react'
@@ -20,23 +20,23 @@ import {
   RingPositionHelper,
   RingPositions,
 } from 'shared/components/RingPositionHelper/RingPositionHelper'
+import { usePageVisit } from 'shared/hooks/usePageVisit'
+import { useAssetsStore } from 'shared/store/assetsStore'
+import { useMinerStore } from 'shared/store/minerStore'
 import { useModalStore } from 'shared/store/modalStore'
 import { Colors } from 'shared/util/colors'
-import { useActions, useAppState } from 'store'
 import { PagePath } from 'store/main/types'
 
 const Planets = () => {
-  const {
-    wax: { setPlanetSelectedForMiningIntent, setPlanetNameForMiningIntent },
-    main: { showPlanetPage },
-  } = useActions()
+  const setPlanetSelectedForMiningIntent = useMinerStore(
+    (state) => state.setPlanetSelectedForMiningIntent
+  )
   const openPlanetDetailsDrawer = useModalStore((state) => state.openPlanetDetailsDrawer)
   const closePlanetDetailsDrawer = useModalStore((state) => state.closePlanetDetailsDrawer)
   const planetDetailsDrawer = useModalStore((state) => state.planetDetailsDrawer)
-  const {
-    atomic: { landAsset },
-    wax: { planetSelectedForMining, isOnboarded },
-  } = useAppState()
+  const planetSelectedForMining = useMinerStore((state) => state.planetSelectedForMining)
+  const isOnboarded = useMinerStore((state) => state.isOnboarded)
+  const landAsset = useAssetsStore((state) => state.landAsset)
 
   const navigate = useNavigate()
 
@@ -46,9 +46,13 @@ const Planets = () => {
   const { planetDetails, loading } = usePlanetDetail(planetSelectedForMining)
   const { filteredPlanets, loading: planetLoading } = usePlanets()
 
-  useEffect(() => {
-    showPlanetPage()
-  }, [])
+  usePageVisit(PagePath.Planet)
+
+  // Browse a planet's lands.
+  const exploreLands = (planetId: string) => {
+    setPlanetSelectedForMiningIntent(planetId)
+    navigate(PagePath.Land)
+  }
 
   if (loading && planetLoading) return <LoadingSpinner />
   return (
@@ -179,8 +183,7 @@ const Planets = () => {
                   onClick={() => {
                     setSelectedPlanet(planet)
                     setPlanetSelectedForInfo(planet)
-                    setPlanetNameForMiningIntent(planet.planet_details.planet_name)
-                    setPlanetSelectedForMiningIntent(planet.id)
+                    exploreLands(planet.id)
                   }}
                   miningRing
                 />
@@ -215,8 +218,7 @@ const Planets = () => {
                     openPlanetDetailsDrawer()
                   }}
                   onExploreBtnClick={() => {
-                    setPlanetNameForMiningIntent()
-                    setPlanetSelectedForMiningIntent(planet.id)
+                    exploreLands(planet.id)
                   }}
                 />
               </Box>

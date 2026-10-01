@@ -2,16 +2,15 @@ import { StackingIcon } from '@alien-worlds/icons'
 import { Box, Flex, Text } from '@chakra-ui/react'
 import { NFTCardOverlayRender } from 'features/inventory/utils/NFTCardOverlayRender'
 import { LandImage } from 'features/mining/components/LandOwners/Components/LandImage/LandImage'
+import { useMiningStore } from 'features/mining/store/miningStore'
 import { Colors } from 'shared/util/colors'
 import { formatLandRating } from 'shared/util/helpers'
-import { useAppState } from 'store'
 
 import { Constants } from '../../../../../../shared/util/constants'
 
 const LandInfo = () => {
-  const {
-    wax: { managingLandDetails: landAsset, nftLandCardProperties },
-  } = useAppState()
+  const landAsset = useMiningStore((state) => state.managingLandDetails)
+  const nftLandCardProperties = useMiningStore((state) => state.nftLandCardProperties)
   const LandBasicDetails = () => {
     return (
       <Flex flexDirection="column" fontFamily="orb">

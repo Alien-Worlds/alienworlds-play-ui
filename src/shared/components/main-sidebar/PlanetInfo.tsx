@@ -1,23 +1,21 @@
-import { getNftImage } from 'shared/util/nft'
-import { formatNumber } from 'shared/util/numbers'
-
 import { VFC } from 'react'
 
 import { FillRateOldIcon, ProfitsIcon, StackingIcon, WaxIcon } from '@alien-worlds/icons'
 import { Avatar, Box, Flex, Icon, Text, Tooltip } from '@chakra-ui/react'
-import { Colors } from 'shared/util/colors'
 import { PlanetImage } from 'features/mining/components/PlanetLand/Components/PlanetImage'
 import { LoadingSpinner } from 'features/syndicates/components/LoadingSpinner/LoadingSpinner'
 import { usePlanetDetail } from 'graphql/hooks/usePlanetDetail'
 import { useNavigate } from 'react-router-dom'
-import { useAppState } from 'store'
+import { useAssetsStore } from 'shared/store/assetsStore'
+import { useMinerStore } from 'shared/store/minerStore'
+import { Colors } from 'shared/util/colors'
+import { getNftImage } from 'shared/util/nft'
+import { formatNumber } from 'shared/util/numbers'
 import { PagePath } from 'store/main/types'
 
 const PlanetInfo: VFC = () => {
-  const {
-    atomic: { landAsset },
-    wax: { planetSelectedForMining },
-  } = useAppState()
+  const planetSelectedForMining = useMinerStore((state) => state.planetSelectedForMining)
+  const landAsset = useAssetsStore((state) => state.landAsset)
 
   const navigate = useNavigate()
   const { planetDetails: miningPlanet, loading } = usePlanetDetail(planetSelectedForMining)

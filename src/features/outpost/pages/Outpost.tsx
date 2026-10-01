@@ -12,17 +12,15 @@ import { LoadingSpinner } from 'features/syndicates/components/LoadingSpinner/Lo
 import { useWalletDetails } from 'graphql/hooks/useWalletDetails'
 import { WalletDetailsResponse } from 'graphql/types'
 import { get, isNil } from 'lodash'
+import { useModalStore } from 'shared/store/modalStore'
 import { useSessionStore } from 'shared/store/sessionStore'
 import { Colors } from 'shared/util/colors'
 import { formatUserPointsWithDecimal } from 'shared/util/helpers'
-import { useActions } from 'store'
 import { v4 } from 'uuid'
 
 const Outpost = () => {
   const walletId = useSessionStore((state) => state.walletId)
-  const {
-    main: { setOutPostModalsActive },
-  } = useActions()
+  const setOutPostModalsActive = useModalStore((state) => state.setOutPostModalsActive)
   const { walletDetails, loading }: { walletDetails: WalletDetailsResponse; loading: boolean } =
     useWalletDetails(walletId)
   const [tabIndex, setTabIndex] = useState(0)

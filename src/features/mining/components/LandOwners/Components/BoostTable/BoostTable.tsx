@@ -18,12 +18,12 @@ import {
 import styled from '@emotion/styled/macro'
 import { SlotNumber } from 'features/mining/components/LandOwners/Components/SlotNumber/SlotNumber'
 import { useLandBoostSlots } from 'features/mining/hooks/useLandBoostSlots'
+import { useMiningStore } from 'features/mining/store/miningStore'
 import { LandSlot, SlotSize, SlotVariant } from 'features/mining/types/LandownerTypes'
 import { map } from 'lodash'
 import ScrollContainer from 'react-indiana-drag-scroll'
 import { useModalStore } from 'shared/store/modalStore'
 import { Colors } from 'shared/util/colors'
-import { useAppState } from 'store'
 import { v4 } from 'uuid'
 
 interface BoostTableProps {
@@ -216,9 +216,8 @@ const BoostTable: FC<BoostTableProps> = ({ onShowUnlockModal, setSlotToUnlock })
     (state) => state.setIsLandOwnerAddSlotDrawerOpen
   )
   const [id] = useState(() => v4())
-  const {
-    wax: { managingLandBoostFullSlots, isLoadingManagingLandBoosts },
-  } = useAppState()
+  const managingLandBoostFullSlots = useMiningStore((state) => state.managingLandBoostFullSlots)
+  const isLoadingManagingLandBoosts = useMiningStore((state) => state.isLoadingManagingLandBoosts)
 
   const { firstAvailableSlot } = useLandBoostSlots()
 

@@ -36,25 +36,22 @@ import { usePlanetDetail } from 'graphql/hooks/usePlanetDetail'
 import { get, toLower } from 'lodash'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { useNavigate } from 'react-router-dom'
+import { usePageVisit } from 'shared/hooks/usePageVisit'
+import { useAssetsStore } from 'shared/store/assetsStore'
+import { useMinerStore } from 'shared/store/minerStore'
+import { useModalStore } from 'shared/store/modalStore'
 import { useSessionStore } from 'shared/store/sessionStore'
+import { getAssetById } from 'shared/util/atomicassets'
 import { Colors } from 'shared/util/colors'
-import { useActions, useAppState, useEffects } from 'store'
 import { PagePath } from 'store/main/types'
 
 const Inventory = () => {
-  const {
-    atomic: {
-      api: { getAssetById },
-    },
-  } = useEffects()
-  const {
-    main: { showInventoryPage, setOutPostModalsActive },
-  } = useActions()
+  const setOutPostModalsActive = useModalStore((state) => state.setOutPostModalsActive)
 
-  const {
-    wax: { planetSelectedForMining },
-    atomic: { filteredAndSortedAssets, bagAssets, landAsset },
-  } = useAppState()
+  const planetSelectedForMining = useMinerStore((state) => state.planetSelectedForMining)
+  const filteredAndSortedAssets = useAssetsStore((state) => state.filteredAndSortedAssets)
+  const bagAssets = useAssetsStore((state) => state.bagAssets)
+  const landAsset = useAssetsStore((state) => state.landAsset)
   const walletId = useSessionStore((state) => state.walletId)
   const isDemoUser = useSessionStore((state) => state.isDemoUser)
   const { planetDetails, loading } = usePlanetDetail(planetSelectedForMining)
@@ -85,9 +82,7 @@ const Inventory = () => {
     reset()
   }, [filteredAndSortedAssets, reset])
 
-  useEffect(() => {
-    showInventoryPage()
-  }, [])
+  usePageVisit(PagePath.Inventory, { presetAssetsFilter: true })
 
   // Show loading spinner for both planet details and inventory loading
   if (loading) return <LoadingSpinner />

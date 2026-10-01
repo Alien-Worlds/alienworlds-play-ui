@@ -2,20 +2,16 @@ import { useRef, useState, VFC } from 'react'
 
 import { Dropdown, Option } from '@alien-worlds/uikit'
 import { Flex } from '@chakra-ui/react'
+import { useMiningStore } from 'features/mining/store/miningStore'
 import { find } from 'lodash'
 import { useClickAway } from 'react-use'
 import { dropdownStyles } from 'shared/util/helpers'
-import { useActions, useAppState } from 'store'
 import { filterLandRarities } from 'store/atomic/types'
 
 const FilterLandRarity: VFC = () => {
-  const {
-    atomic: { landAssetsFilter },
-  } = useAppState()
+  const landAssetsFilter = useMiningStore((state) => state.landAssetsFilter)
 
-  const {
-    atomic: { setLandAssetsFilter },
-  } = useActions()
+  const setLandAssetsFilter = useMiningStore((state) => state.setLandAssetsFilter)
 
   const [, setMenuVisible] = useState(false)
 
