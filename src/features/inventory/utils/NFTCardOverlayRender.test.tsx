@@ -28,26 +28,35 @@ let mockWaxState: any = { isOnboarded: false }
 
 jest.mock('store', () => ({
   useActions: () => ({
-    wax: {
-      setLand: mockSetLand,
-      setLandId: jest.fn(),
-      setNftLandCardProperties: jest.fn(),
-      executeOnboarding: jest.fn(),
-      setOnboarding: jest.fn(),
-      collectEvent: jest.fn(),
-      loadManagingLandDetailsAndBoosts: jest.fn(),
-      setAvatar: mockSetAvatar,
-    },
-    main: { setIsLandOwnerAddSlotDrawerOpen: jest.fn() },
+    wax: { executeOnboarding: jest.fn(), setOnboarding: jest.fn(), collectEvent: jest.fn() },
   }),
-  useAppState: () => ({
-    wax: { isOnboarded: false, onboarding: {}, ...mockWaxState },
-  }),
+  useAppState: () => ({ wax: { onboarding: {} } }),
 }))
 
 jest.mock('shared/store/assetsStore', () => ({
   useAssetsStore: (selector: (state: unknown) => unknown) =>
-    selector({ ownedLandsAssets: [], landAsset: null, assets: [], ...mockAtomicState }),
+    selector({
+      ownedLandsAssets: [],
+      landAsset: null,
+      assets: [],
+      setLand: mockSetLand,
+      setAvatar: mockSetAvatar,
+      ...mockAtomicState,
+    }),
+}))
+
+jest.mock('shared/store/minerStore', () => ({
+  useMinerStore: (selector: (state: unknown) => unknown) =>
+    selector({ isOnboarded: false, ...mockWaxState }),
+}))
+
+jest.mock('features/mining/store/miningStore', () => ({
+  useMiningStore: (selector: (state: unknown) => unknown) =>
+    selector({
+      setLandId: jest.fn(),
+      setNftLandCardProperties: jest.fn(),
+      loadManagingLandDetailsAndBoosts: jest.fn(),
+    }),
 }))
 
 jest.mock('features/inventory/store/inventoryStore', () => ({

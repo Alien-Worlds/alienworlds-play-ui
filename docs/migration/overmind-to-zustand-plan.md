@@ -104,9 +104,33 @@ logically isolated, or shared with another feature."
 - Tests: `features/mining/testUtils/mockStore` seeds `useAssetsStore` and `useMiningStore` from
   `state.atomic` / `actions.atomic` (each store gets the fields it owns), so the mining tests ran
   unchanged. Inventory tests mock `shared/store/assetsStore` like they mock `sessionStore`.
-- Remaining Overmind use in mining/inventory: `wax` state and the mining transactions
-  (`setBag`, `setLand`, `tryShine`, `boostSlot`, `unlockSlot`, `applyMainBoost`, `setMinBoost`,
-  `trySetCommission`, `setAvatar`), and `main` page actions. Those are the next phase.
+- **Mining's `wax`/`main` state and transactions** followed on the same branch, so the mining and
+  inventory files are only touched (and smoke-tested) once:
+  - `src/shared/store/minerStore.ts` (`useMinerStore`, shared): `miner`, `planetSelectedForMining`,
+    `whereToMineIntent`, and `whereToMine` / `isOnboarded` kept as fields (recomputed on change;
+    `isOnboarded` follows `sessionStore.isLoggedIn`). Read by the layouts, top bar and onboarding.
+  - `useAssetsStore` adds the raw `bag` and the `setBag` / `setLand` / `setAvatar` transactions
+    (builders in `shared/wax/assetActions.ts`).
+  - `useMiningStore` adds land management (`managingLand*`, boost slots, `nftLandCardProperties`),
+    shining (`isShining`, `shiningUrl`) and their transactions: `tryShine`, `trySetCommission`,
+    `boostSlot`, `unlockSlot`, `applyMainBoost`, `setMinBoost`, `loadManagingLandDetailsAndBoosts`
+    (builders in `features/mining/utils/miningActions.ts`).
+  - Chain reads: `shared/wax/tables.ts` (`getTableRows`), `features/mining/utils/chainReads.ts`
+    (shine info, rarity pools), `features/mining/utils/landBoosts.ts`; NFT reads in
+    `shared/util/atomicassets.ts`.
+  - `isOutPostModalsActive` moved to `modalStore`. The `main.show*Page` actions became
+    `shared/hooks/usePageVisit` (drawer, asset-filter preset, analytics).
+  - Transactions still ask Overmind's sync loop for early reloads through
+    `shared/store/syncScheduler.ts`, which `store/main` registers on start-up.
+- Still Overmind in mining/inventory: `wax.collectEvent` (analytics, app-wide) and the onboarding
+  flow (`onboarding`, `setOnboarding`, `executeOnboarding`) used by inventory's land cards. Overmind
+  itself still runs the loaders (assets, bag, mining land, avatar) and login, which write `miner`,
+  `bag` etc. into the stores.
+- Behaviour changes in this step:
+  - A rejected shine no longer leaves the Shining page locked (`isShining` stayed true).
+  - `unlockSlot` / `setMinBoost` failures now show the chain error; before they failed silently
+    and left the error to appear on the next transaction.
+  - Dead state removed: `wax.selectedPlanetName`, `wax.planetLandsAssets` / `main.bindLandsMap`.
 
 ## Shared session & transactions
 
@@ -131,7 +155,7 @@ away in the final phase below.
 2. `lore` — contained but real; needs care around the blockchain-action ports and tests. (done)
 3. `inventory` + mining's `atomic` state — split into a shared `useAssetsStore` plus mining and
    inventory stores. (done)
-4. Mining transactions and mining `wax` state — onto `shared/wax/transact`, like lore.
+4. Mining transactions and mining `wax` state — onto `shared/wax/transact`, like lore. (done)
 5. **Final: session/auth** — once features no longer read session state from Overmind:
    - Move login / logout / `switchWallet` / session restore out of `main/actions.ts` into Zustand,
      writing `sessionStore` directly.

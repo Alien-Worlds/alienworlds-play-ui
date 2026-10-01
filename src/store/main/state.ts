@@ -48,13 +48,11 @@ type MainState = {
   autoExpireSigningDACTerms: number
   signingDACTermsState: SigningDACTermsState
   modalErrorState: ErrorTypes
-  shiningUrl: string
   isCompactSidebar: boolean
   isVotingDACCandidates: boolean
   autoExpireVoteDACCandidates: number
   lastMineBounty: string
   lastMineCountdown: string
-  isOutPostModalsActive: boolean
   sessionKit: SessionKit
   currentSession: Session
   currentWallet: string
@@ -91,7 +89,6 @@ export const defaultState: MainState = {
   isClaiming: false,
   isWorkInProgress: false,
   modalErrorState: null,
-  shiningUrl: null,
   miningGameState: derived((state: MainState) => {
     if (state.isClaiming) return MiningGameState.Claiming
 
@@ -123,7 +120,6 @@ export const defaultState: MainState = {
   autoExpireVoteDACCandidates: null,
   lastMineBounty: null,
   lastMineCountdown: null,
-  isOutPostModalsActive: false,
   sessionKit: null,
   currentSession: null,
   currentWallet: null,

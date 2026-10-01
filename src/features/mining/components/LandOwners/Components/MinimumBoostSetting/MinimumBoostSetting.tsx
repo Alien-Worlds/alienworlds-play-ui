@@ -2,23 +2,23 @@ import { useEffect, useState } from 'react'
 
 import { Dropdown, Option } from '@alien-worlds/uikit'
 import { Flex, Text } from '@chakra-ui/react'
+import { useMiningStore } from 'features/mining/store/miningStore'
 import { BoostLevels } from 'features/mining/utils/constants'
 import { find, map } from 'lodash'
 import { useSessionStore } from 'shared/store/sessionStore'
 import { Colors } from 'shared/util/colors'
-import { useActions, useAppState } from 'store'
 
 import { Constants } from '../../../../../../shared/util/constants'
 
 const MinimumBoostSetting = () => {
-  const {
-    wax: { managingLandId, managingLandDetails },
-  } = useAppState()
+  const managingLandId = useMiningStore((state) => state.managingLandId)
+  const managingLandDetails = useMiningStore((state) => state.managingLandDetails)
   const walletId = useSessionStore((state) => state.walletId)
 
-  const {
-    wax: { setMinBoost, loadManagingLandDetailsAndBoostsWithDelay },
-  } = useActions()
+  const setMinBoost = useMiningStore((state) => state.setMinBoost)
+  const loadManagingLandDetailsAndBoostsWithDelay = useMiningStore(
+    (state) => state.loadManagingLandDetailsAndBoostsWithDelay
+  )
 
   const [selectedMinimumBoost, setSelectedMinimumBoost] = useState<any>(null)
 

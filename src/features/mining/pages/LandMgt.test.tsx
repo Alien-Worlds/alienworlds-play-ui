@@ -1,4 +1,4 @@
-import { act, render, screen } from '@testing-library/react'
+import { act, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { mockStore } from 'features/mining/testUtils/mockStore'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
@@ -70,7 +70,9 @@ jest.mock('shared/layouts', () => ({
   AppModal: ({ isOpen, children }: any) => (isOpen ? <div>{children}</div> : null),
 }))
 
-const showLandMgtPage = jest.fn()
+const collectEvent = jest.fn()
+const setLandId = jest.fn()
+const loadManagingLandDetailsAndBoosts = jest.fn()
 const setAssetsFilter = jest.fn()
 const setNftLandCardProperties = jest.fn()
 
@@ -102,8 +104,12 @@ const setup = ({
     },
     actions: {
       atomic: { setAssetsFilter },
-      wax: { setNftLandCardProperties },
-      main: { showLandMgtPage },
+      wax: {
+        setNftLandCardProperties,
+        setLandId,
+        loadManagingLandDetailsAndBoosts,
+        collectEvent,
+      },
     },
   })
   return render(
@@ -117,6 +123,7 @@ const setup = ({
 
 beforeEach(() => {
   jest.clearAllMocks()
+  loadManagingLandDetailsAndBoosts.mockResolvedValue(undefined)
   useSessionStore.getState().setWalletId('owner.wam')
 })
 
@@ -125,10 +132,28 @@ afterEach(() => {
 })
 
 describe('LandMgt page', () => {
-  it('loads the land from the url', () => {
+  it('loads the land from the url and records the visit', () => {
     setup()
 
-    expect(showLandMgtPage).toHaveBeenCalledWith('42')
+    expect(setLandId).toHaveBeenCalledWith('42')
+    expect(loadManagingLandDetailsAndBoosts).toHaveBeenCalled()
+    expect(collectEvent).toHaveBeenCalledWith({
+      name: 'page_visit',
+      fields: { location: '/landMgt/:id' },
+    })
+  })
+
+  it('sends players who do not own the land back to their inventory', async () => {
+    setup({ wax: { nftLandCardProperties: { isUserOwner: false } } })
+
+    await waitFor(() => expect(mockNavigate).toHaveBeenCalledWith('/inventory'))
+  })
+
+  it('lets the owner stay', async () => {
+    setup({ wax: { nftLandCardProperties: { isUserOwner: true } } })
+
+    await waitFor(() => expect(loadManagingLandDetailsAndBoosts).toHaveBeenCalled())
+    expect(mockNavigate).not.toHaveBeenCalled()
   })
 
   it('shows the land details', () => {
@@ -227,6 +252,8 @@ describe('LandMgt page', () => {
   it('returns other players to the land list on close', async () => {
     useSessionStore.getState().setWalletId('visitor.wam')
     setup()
+    // Mount presets the page's asset filter; only the close behaviour matters here.
+    setAssetsFilter.mockClear()
 
     await userEvent.click(screen.getByRole('button', { name: 'Close' }))
 

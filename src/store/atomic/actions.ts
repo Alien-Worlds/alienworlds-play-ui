@@ -4,10 +4,12 @@ import { useInventoryStore } from 'features/inventory/store/inventoryStore'
 import { useMiningStore } from 'features/mining/store/miningStore'
 import { LandBoost, LandBoostsDay } from 'features/mining/types/LandownerTypes'
 import { MainBoostLevels } from 'features/mining/utils/constants'
+import { fetchLandBoostsByDay } from 'features/mining/utils/landBoosts'
 import { find, forEach, map } from 'lodash'
 import { DateTime } from 'luxon'
 import { catchError, pipe } from 'overmind'
 import { useAssetsStore } from 'shared/store/assetsStore'
+import { useMinerStore } from 'shared/store/minerStore'
 import { today25hDay } from 'shared/util/helpers'
 import { AssetSchema, AssetType } from 'store/atomic/types'
 import { executeAfter, shouldExecute } from 'store/main/helpers'
@@ -24,7 +26,7 @@ export const onInitializeOvermind = async ({ state, effects }: Context) => {
 }
 
 export const initializeOrReloadAssets = pipe(
-  async ({ state, actions, effects }: Context) => {
+  async ({ state, effects }: Context) => {
     const assetsStore = useAssetsStore.getState()
 
     if (!state.wax.isLoggedIn) {
@@ -112,11 +114,8 @@ export const initializeOrReloadAssets = pipe(
       // fetch all daily boosts applied to all owned Lands
       await Promise.all(
         map(ownedLands, async (asset) => {
-          const dayBoosts: LandBoost[] = await actions.wax.getLandBoostsByDay({
-            landId: asset.asset_id,
-            isManagingLand: false,
-            day: today25hDay(),
-          })
+          const dayBoosts: LandBoost[] =
+            (await fetchLandBoostsByDay(asset.asset_id, today25hDay())) ?? []
 
           boosts.push({
             landId: asset.asset_id,
@@ -234,7 +233,7 @@ export const initializeOrReloadBag = pipe(
     const assetsStore = useAssetsStore.getState()
 
     if (!state.wax.isLoggedIn) {
-      state.wax.bag = null
+      assetsStore.setWaxBag(null)
       assetsStore.setBagAssets(null)
     }
 
@@ -246,20 +245,21 @@ export const initializeOrReloadBag = pipe(
     if (state.wax.isDemoUser) {
       // for demo user, fetch bag items only once at first load, afterwards skip loading new tools
       // so the ones switched remain available in the UI while in demo mode.
-      if (!state.wax.bag || !state.wax.bag?.items || state.wax.bag?.items?.length === 0) {
-        state.wax.bag = await effects.wax.api.getBag()
+      if (!useAssetsStore.getState().bag?.items?.length) {
+        assetsStore.setWaxBag(await effects.wax.api.getBag())
       }
     } else {
-      state.wax.bag = await effects.wax.api.getBag()
+      assetsStore.setWaxBag(await effects.wax.api.getBag())
     }
 
-    if (!state.wax.bag) {
+    const { bag } = useAssetsStore.getState()
+    if (!bag) {
       assetsStore.setBagAssets(null)
       return
     }
 
     const bagAssets = await Promise.all(
-      state.wax.bag.items.map((item) => {
+      bag.items.map((item) => {
         return effects.atomic.api.getAssetById(item)
       })
     )
@@ -282,11 +282,12 @@ export const initializeOrReloadBag = pipe(
 )
 
 export const initializeOrReloadMiningLand = pipe(
-  async ({ state, actions, effects }: Context) => {
+  async ({ state, effects }: Context) => {
     const assetsStore = useAssetsStore.getState()
+    const minerStore = useMinerStore.getState()
 
     if (!state.wax.isLoggedIn) {
-      state.wax.miner = null
+      minerStore.setMiner(null)
       assetsStore.setLandAsset(null)
     }
 
@@ -295,17 +296,18 @@ export const initializeOrReloadMiningLand = pipe(
     }
     state.main.syncAi.land.isInProgress = true
 
-    state.wax.miner = await effects.wax.api.getMiner()
+    const miner = await effects.wax.api.getMiner()
+    minerStore.setMiner(miner)
 
-    if (!state.wax.miner) {
+    if (!miner) {
       assetsStore.setLandAsset(null)
     } else if (!state.wax.isDemoUser || useAssetsStore.getState().landAsset === null) {
       // Demo users keep the first land they load, so switching land in demo mode sticks.
-      assetsStore.setLandAsset(await effects.atomic.api.getAssetById(state.wax.miner.current_land))
+      assetsStore.setLandAsset(await effects.atomic.api.getAssetById(miner.current_land))
     }
-    if (!state.wax.isDemoUser) actions.wax.setPlanetSelectedForMining()
-    else if (state.wax.isDemoUser && useAssetsStore.getState().landAsset === null) {
-      actions.wax.setPlanetSelectedForMining()
+    const { landAsset } = useAssetsStore.getState()
+    if (!state.wax.isDemoUser || landAsset === null) {
+      minerStore.setPlanetSelectedForMining(landAsset)
     }
 
     if (state.wax.isDemoUser)

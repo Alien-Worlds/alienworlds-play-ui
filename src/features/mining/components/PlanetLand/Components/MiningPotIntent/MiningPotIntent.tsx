@@ -1,18 +1,15 @@
-import { formatNumber } from 'shared/util/numbers'
-
 import { VFC } from 'react'
 
 import { WaxIcon } from '@alien-worlds/icons'
 import { Flex, Text } from '@chakra-ui/react'
-import { Colors } from 'shared/util/colors'
 import { LoadingSpinner } from 'features/syndicates/components/LoadingSpinner/LoadingSpinner'
 import { usePlanetDetail } from 'graphql/hooks/usePlanetDetail'
-import { useAppState } from 'store'
+import { useMinerStore } from 'shared/store/minerStore'
+import { Colors } from 'shared/util/colors'
+import { formatNumber } from 'shared/util/numbers'
 
 const MiningPotIntent: VFC = () => {
-  const {
-    wax: { whereToMine },
-  } = useAppState()
+  const whereToMine = useMinerStore((state) => state.whereToMine)
   const { planetDetails, loading } = usePlanetDetail(whereToMine)
   if (loading) return <LoadingSpinner />
   if (!planetDetails) return <></>

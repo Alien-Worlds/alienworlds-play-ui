@@ -74,9 +74,8 @@ const makePlanet = (id: string, title: string) => ({
   planet_details: { title, planet_name: `${id}.world` },
 })
 
-const showPlanetPage = jest.fn()
+const collectEvent = jest.fn()
 const setPlanetSelectedForMiningIntent = jest.fn()
-const setPlanetNameForMiningIntent = jest.fn()
 
 const setup = (wax: Record<string, any> = {}, atomic: Record<string, any> = {}) => {
   mockStore({
@@ -85,8 +84,7 @@ const setup = (wax: Record<string, any> = {}, atomic: Record<string, any> = {}) 
       wax: { planetSelectedForMining: null, isOnboarded: true, ...wax },
     },
     actions: {
-      wax: { setPlanetSelectedForMiningIntent, setPlanetNameForMiningIntent },
-      main: { showPlanetPage },
+      wax: { setPlanetSelectedForMiningIntent, collectEvent },
     },
   })
   return render(<Planets />)
@@ -105,10 +103,13 @@ beforeEach(() => {
 })
 
 describe('Planets page', () => {
-  it('registers the page on mount', () => {
+  it('records the page visit on mount', () => {
     setup()
 
-    expect(showPlanetPage).toHaveBeenCalledTimes(1)
+    expect(collectEvent).toHaveBeenCalledWith({
+      name: 'page_visit',
+      fields: { location: '/mining/planet' },
+    })
   })
 
   // Current behaviour: the spinner only shows while both queries are loading.
@@ -133,18 +134,18 @@ describe('Planets page', () => {
 
     await userEvent.click(screen.getByText('planet kavian'))
 
-    expect(setPlanetNameForMiningIntent).toHaveBeenCalledWith('kavian.world')
     expect(setPlanetSelectedForMiningIntent).toHaveBeenCalledWith('kavian')
+    expect(mockNavigate).toHaveBeenCalledWith('/mining/land')
     expect(screen.getByText('planet kavian')).toHaveAttribute('data-selected', 'true')
   })
 
-  it('explores a planet without a planet name', async () => {
+  it("explores a planet's lands", async () => {
     setup()
 
     await userEvent.click(within(planetCard('eyeke')).getByRole('button', { name: 'Explore' }))
 
-    expect(setPlanetNameForMiningIntent).toHaveBeenCalledWith()
     expect(setPlanetSelectedForMiningIntent).toHaveBeenCalledWith('eyeke')
+    expect(mockNavigate).toHaveBeenCalledWith('/mining/land')
   })
 
   it('opens the details drawer for the chosen planet', async () => {

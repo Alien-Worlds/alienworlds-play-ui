@@ -41,6 +41,8 @@ import {
   NFTCardOverlayRender,
   NFTCardTopRightPanelRender,
 } from 'features/inventory/utils/NFTCardOverlayRender'
+import { useMiningStore } from 'features/mining/store/miningStore'
+import { getShineInfo } from 'features/mining/utils/chainReads'
 import { ASSET_TYPE_LAND } from 'features/mining/utils/constants'
 import { NftZoomModal } from 'features/outpost/modals/NftZoomModal/NftZoomModal'
 import { LoadingSpinner } from 'features/syndicates/components/LoadingSpinner/LoadingSpinner'
@@ -62,37 +64,27 @@ import {
 } from 'lodash'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { useNavigate } from 'react-router-dom'
+import { usePageVisit } from 'shared/hooks/usePageVisit'
 import { useAssetsStore } from 'shared/store/assetsStore'
 import { useModalStore } from 'shared/store/modalStore'
 import { useSessionStore } from 'shared/store/sessionStore'
+import { getAssetById, getTemplateById } from 'shared/util/atomicassets'
 import { Colors } from 'shared/util/colors'
 import { config } from 'shared/util/config'
 import { isShinableNFT } from 'shared/util/helpers'
 import { formatNumber } from 'shared/util/numbers'
-import { useActions, useAppState, useEffects } from 'store'
 import { AssetShine } from 'store/atomic/types'
 import { PagePath } from 'store/main/types'
 import { ShineData } from 'store/wax/types'
 
 const Shining = () => {
-  const {
-    wax: {
-      api: { getShineInfo },
-    },
-    atomic: {
-      api: { getAssetById, getTemplateById },
-    },
-  } = useEffects()
-  const {
-    wax: { tryShine },
-    main: { showShiningPage, setShiningUrl, setOutPostModalsActive },
-  } = useActions()
+  const tryShine = useMiningStore((state) => state.tryShine)
+  const setShiningUrl = useMiningStore((state) => state.setShiningUrl)
+  const setOutPostModalsActive = useModalStore((state) => state.setOutPostModalsActive)
   const setPrimaryModalActive = useModalStore((state) => state.setPrimaryModalActive)
   const isDemoUser = useSessionStore((state) => state.isDemoUser)
   const walletId = useSessionStore((state) => state.walletId)
-  const {
-    wax: { isShining },
-  } = useAppState()
+  const isShining = useMiningStore((state) => state.isShining)
   const filteredAndSortedAssets = useAssetsStore((state) => state.filteredAndSortedAssets)
   const assets = useAssetsStore((state) => state.assets)
   const triggerFilterAndSortAssets = useAssetsStore((state) => state.triggerFilterAndSortAssets)
@@ -298,8 +290,9 @@ const Shining = () => {
     }
   }, [filteredAndSortedAssets, visibleAssets])
 
+  usePageVisit(PagePath.Shining, { presetAssetsFilter: true })
+
   useEffect(() => {
-    showShiningPage()
     return () => {
       setVisibleAssets([])
     }

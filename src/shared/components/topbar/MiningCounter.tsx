@@ -2,6 +2,7 @@ import { Button } from '@alien-worlds/uikit'
 import { Flex, Spinner, useBreakpointValue } from '@chakra-ui/react'
 import { motion } from 'framer-motion'
 import { Clock } from 'shared/components/topbar/Clock'
+import { useAssetsStore } from 'shared/store/assetsStore'
 import { useSessionStore } from 'shared/store/sessionStore'
 import { pageTransition } from 'shared/util/animations'
 import { Colors } from 'shared/util/colors'
@@ -14,9 +15,9 @@ const MiningCounter = ({ height, width }: { height?: string; width?: string }) =
     main: { mine, claimMine },
   } = useActions()
   const {
-    wax: { bag },
     main: { miningGameState, mineDelay },
   } = useAppState()
+  const bag = useAssetsStore((state) => state.bag)
   const isLoggedIn = useSessionStore((state) => state.isLoggedIn)
   const buttonFontValue = useBreakpointValue({ base: 16, md: 18 })
 

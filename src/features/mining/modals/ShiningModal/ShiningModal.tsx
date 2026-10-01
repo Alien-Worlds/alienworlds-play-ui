@@ -7,18 +7,14 @@ import {
   ModalOverlay,
   useBreakpointValue,
 } from '@chakra-ui/react'
+import { useMiningStore } from 'features/mining/store/miningStore'
 import ReactPlayer from 'react-player'
 import { useModalStore } from 'shared/store/modalStore'
 import { Colors } from 'shared/util/colors'
-import { useActions, useAppState } from 'store'
 
 export const ShiningModal = () => {
-  const {
-    main: { setShiningUrl },
-  } = useActions()
-  const {
-    main: { shiningUrl },
-  } = useAppState()
+  const setShiningUrl = useMiningStore((state) => state.setShiningUrl)
+  const shiningUrl = useMiningStore((state) => state.shiningUrl)
   const setPrimaryModalActive = useModalStore((state) => state.setPrimaryModalActive)
   const primaryModals = useModalStore((state) => state.primaryModals)
 

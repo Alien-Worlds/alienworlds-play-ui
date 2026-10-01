@@ -1,22 +1,22 @@
 import { renderHook, waitFor } from '@testing-library/react'
-import { createQueryWrapper, mockStore } from 'features/mining/testUtils/mockStore'
+import { createQueryWrapper } from 'features/mining/testUtils/mockStore'
 
 import { useRarityPools } from './useRarityPools'
 
-jest.mock('store', () => jest.requireActual('features/mining/testUtils/mockStore').storeMock)
-
-const getRarityPools = jest.fn()
+const mockGetRarityPools = jest.fn()
+jest.mock('features/mining/utils/chainReads', () => ({
+  getRarityPools: (planet: string) => mockGetRarityPools(planet),
+}))
 
 beforeEach(() => {
-  getRarityPools.mockReset()
-  mockStore({ effects: { wax: { api: { getRarityPools } } } })
+  mockGetRarityPools.mockReset()
 })
 
 const RARITIES = ['Abundant', 'Common', 'Rare', 'Epic', 'Legendary', 'Mythical']
 
 describe('useRarityPools', () => {
   it('returns the pools in rarity order with their amounts and rates', async () => {
-    getRarityPools.mockResolvedValue({
+    mockGetRarityPools.mockResolvedValue({
       pool_buckets: [...RARITIES].reverse().map((key, i) => ({ key, value: `${i + 1}.5000 TLM` })),
       rates: [{ key: 'Rare', value: '12.5' }],
     })
@@ -26,7 +26,7 @@ describe('useRarityPools', () => {
     })
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true))
-    expect(getRarityPools).toHaveBeenCalledWith('eyeke')
+    expect(mockGetRarityPools).toHaveBeenCalledWith('eyeke')
     expect(result.current.data.map((x) => x.rarityName)).toEqual(RARITIES)
     expect(result.current.data[2]).toEqual({
       rarityName: 'Rare',
@@ -38,7 +38,7 @@ describe('useRarityPools', () => {
   })
 
   it('returns no pools when the chain returns nothing', async () => {
-    getRarityPools.mockResolvedValue(null)
+    mockGetRarityPools.mockResolvedValue(null)
 
     const { result } = renderHook(() => useRarityPools('eyeke'), {
       wrapper: createQueryWrapper(),

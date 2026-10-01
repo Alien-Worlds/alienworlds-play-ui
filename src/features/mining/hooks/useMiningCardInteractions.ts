@@ -2,12 +2,9 @@ import { useCallback } from 'react'
 
 import { map } from 'lodash'
 import { useAssetsStore } from 'shared/store/assetsStore'
-import { useActions } from 'store'
 
 export const useMiningCardInteractions = () => {
-  const {
-    wax: { setBag },
-  } = useActions()
+  const setBag = useAssetsStore((state) => state.setBag)
 
   const bagAssets = useAssetsStore((state) => state.bagAssets)
 

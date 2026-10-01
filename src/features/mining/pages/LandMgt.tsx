@@ -36,28 +36,34 @@ import { filter, toLower } from 'lodash'
 import { useNavigate, useParams } from 'react-router-dom'
 import { AppModal } from 'shared/layouts'
 import { useAssetsStore } from 'shared/store/assetsStore'
+import { useModalStore } from 'shared/store/modalStore'
 import { useSessionStore } from 'shared/store/sessionStore'
 import { Colors } from 'shared/util/colors'
 import { landBoostValueByRarity, formatLandRating } from 'shared/util/helpers'
-import { useActions, useAppState } from 'store'
+import { useActions } from 'store'
 import { AssetSchema } from 'store/atomic/types'
 import { PagePath } from 'store/main/types'
 
 import { Constants } from '../../../shared/util/constants'
 
 const LandMgt: VFC = () => {
-  const {
-    wax: { managingLandId, nftLandCardProperties, managingLandDetails: landAsset },
-  } = useAppState()
+  const managingLandId = useMiningStore((state) => state.managingLandId)
+  const nftLandCardProperties = useMiningStore((state) => state.nftLandCardProperties)
+  const landAsset = useMiningStore((state) => state.managingLandDetails)
   const currentLand = useAssetsStore((state) => state.landAsset)
   const ownedLandBoostsAssets = useMiningStore((state) => state.ownedLandBoostsAssets)
   const assetsFilter = useAssetsStore((state) => state.assetsFilter)
   const walletId = useSessionStore((state) => state.walletId)
 
   const {
-    wax: { setNftLandCardProperties },
-    main: { showLandMgtPage },
+    wax: { collectEvent },
   } = useActions()
+  const setLandId = useMiningStore((state) => state.setLandId)
+  const loadManagingLandDetailsAndBoosts = useMiningStore(
+    (state) => state.loadManagingLandDetailsAndBoosts
+  )
+  const presetAssetsFilter = useAssetsStore((state) => state.presetAssetsFilter)
+  const setNftLandCardProperties = useMiningStore((state) => state.setNftLandCardProperties)
   const setAssetsFilter = useAssetsStore((state) => state.setAssetsFilter)
 
   const navigate = useNavigate()
@@ -86,7 +92,17 @@ const LandMgt: VFC = () => {
   }
 
   useEffect(() => {
-    showLandMgtPage(currentLandId)
+    useModalStore.getState().toggleMainDrawer(false)
+    setLandId(currentLandId)
+    collectEvent({ name: Constants.GA_PAGE_VISIT, fields: { location: PagePath.LandMgtSubpage } })
+    presetAssetsFilter()
+    loadManagingLandDetailsAndBoosts().then(() => {
+      // Only owners manage a land here; anyone else goes back to their inventory.
+      const card = useMiningStore.getState().nftLandCardProperties
+      if (!window.location.pathname.startsWith(PagePath.Land) && card && !card.isUserOwner) {
+        navigate(PagePath.Inventory)
+      }
+    })
   }, [currentLandId])
 
   useEffect(() => {
