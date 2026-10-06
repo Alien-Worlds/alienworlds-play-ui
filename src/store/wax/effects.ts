@@ -82,8 +82,6 @@ const persistedWallet = {
   },
 }
 
-const WHITELIST_STATUS_API_URL = 'https://api.alienworlds.io/whitelist/whitelist-status'
-
 export const api = (() => {
   let waxClient: WaxJS = null
   let wharfClient: any = null
@@ -444,11 +442,14 @@ export const api = (() => {
     },
 
     async getWhitelistStatus(): Promise<WhitelistStatusResponse | null> {
-      if (!options || !options?.getWalletId()) return null
+      if (!options || !options?.getWalletId() || !config.WhitelistApiUrl) return null
 
-      const response = await fetch(`${WHITELIST_STATUS_API_URL}/${options.getWalletId()}`, {
-        headers: { accept: 'application/json' },
-      })
+      const response = await fetch(
+        `${config.WhitelistApiUrl}/whitelist-status/${options.getWalletId()}`,
+        {
+          headers: { accept: 'application/json' },
+        }
+      )
       if (!response.ok) throw new Error(`Whitelist status request failed: ${response.status}`)
 
       return <WhitelistStatusResponse>await response.json()
