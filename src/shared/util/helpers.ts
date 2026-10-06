@@ -860,6 +860,11 @@ export const isUnionDAO = (dao: string) => {
   return includes(dao, 'unn')
 }
 
+// Whitelist status API keys DAOs by planet name (e.g. 'neriunn' / 'nerix' -> 'neri')
+export const getWhitelistDaoKey = (dacId: string) => {
+  return convertPlanetIdToName(toLower(dacId).replace(/unn$/, ''))
+}
+
 export const processElectionGlobals = (result: any) => {
   const electionGlobals = get(result, 'electionGlobals', null)
 

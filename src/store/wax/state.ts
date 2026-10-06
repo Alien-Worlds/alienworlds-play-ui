@@ -14,6 +14,7 @@ import {
   WaxPlayer,
   WaxTerms,
   WaxRefundInProgress,
+  WhitelistStatus,
   OnboardingData,
   PlanetCandidateType,
   PlanetDACInfo,
@@ -68,6 +69,7 @@ type WaxState = {
   selectedDacCustodians: PlanetCustodian[]
   selectedDacCandidateWalletId: string | null
   isUserWhiteListed: boolean
+  userWhitelistStatus: WhitelistStatus | null
   maxStakeTime: number
 
   actionProgressState: RequestState
@@ -101,6 +103,7 @@ export const defaultState: WaxState = {
   isLoggedIn: derived((state: WaxState) => state.walletId !== null),
   isAuthenticating: null,
   isUserWhiteListed: false,
+  userWhitelistStatus: null,
   isValidated: false,
   walletId: null,
   isDemoUser: derived((state: WaxState) => state.walletId === config.DemoUserWaxAccount),

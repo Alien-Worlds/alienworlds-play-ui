@@ -14,14 +14,20 @@ import {
 } from '@chakra-ui/react'
 import AlienWorldsLogo from 'assets/images/alienworlds-db-logo_full_color.svg'
 import { motion } from 'framer-motion'
+import { capitalize } from 'lodash'
 import { useModalStore } from 'shared/store/modalStore'
 import { Colors } from 'shared/util/colors'
-import { openInNewTab } from 'shared/util/helpers'
+import { getWhitelistDaoKey, openInNewTab } from 'shared/util/helpers'
+import { useAppState } from 'store'
 const AnimatedBox = motion(Box)
 
 const UserWhiteListModal = () => {
   const secondaryModals = useModalStore((state) => state.secondaryModals)
   const setSecondaryModalActive = useModalStore((state) => state.setSecondaryModalActive)
+  const {
+    wax: { selectedDacId, userWhitelistStatus },
+  } = useAppState()
+  const isArbiter = userWhitelistStatus === 'arbiter'
 
   const handleClose = () => {
     setSecondaryModalActive({ modalName: 'UserWhiteListModal', value: false })
@@ -85,7 +91,11 @@ const UserWhiteListModal = () => {
                   }}
                   fontWeight={400}
                 >
-                  You have to Verify to be able to vote
+                  {isArbiter
+                    ? `You are verified as Arbiter on ${capitalize(
+                        getWhitelistDaoKey(selectedDacId)
+                      )}`
+                    : 'You have to Verify to be able to vote'}
                 </Text>
 
                 <Text
@@ -98,7 +108,9 @@ const UserWhiteListModal = () => {
                   color={Colors.SNOW_WHITE}
                   maxW={422}
                 >
-                  Get Verified to become a Union Candidate.
+                  {isArbiter
+                    ? 'Please get yourself verified as Custodian to become a Union Candidate.'
+                    : 'Get Verified to become a Union Candidate.'}
                 </Text>
 
                 <Flex
