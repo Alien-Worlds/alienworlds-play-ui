@@ -45,6 +45,7 @@ import {
   VotersHistoryResponse,
   MemberTermsSignRequest,
   WaxRequest,
+  WhitelistStatusResponse,
 } from 'store/wax/types'
 
 import { Constants } from '../../shared/util/constants'
@@ -438,6 +439,20 @@ export const api = (() => {
       else if (wharfClient) result = await wharfClient.v1.chain.get_table_rows(query)
 
       return <any>result?.rows?.[0] ?? null
+    },
+
+    async getWhitelistStatus(): Promise<WhitelistStatusResponse | null> {
+      if (!options || !options?.getWalletId() || !config.WhitelistApiUrl) return null
+
+      const response = await fetch(
+        `${config.WhitelistApiUrl}/whitelist-status/${options.getWalletId()}`,
+        {
+          headers: { accept: 'application/json' },
+        }
+      )
+      if (!response.ok) throw new Error(`Whitelist status request failed: ${response.status}`)
+
+      return <WhitelistStatusResponse>await response.json()
     },
 
     async getRefundsInProgress() {

@@ -33,6 +33,7 @@ import { config } from 'shared/util/config'
 import {
   dacIdToDacTreasuryAccountList,
   getDacTokenPrecision,
+  getWhitelistDaoKey,
   isObjectEqual,
   PrepareDacTokenAmountWithPrecision,
   PrepareTlmAmountWithPrecision,
@@ -58,6 +59,7 @@ import {
   WaxResponse,
   WaxUserPoints,
   DacInfoResponse,
+  WhitelistStatus,
 } from './types'
 import { Context } from '..'
 import { Constants } from '../../shared/util/constants'
@@ -405,10 +407,22 @@ export const tryUnstake = pipe(
 
 export const checkWhitelist = pipe(
   async ({ state, effects }: Context, dacId?: string) => {
-    const result = await effects.wax.api.getWhiteListId(dacId)
+    let status: WhitelistStatus | null = null
+    try {
+      const response = await effects.wax.api.getWhitelistStatus()
+      status = get(response, ['daos', getWhitelistDaoKey(dacId), 'status'], null)
+    } catch (error) {
+      console.error(error)
+    }
 
-    state.wax.isUserWhiteListed = result ? true : false
-    return result ? true : false
+    // Only a custodian KYC qualifies for candidacy; fall back to the on-chain table if the status API is unavailable
+    const isWhiteListed = status
+      ? status === 'custodian'
+      : Boolean(await effects.wax.api.getWhiteListId(dacId))
+
+    state.wax.userWhitelistStatus = status
+    state.wax.isUserWhiteListed = isWhiteListed
+    return isWhiteListed
   },
   catchError((_: Context, error) => {
     toastErrorMessage(error?.message ?? 'Load Stake Time Multiplier')

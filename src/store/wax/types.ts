@@ -22,6 +22,13 @@ export type LoreGlobals = {
   last_update: DateTime
 }
 
+export type WhitelistStatus = 'none' | 'custodian' | 'arbiter'
+
+export type WhitelistStatusResponse = {
+  account: string
+  daos: Record<string, { receiverWL: boolean; status: WhitelistStatus }>
+}
+
 export type WaxQuery = {
   code: string
   scope: string

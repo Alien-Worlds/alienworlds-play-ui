@@ -140,7 +140,7 @@ export const BecomeCandidate = () => {
     if (!formReady) {
       return
     }
-    const isWhiteListed = checkWhitelist(planetId || selectedDacId)
+    const isWhiteListed = await checkWhitelist(planetId || selectedDacId)
     if (!isWhiteListed && isUnionDAO(selectedDacId)) {
       setSecondaryModalActive({ modalName: 'UserWhiteListModal', value: true })
 
