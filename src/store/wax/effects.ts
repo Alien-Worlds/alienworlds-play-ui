@@ -45,6 +45,7 @@ import {
   VotersHistoryResponse,
   MemberTermsSignRequest,
   WaxRequest,
+  WhitelistPurpose,
   WhitelistStatusResponse,
 } from 'store/wax/types'
 
@@ -453,6 +454,20 @@ export const api = (() => {
       if (!response.ok) throw new Error(`Whitelist status request failed: ${response.status}`)
 
       return <WhitelistStatusResponse>await response.json()
+    },
+
+    // `union` is a union dacId or 'all'
+    async verifyWhitelist(purpose: WhitelistPurpose, union: string) {
+      if (!options || !options?.getWalletId() || !config.WhitelistApiUrl) return null
+
+      const response = await fetch(`${config.WhitelistApiUrl}/verify`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', accept: 'application/json' },
+        body: JSON.stringify({ account: options.getWalletId(), purpose, union }),
+      })
+      if (!response.ok) throw new Error(`Whitelist verify request failed: ${response.status}`)
+
+      return await response.json()
     },
 
     async getRefundsInProgress() {

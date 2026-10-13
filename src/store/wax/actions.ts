@@ -19,7 +19,7 @@ import {
   DaoWalletDetailsResponse,
 } from 'graphql/types'
 import { queryClient } from 'index'
-import { find, map, join, get } from 'lodash'
+import { find, map, join, get, toLower } from 'lodash'
 import { DateTime } from 'luxon'
 import { catchError, pipe, wait, waitUntil } from 'overmind'
 import { generatePath } from 'react-router'
@@ -33,7 +33,6 @@ import { config } from 'shared/util/config'
 import {
   dacIdToDacTreasuryAccountList,
   getDacTokenPrecision,
-  getWhitelistDaoKey,
   isObjectEqual,
   PrepareDacTokenAmountWithPrecision,
   PrepareTlmAmountWithPrecision,
@@ -410,12 +409,12 @@ export const checkWhitelist = pipe(
     let status: WhitelistStatus | null = null
     try {
       const response = await effects.wax.api.getWhitelistStatus()
-      status = get(response, ['daos', getWhitelistDaoKey(dacId), 'status'], null)
+      status = get(response, ['unions', toLower(dacId), 'status'], null)
     } catch (error) {
       console.error(error)
     }
 
-    // Only a custodian KYC qualifies for candidacy; fall back to the on-chain table if the status API is unavailable
+    // Only a custodian verification qualifies for candidacy; fall back to the on-chain table if the status API is unavailable
     const isWhiteListed = status
       ? status === 'custodian'
       : Boolean(await effects.wax.api.getWhiteListId(dacId))
@@ -425,9 +424,28 @@ export const checkWhitelist = pipe(
     return isWhiteListed
   },
   catchError((_: Context, error) => {
-    toastErrorMessage(error?.message ?? 'Load Stake Time Multiplier')
+    toastErrorMessage(error?.message ?? 'Whitelist check failed')
     console.error(error)
     return null
+  })
+)
+
+// An arbiter on a union is already verified, so they can be moved to custodian on that union without a new verification
+export const switchWhitelistToCustodian = pipe(
+  async ({ state, effects }: Context, dacId: string) => {
+    if (state.wax.userWhitelistStatus !== 'arbiter') return false
+
+    // The API switches the role straight away; a failed request throws and is caught below
+    const result = await effects.wax.api.verifyWhitelist('CUSTODIAN', toLower(dacId))
+    if (!result) return false
+
+    state.wax.userWhitelistStatus = 'custodian'
+    state.wax.isUserWhiteListed = true
+    return true
+  },
+  catchError((_: Context, error) => {
+    console.error(error)
+    return false
   })
 )
 
