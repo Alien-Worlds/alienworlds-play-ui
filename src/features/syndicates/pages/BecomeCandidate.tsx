@@ -68,7 +68,7 @@ const FormGroupWrapper = styled(Flex)(() => ({
 export const BecomeCandidate = () => {
   const {
     main: { showGovernanceBecomeCandidatePage },
-    wax: { setDacCandidacyProposalPayload, checkWhitelist },
+    wax: { setDacCandidacyProposalPayload, checkWhitelist, switchWhitelistToCustodian },
   } = useActions()
   const {
     wax: { currentTag, selectedDacId },
@@ -140,12 +140,28 @@ export const BecomeCandidate = () => {
     if (!formReady) {
       return
     }
-    const isWhiteListed = checkWhitelist(planetId || selectedDacId)
-    if (!isWhiteListed && isUnionDAO(selectedDacId)) {
-      setSecondaryModalActive({ modalName: 'UserWhiteListModal', value: true })
 
-      return
+    // Verification only gates candidacy on union DAOs
+    if (isUnionDAO(selectedDacId)) {
+      const unionId = planetId || selectedDacId
+      const isWhiteListed = await checkWhitelist(unionId)
+      if (!isWhiteListed) {
+        // Arbiters are already verified: switch them to custodian on this union and carry on
+        const isSwitched = await switchWhitelistToCustodian(unionId)
+        setSecondaryModalActive({
+          modalName: 'UserWhiteListModal',
+          value: true,
+          onConfirm: isSwitched ? continueCandidacyRegistration : null,
+        })
+
+        return
+      }
     }
+
+    continueCandidacyRegistration()
+  }
+
+  function continueCandidacyRegistration() {
     if (!hasSignedCurrentDaoTerms) {
       setSecondaryModalActive({ modalName: 'NotSignedMemberTermsModal', value: true })
 

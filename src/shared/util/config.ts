@@ -24,6 +24,7 @@ interface Config {
   AppEnv: string
   ActiveDacIds: string
   DaoApiUrl: string
+  WhitelistApiUrl: string
   DaoCandidacyTermsIpfs: string
   CouncilPolicyUrl: string
   UserAgreementUrl: string
@@ -65,6 +66,7 @@ const {
   REACT_APP_ENV,
   REACT_APP_ACTIVE_DAC_IDS,
   REACT_APP_DAO_API,
+  REACT_APP_WHITELIST_API_URL,
   REACT_APP_DAO_CANDIDACY_TERMS_IPFS,
   REACT_APP_COUNCIL_POLICY_URL,
   REACT_APP_USER_AGREEMENT_URL,
@@ -110,6 +112,7 @@ export const config: Config = {
   ActivePlanetIds: REACT_APP_ACTIVE_PLANET_IDS ?? null,
   ActiveDacIds: REACT_APP_ACTIVE_DAC_IDS ?? null,
   DaoApiUrl: REACT_APP_DAO_API ?? null,
+  WhitelistApiUrl: REACT_APP_WHITELIST_API_URL ?? null,
   DaoCandidacyTermsIpfs: REACT_APP_DAO_CANDIDACY_TERMS_IPFS ?? null,
   CouncilPolicyUrl: REACT_APP_COUNCIL_POLICY_URL ?? null,
   UserAgreementUrl: REACT_APP_USER_AGREEMENT_URL ?? null,

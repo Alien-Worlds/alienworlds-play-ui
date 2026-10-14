@@ -860,6 +860,11 @@ export const isUnionDAO = (dao: string) => {
   return includes(dao, 'unn')
 }
 
+// Planet name a union belongs to (e.g. 'neriunn' -> 'neri')
+export const getUnionPlanetName = (dacId: string) => {
+  return convertPlanetIdToName(toLower(dacId).replace(/unn$/, ''))
+}
+
 export const processElectionGlobals = (result: any) => {
   const electionGlobals = get(result, 'electionGlobals', null)
 
