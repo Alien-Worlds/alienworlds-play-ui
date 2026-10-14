@@ -24,9 +24,12 @@ export type LoreGlobals = {
 
 export type WhitelistStatus = 'none' | 'custodian' | 'arbiter'
 
+export type WhitelistPurpose = 'RECEIVER' | 'CUSTODIAN' | 'ARBITER'
+
+// Whitelisting only applies to union DAOs; keyed by union dacId (e.g. 'neriunn')
 export type WhitelistStatusResponse = {
   account: string
-  daos: Record<string, { receiverWL: boolean; status: WhitelistStatus }>
+  unions: Record<string, { receiverWL: boolean; status: WhitelistStatus }>
 }
 
 export type WaxQuery = {

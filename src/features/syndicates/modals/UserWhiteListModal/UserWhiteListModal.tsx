@@ -17,7 +17,7 @@ import { motion } from 'framer-motion'
 import { capitalize } from 'lodash'
 import { useModalStore } from 'shared/store/modalStore'
 import { Colors } from 'shared/util/colors'
-import { getWhitelistDaoKey, openInNewTab } from 'shared/util/helpers'
+import { getUnionPlanetName, openInNewTab } from 'shared/util/helpers'
 import { useAppState } from 'store'
 const AnimatedBox = motion(Box)
 
@@ -27,13 +27,26 @@ const UserWhiteListModal = () => {
   const {
     wax: { selectedDacId, userWhitelistStatus },
   } = useAppState()
+  // Opened with a custodian status only after an arbiter was switched to custodian on this union
+  const isSwitchedToCustodian = userWhitelistStatus === 'custodian'
   const isArbiter = userWhitelistStatus === 'arbiter'
+  const unionName = `${capitalize(getUnionPlanetName(selectedDacId))} Union`
 
   const handleClose = () => {
     setSecondaryModalActive({ modalName: 'UserWhiteListModal', value: false })
   }
   const handleSubmit = () => {
-    openInNewTab('https://verifyme.alienworlds.io/')
+    if (isSwitchedToCustodian) {
+      // Closing resets the modal callbacks, so grab onConfirm first
+      const { onConfirm } = secondaryModals
+      handleClose()
+      onConfirm?.()
+      return
+    }
+    openInNewTab(
+      `https://verifyme.alienworlds.io/?role=custodian&union=${encodeURIComponent(selectedDacId)}`
+    )
+    handleClose()
   }
 
   const currentBreakpointButtonSize: keyof typeof BUTTON_SIZE = useBreakpointValue({
@@ -91,10 +104,10 @@ const UserWhiteListModal = () => {
                   }}
                   fontWeight={400}
                 >
-                  {isArbiter
-                    ? `You are verified as Arbiter on ${capitalize(
-                        getWhitelistDaoKey(selectedDacId)
-                      )}`
+                  {isSwitchedToCustodian
+                    ? `You are now verified as Custodian on ${unionName}`
+                    : isArbiter
+                    ? `You are verified as Arbiter on ${unionName}`
                     : 'You have to Verify to be able to vote'}
                 </Text>
 
@@ -108,7 +121,9 @@ const UserWhiteListModal = () => {
                   color={Colors.SNOW_WHITE}
                   maxW={422}
                 >
-                  {isArbiter
+                  {isSwitchedToCustodian
+                    ? 'Your Arbiter verification has been switched to Custodian, so you can now continue as a Union Candidate.'
+                    : isArbiter
                     ? 'Please get yourself verified as Custodian to become a Union Candidate.'
                     : 'Get Verified to become a Union Candidate.'}
                 </Text>
@@ -128,12 +143,9 @@ const UserWhiteListModal = () => {
                   <Button
                     size={currentBreakpointButtonSize}
                     variant="warning"
-                    onClick={() => {
-                      handleSubmit()
-                      handleClose()
-                    }}
+                    onClick={handleSubmit}
                   >
-                    Verify Me
+                    {isSwitchedToCustodian ? 'Continue' : 'Verify Me'}
                   </Button>
                 </Flex>
               </VStack>
