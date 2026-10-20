@@ -38,9 +38,9 @@ import { AppModal } from 'shared/layouts'
 import { useAssetsStore } from 'shared/store/assetsStore'
 import { useModalStore } from 'shared/store/modalStore'
 import { useSessionStore } from 'shared/store/sessionStore'
+import { collectEvent } from 'shared/util/analytics'
 import { Colors } from 'shared/util/colors'
 import { landBoostValueByRarity, formatLandRating } from 'shared/util/helpers'
-import { useActions } from 'store'
 import { AssetSchema } from 'store/atomic/types'
 import { PagePath } from 'store/main/types'
 
@@ -55,9 +55,6 @@ const LandMgt: VFC = () => {
   const assetsFilter = useAssetsStore((state) => state.assetsFilter)
   const walletId = useSessionStore((state) => state.walletId)
 
-  const {
-    wax: { collectEvent },
-  } = useActions()
   const setLandId = useMiningStore((state) => state.setLandId)
   const loadManagingLandDetailsAndBoosts = useMiningStore(
     (state) => state.loadManagingLandDetailsAndBoosts

@@ -8,6 +8,7 @@ import { replace } from 'lodash'
 import { Controller, useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router'
 import { FormCheckbox } from 'shared/components/FormCheckbox/FormCheckbox'
+import { collectEvent } from 'shared/util/analytics'
 import { Colors } from 'shared/util/colors'
 import { config } from 'shared/util/config'
 import { femaleHumanAvatar, maleHumanAvatar } from 'shared/util/nft'
@@ -124,7 +125,7 @@ const PlayerCard: FC<PlayerCardProps> = ({ avatarImageSrc, titleText, detailsTex
 
 const Onboarding: VFC = () => {
   const {
-    wax: { setOnboarding, collectEvent },
+    wax: { setOnboarding },
     main: { logout },
   } = useActions()
   const {

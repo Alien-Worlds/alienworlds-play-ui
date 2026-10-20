@@ -8,8 +8,8 @@ import { ArenaSelect } from 'features/arena/components/ArenaSelect'
 import { useArenaPortal, useArenaCategories } from 'features/arena/hooks/useArenaPortal'
 import { filter, get, includes, map, some, toLower } from 'lodash'
 import { useModalStore } from 'shared/store/modalStore'
+import { collectEvent } from 'shared/util/analytics'
 import { Constants } from 'shared/util/constants'
-import { useActions } from 'store'
 import { PagePath } from 'store/main/types'
 import { v4 as uuidv4 } from 'uuid'
 
@@ -125,9 +125,6 @@ export const Arena = () => {
   }
   selectOptions.unshift(allOption)
 
-  const {
-    wax: { collectEvent },
-  } = useActions()
   const toggleMainDrawer = useModalStore((state) => state.toggleMainDrawer)
 
   useEffect(() => {

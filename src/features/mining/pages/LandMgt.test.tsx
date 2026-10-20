@@ -70,7 +70,10 @@ jest.mock('shared/layouts', () => ({
   AppModal: ({ isOpen, children }: any) => (isOpen ? <div>{children}</div> : null),
 }))
 
-const collectEvent = jest.fn()
+const mockCollectEvent = jest.fn()
+jest.mock('shared/util/analytics', () => ({
+  collectEvent: (event: unknown) => mockCollectEvent(event),
+}))
 const setLandId = jest.fn()
 const loadManagingLandDetailsAndBoosts = jest.fn()
 const setAssetsFilter = jest.fn()
@@ -108,7 +111,6 @@ const setup = ({
         setNftLandCardProperties,
         setLandId,
         loadManagingLandDetailsAndBoosts,
-        collectEvent,
       },
     },
   })
@@ -137,7 +139,7 @@ describe('LandMgt page', () => {
 
     expect(setLandId).toHaveBeenCalledWith('42')
     expect(loadManagingLandDetailsAndBoosts).toHaveBeenCalled()
-    expect(collectEvent).toHaveBeenCalledWith({
+    expect(mockCollectEvent).toHaveBeenCalledWith({
       name: 'page_visit',
       fields: { location: '/landMgt/:id' },
     })

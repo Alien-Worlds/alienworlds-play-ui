@@ -28,6 +28,7 @@ import { useMatch, useNavigate } from 'react-router-dom'
 import { useAssetsStore } from 'shared/store/assetsStore'
 import { useMinerStore } from 'shared/store/minerStore'
 import { useModalStore } from 'shared/store/modalStore'
+import { collectEvent } from 'shared/util/analytics'
 import { Colors } from 'shared/util/colors'
 import { useActions, useAppState } from 'store'
 import { PagePath } from 'store/main/types'
@@ -652,7 +653,7 @@ const NFTCardLandActions = ({ asset }: LooseObject) => {
   const assetId = _.get(asset, 'assetId.name', null)
   const isCardOwner = _.get(asset, 'isUserOwner')
   const {
-    wax: { executeOnboarding, setOnboarding, collectEvent },
+    wax: { executeOnboarding, setOnboarding },
   } = useActions()
   const setLand = useAssetsStore((state) => state.setLand)
   const setLandId = useMiningStore((state) => state.setLandId)

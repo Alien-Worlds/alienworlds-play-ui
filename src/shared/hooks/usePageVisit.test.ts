@@ -6,8 +6,8 @@ import { PagePath } from 'store/main/types'
 import { usePageVisit } from './usePageVisit'
 
 const mockCollectEvent = jest.fn()
-jest.mock('store', () => ({
-  useActions: () => ({ wax: { collectEvent: mockCollectEvent } }),
+jest.mock('shared/util/analytics', () => ({
+  collectEvent: (event: unknown) => mockCollectEvent(event),
 }))
 
 const presetAssetsFilter = jest.fn()

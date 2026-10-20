@@ -10,6 +10,7 @@ import { DateTime } from 'luxon'
 import { catchError, pipe } from 'overmind'
 import { useAssetsStore } from 'shared/store/assetsStore'
 import { useMinerStore } from 'shared/store/minerStore'
+import { useSessionStore } from 'shared/store/sessionStore'
 import { today25hDay } from 'shared/util/helpers'
 import { AssetSchema, AssetType } from 'store/atomic/types'
 import { executeAfter, shouldExecute } from 'store/main/helpers'
@@ -164,7 +165,7 @@ export const initializeOrReloadTagAndAvatar = pipe(
     const assetsStore = useAssetsStore.getState()
 
     if (!state.wax.isLoggedIn) {
-      state.wax.player = null
+      useSessionStore.getState().setPlayer(null)
       assetsStore.setAvatarAsset(null)
     }
 
@@ -175,13 +176,14 @@ export const initializeOrReloadTagAndAvatar = pipe(
     }
     state.main.syncAi.avatar.isInProgress = true
 
-    state.wax.player = await effects.wax.api.getPlayer(state.wax.walletId)
+    const player = await effects.wax.api.getPlayer(state.wax.walletId)
+    useSessionStore.getState().setPlayer(player)
 
-    if (!state.wax.player) {
+    if (!player) {
       assetsStore.setAvatarAsset(null)
       executeAfter(state.main.syncAi.avatar, DateTime.now().plus({ seconds: 1 }))
     } else {
-      const currentAvatar = await effects.atomic.api.getAssetById(state.wax.player.avatar)
+      const currentAvatar = await effects.atomic.api.getAssetById(player.avatar)
       const { assets, avatarAsset } = useAssetsStore.getState()
       if (find(assets, (ob) => ob.asset_id === currentAvatar.asset_id)) {
         assetsStore.setAvatarAsset(currentAvatar)

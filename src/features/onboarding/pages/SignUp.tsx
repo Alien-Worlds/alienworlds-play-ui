@@ -6,6 +6,7 @@ import { Flex, Image, Link, Text, Box, IconButton } from '@chakra-ui/react'
 import { delay } from 'lodash'
 import { useNavigate } from 'react-router'
 import { useSessionStore } from 'shared/store/sessionStore'
+import { collectEvent } from 'shared/util/analytics'
 import { Colors } from 'shared/util/colors'
 import { useActions } from 'store'
 import { PagePath } from 'store/main/types'
@@ -32,7 +33,6 @@ const SignUp: VFC = () => {
   const isLoggedIn = useSessionStore((state) => state.isLoggedIn)
 
   const {
-    wax: { collectEvent },
     main: { signUp, storeOnboardingNewsletterWasShown, logout },
   } = useActions()
 

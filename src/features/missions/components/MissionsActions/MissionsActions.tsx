@@ -7,6 +7,7 @@ import { useConnectWallet, useSetChain, useWallets } from '@web3-onboard/react'
 import { useNavigate } from 'react-router-dom'
 import { useModalStore } from 'shared/store/modalStore'
 import { useSessionStore } from 'shared/store/sessionStore'
+import { collectEvent } from 'shared/util/analytics'
 import { Colors } from 'shared/util/colors'
 import { config } from 'shared/util/config'
 import { useScreenSize } from 'shared/util/hooks'
@@ -166,7 +167,6 @@ export const useWalletConnect = () => {
   const [{ connectedChain }, setChain] = useSetChain()
   const {
     web3: { setWallet, setIsAutoConnect, setIsSync },
-    wax: { collectEvent },
   } = useActions()
   const {
     web3: { userWallet },
