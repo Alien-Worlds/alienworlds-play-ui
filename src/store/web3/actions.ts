@@ -1,6 +1,7 @@
 import { WalletState } from '@web3-onboard/core'
 import { DateTime } from 'luxon'
 import { catchError, pipe } from 'overmind'
+import { collectEvent } from 'shared/util/analytics'
 import { executeAfter } from 'store/main/helpers'
 
 import { Context } from '..'
@@ -18,7 +19,7 @@ export const onInitializeOvermind = async ({ state, effects, actions }: Context)
     },
     onChainChanged() {
       actions.missions.reloadMissions()
-      actions.wax.collectEvent({ name: Constants.GA_CHAIN_CHANGED })
+      collectEvent({ name: Constants.GA_CHAIN_CHANGED })
     },
     onInOutTransfer() {
       executeAfter(state.main.syncAi.bscBalance, DateTime.now())

@@ -5,6 +5,7 @@ import { catchError, debounce, pipe, wait, waitUntil } from 'overmind'
 import { matchPath, matchRoutes } from 'react-router'
 import { router } from 'routes'
 import { useModalStore } from 'shared/store/modalStore'
+import { collectEvent } from 'shared/util/analytics'
 import { config } from 'shared/util/config'
 import { isMissionsRelatedPage } from 'shared/util/router'
 import { executeAfter, shouldExecute } from 'store/main/helpers'
@@ -454,7 +455,7 @@ export const setMissionShipsCount = pipe(
 )
 
 export const joinMission = pipe(
-  async ({ state, effects, actions }: Context, spaceshipsCount: number) => {
+  async ({ state, effects }: Context, spaceshipsCount: number) => {
     state.missions.joinMissionStep = 1
     const mission = state.missions.selectedMission
     const provider = state?.web3.userWallet?.provider
@@ -462,11 +463,11 @@ export const joinMission = pipe(
     const allowance = await effects.web3.api.getAllowance(provider, account)
     const cost = mission.attributes.spaceshipCost * spaceshipsCount
     state.missions.missionShipsCount = spaceshipsCount
-    actions.wax.collectEvent({ name: Constants.GA_MISSIONS_JOIN })
+    collectEvent({ name: Constants.GA_MISSIONS_JOIN })
 
     if (BigNumber.from(cost).gt(allowance || BigNumber.from(0))) {
       await effects.web3.api.setAllowance(BigNumber.from(cost), provider)
-      actions.wax.collectEvent({ name: Constants.GA_MISSIONS_SET_ALLOWANCE })
+      collectEvent({ name: Constants.GA_MISSIONS_SET_ALLOWANCE })
     }
 
     return { missionId: mission.id, spaceshipsCount }
@@ -488,7 +489,7 @@ export const joinMission = pipe(
   async ({ actions }: Context) => {
     actions.missions.reloadMissions()
     try {
-      actions.wax.collectEvent({ name: Constants.GA_MISSIONS_JOIN_SUCCESS })
+      collectEvent({ name: Constants.GA_MISSIONS_JOIN_SUCCESS })
     } catch (e) {
       console.log(e)
     }
@@ -521,12 +522,12 @@ export const claimMissionRewards = pipe(
     state.missions.loadingMessage = 'Claiming your Mission rewards..'
     return missionId
   },
-  async ({ state, effects, actions }: Context, missionId: string) => {
+  async ({ state, effects }: Context, missionId: string) => {
     try {
       const provider = state?.web3?.userWallet?.provider
       await effects.web3.api.claimMissionRewards(missionId, provider)
 
-      actions.wax.collectEvent({ name: Constants.GA_MISSIONS_REWARDS_CLAIMED_SUCCESS })
+      collectEvent({ name: Constants.GA_MISSIONS_REWARDS_CLAIMED_SUCCESS })
 
       return true
     } catch (error) {
@@ -535,7 +536,7 @@ export const claimMissionRewards = pipe(
         message = 'User denied transaction'
       }
 
-      actions.wax.collectEvent({ name: Constants.GA_MISSIONS_REWARDS_CLAIMED_ERROR })
+      collectEvent({ name: Constants.GA_MISSIONS_REWARDS_CLAIMED_ERROR })
 
       state.missions.loadingMessage = null
       state.missions.errorMessage = message
@@ -575,13 +576,13 @@ export const storeNewsletterWasShown = ({ state }: Context) => {
 }
 
 // #region Email subscription
-export const storeSubscribedEmail = ({ state, actions }: Context, email: string) => {
+export const storeSubscribedEmail = ({ state }: Context, email: string) => {
   if (email) {
     localStorage.setItem('alienworlds-missions-email', email)
-    actions.wax.collectEvent({ name: Constants.GA_MISSIONS_NEWSLETTER_SUB })
+    collectEvent({ name: Constants.GA_MISSIONS_NEWSLETTER_SUB })
   } else {
     localStorage.removeItem('alienworlds-missions-email')
-    actions.wax.collectEvent({ name: Constants.GA_MISSIONS_NEWSLETTER_UNSUB })
+    collectEvent({ name: Constants.GA_MISSIONS_NEWSLETTER_UNSUB })
   }
   state.missions.subscribedEmail = email
 }

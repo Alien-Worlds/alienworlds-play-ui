@@ -77,7 +77,10 @@ jest.mock('graphql/hooks/usePlanetDetail', () => ({
   usePlanetDetail: () => mockPlanetDetail,
 }))
 
-const collectEvent = jest.fn()
+const mockCollectEvent = jest.fn()
+jest.mock('shared/util/analytics', () => ({
+  collectEvent: (event: unknown) => mockCollectEvent(event),
+}))
 
 const land = {
   name: 'Mountains on Eyeke',
@@ -90,13 +93,12 @@ const setup = ({
 }: { landAsset?: any; planet?: string } = {}) => {
   mockStore({
     state: { atomic: { landAsset }, wax: { planetSelectedForMining: planet } },
-    actions: { wax: { collectEvent } },
   })
   return render(<Mining />)
 }
 
 beforeEach(() => {
-  collectEvent.mockClear()
+  mockCollectEvent.mockClear()
   mockRarityPools.mockReset().mockReturnValue({ data: [] })
   mockPlanetDetail = {
     planetDetails: { planet_details: { title: 'Eyeke', planet_name: 'eyeke.world' } },
@@ -112,8 +114,8 @@ describe('Mining page', () => {
   it('records the page visit on mount', () => {
     setup()
 
-    expect(collectEvent).toHaveBeenCalledTimes(1)
-    expect(collectEvent).toHaveBeenCalledWith({
+    expect(mockCollectEvent).toHaveBeenCalledTimes(1)
+    expect(mockCollectEvent).toHaveBeenCalledWith({
       name: 'page_visit',
       fields: { location: '/mining/tools' },
     })

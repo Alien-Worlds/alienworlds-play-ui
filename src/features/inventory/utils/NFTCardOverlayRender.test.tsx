@@ -28,7 +28,7 @@ let mockWaxState: any = { isOnboarded: false }
 
 jest.mock('store', () => ({
   useActions: () => ({
-    wax: { executeOnboarding: jest.fn(), setOnboarding: jest.fn(), collectEvent: jest.fn() },
+    wax: { executeOnboarding: jest.fn(), setOnboarding: jest.fn() },
   }),
   useAppState: () => ({ wax: { onboarding: {} } }),
 }))

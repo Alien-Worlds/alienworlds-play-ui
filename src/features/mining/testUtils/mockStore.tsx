@@ -16,8 +16,7 @@ import { theme } from 'shared/styles/theme'
 // The `atomic`, `wax` and `main` state and actions passed in also seed the Zustand stores that now
 // hold them (useAssetsStore, useMiningStore, useMinerStore, useModalStore), each store getting the
 // fields it owns, so tests written against Overmind's namespaces keep working. Passing an action
-// replaces the store's real one (e.g. a jest.fn to assert on). `wax.collectEvent` (page-visit
-// analytics, still Overmind) defaults to a no-op.
+// replaces the store's real one (e.g. a jest.fn to assert on).
 
 type Namespaces = Record<string, Record<string, any>>
 
@@ -49,8 +48,6 @@ const seedZustandStores = (fields: Record<string, any>) => {
   })
 }
 
-const DEFAULT_ACTIONS: Namespaces = { wax: { collectEvent: () => {} } }
-
 const current: { state: Namespaces; actions: Namespaces; effects: Namespaces } = {
   state: withNamespaces(),
   actions: withNamespaces(),
@@ -69,10 +66,7 @@ export const mockStore = ({
   effects,
 }: { state?: Namespaces; actions?: Namespaces; effects?: Namespaces } = {}) => {
   current.state = withNamespaces(state)
-  current.actions = withNamespaces({
-    ...actions,
-    wax: { ...DEFAULT_ACTIONS.wax, ...actions?.wax },
-  })
+  current.actions = withNamespaces(actions)
   current.effects = withNamespaces(effects)
   seedZustandStores({
     ...state?.atomic,

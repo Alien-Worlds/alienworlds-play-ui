@@ -27,6 +27,7 @@ import { capitalize, find, get, sumBy } from 'lodash'
 import { useParams } from 'react-router-dom'
 import { generatePath, useNavigate } from 'react-router-dom'
 import { useSessionStore } from 'shared/store/sessionStore'
+import { collectEvent } from 'shared/util/analytics'
 import { Colors } from 'shared/util/colors'
 import { convertPlanetIdToName, unionDAOFinder } from 'shared/util/helpers'
 import { formatNumber } from 'shared/util/numbers'
@@ -40,7 +41,7 @@ export const DaoSelect = () => {
   } = useAppState()
   const walletId = useSessionStore((state) => state.walletId)
   const {
-    wax: { collectEvent, getDAOInfo, setSelectedDacId },
+    wax: { getDAOInfo, setSelectedDacId },
     main: { showGovernanceDaoSelect },
   } = useActions()
   const planetImages = getPlanetImages(selectedDacId)

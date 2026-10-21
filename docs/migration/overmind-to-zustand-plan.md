@@ -34,7 +34,7 @@ logically isolated, or shared with another feature."
 - Effort: ~0.5 day. Just needs the two cross-namespace calls it forwards to be reachable
   (either still-Overmind at the time, or already-migrated equivalents).
 - Done: the `arena` namespace is deleted; `Arena.tsx` calls `modalStore.toggleMainDrawer` and
-  `wax.collectEvent` directly. `collectEvent` is still Overmind (analytics, shared app-wide).
+  `collectEvent` directly. Since the analytics step (below) arena has no Overmind imports.
 
 ### competitions — done (`feature/competitions-store-zustand-migration`)
 - Original finding here was wrong: `isDemoUser`/`walletId` were already read from
@@ -122,8 +122,9 @@ logically isolated, or shared with another feature."
     `shared/hooks/usePageVisit` (drawer, asset-filter preset, analytics).
   - Transactions still ask Overmind's sync loop for early reloads through
     `shared/store/syncScheduler.ts`, which `store/main` registers on start-up.
-- Still Overmind in mining/inventory: `wax.collectEvent` (analytics, app-wide) and the onboarding
-  flow (`onboarding`, `setOnboarding`, `executeOnboarding`) used by inventory's land cards. Overmind
+- Still Overmind in mining/inventory: the onboarding flow (`onboarding`, `setOnboarding`,
+  `executeOnboarding`) used by inventory's land cards. (`wax.collectEvent` moved in the analytics
+  step below; mining's components and pages no longer import Overmind.) Overmind
   itself still runs the loaders (assets, bag, mining land, avatar) and login, which write `miner`,
   `bag` etc. into the stores.
 - Behaviour changes in this step:
@@ -131,6 +132,23 @@ logically isolated, or shared with another feature."
   - `unlockSlot` / `setMinBoost` failures now show the chain error; before they failed silently
     and left the error to appear on the next transaction.
   - Dead state removed: `wax.selectedPlanetName`, `wax.planetLandsAssets` / `main.bindLandsMap`.
+
+### analytics (`wax.collectEvent`) — done (`feature/analytics-zustand-migration`)
+- `wax.collectEvent` was called from 15 component/hook files across almost every feature and ~35
+  places inside Overmind (`main`, `missions`, `web3`, `wax`). It is now a plain function,
+  `collectEvent({ name, fields })` in `shared/util/analytics.ts`, used by both. It isn't a store:
+  it has no state, and nothing waits on its result. It never throws (errors are logged), like the
+  Overmind `catchError` it replaces.
+- It reads its context from the stores: `walletId` and `player` from `sessionStore`, `bag` from
+  `useAssetsStore`, `miner.last_mine` from `useMinerStore`, NFT points from the React Query cache.
+- `wax.player` (the players-table row: tag, avatar) moved to `sessionStore.player` / `setPlayer`.
+  The avatar loader (`atomic.initializeOrReloadTagAndAvatar`) still fetches it and writes it there.
+  Readers: `collectEvent`, `topbar/Tag.tsx`, `syndicates/pages/ManageCandidacy.tsx`.
+- `queryClient` moved from `index.tsx` to `shared/util/queryClient.ts`, and the user-points key
+  to `shared/hooks/queries/wax/queryKeys.ts`, so analytics doesn't import the app entry point or
+  Overmind (which kept it out of tests).
+- Tests mock `shared/util/analytics` instead of `useActions().wax.collectEvent`; the mining
+  `mockStore` no longer defaults it.
 
 ## Shared session & transactions
 
@@ -156,7 +174,12 @@ away in the final phase below.
 3. `inventory` + mining's `atomic` state — split into a shared `useAssetsStore` plus mining and
    inventory stores. (done)
 4. Mining transactions and mining `wax` state — onto `shared/wax/transact`, like lore. (done)
-5. **Final: session/auth** — once features no longer read session state from Overmind:
+5. Analytics: `wax.collectEvent` → `shared/util/analytics`, `wax.player` → `sessionStore`. (done)
+6. Small leftovers: leaderboard (`wax.api.getPlayer`, `atomic.api.getAssetById`,
+   `main.isCompactSidebar`), profile (claim transactions, `selectedDacId`, `showProfileInfoPage`),
+   outpost (`loadPremintOffersAction`, `resetLastTransactionError`, redeem effects).
+7. `missions` (own namespace), then `syndicates` (largest; add tests first, as for mining).
+8. **Final: session/auth** — once features no longer read session state from Overmind:
    - Move login / logout / `switchWallet` / session restore out of `main/actions.ts` into Zustand,
      writing `sessionStore` directly.
    - Point the wax API's `getCurrentSession` at `sessionStore`, or move the remaining transactions
@@ -172,6 +195,7 @@ now-merged `feature/<name>-testing-tailwind-store-refactor` branches from PR #67
 - `feature/competitions-store-zustand-migration`
 - `feature/lore-store-zustand-migration`
 - `feature/inventory-store-zustand-migration`
+- `feature/analytics-zustand-migration`
 
 Note: `feature/arena-testing-tailwind-store-refactor` and `feature/profile-testing-tailwind-store-refactor`
 are stale — their content already merged into `main` via PR #67 (Release 5.2.7) under different

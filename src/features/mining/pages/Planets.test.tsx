@@ -74,7 +74,10 @@ const makePlanet = (id: string, title: string) => ({
   planet_details: { title, planet_name: `${id}.world` },
 })
 
-const collectEvent = jest.fn()
+const mockCollectEvent = jest.fn()
+jest.mock('shared/util/analytics', () => ({
+  collectEvent: (event: unknown) => mockCollectEvent(event),
+}))
 const setPlanetSelectedForMiningIntent = jest.fn()
 
 const setup = (wax: Record<string, any> = {}, atomic: Record<string, any> = {}) => {
@@ -84,7 +87,7 @@ const setup = (wax: Record<string, any> = {}, atomic: Record<string, any> = {}) 
       wax: { planetSelectedForMining: null, isOnboarded: true, ...wax },
     },
     actions: {
-      wax: { setPlanetSelectedForMiningIntent, collectEvent },
+      wax: { setPlanetSelectedForMiningIntent },
     },
   })
   return render(<Planets />)
@@ -106,7 +109,7 @@ describe('Planets page', () => {
   it('records the page visit on mount', () => {
     setup()
 
-    expect(collectEvent).toHaveBeenCalledWith({
+    expect(mockCollectEvent).toHaveBeenCalledWith({
       name: 'page_visit',
       fields: { location: '/mining/planet' },
     })

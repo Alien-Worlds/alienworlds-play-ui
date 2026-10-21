@@ -4,10 +4,11 @@ import { useQuery } from '@tanstack/react-query'
 import { useEffects } from 'store'
 import { WaxUserPoints } from 'store/wax/types'
 
+import { LOAD_USER_POINTS_QUERY_KEY } from './queryKeys'
+
 const LOAD_USER_POINTS_UPDATE_INTERVAL = 1000 * 60 * 5 // 5 minutes
 const LOAD_USER_POINTS_UPDATE_FAST_INTERVAL = 1000 * 10 // 10 seconds
 const LOAD_USER_POINTS_UPDATE_FAST_ATTEMPTS = 3
-export const LOAD_USER_POINTS_QUERY_KEY = 'user-points'
 
 /**
  * If query was "reset" via `resetQueries`, we make several burst refetches,

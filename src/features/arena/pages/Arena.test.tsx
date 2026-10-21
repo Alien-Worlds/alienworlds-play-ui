@@ -5,10 +5,8 @@ import { MemoryRouter } from 'react-router-dom'
 import { Arena } from './Arena'
 
 const mockCollectEvent = jest.fn()
-jest.mock('store', () => ({
-  useActions: () => ({
-    wax: { collectEvent: mockCollectEvent },
-  }),
+jest.mock('shared/util/analytics', () => ({
+  collectEvent: (event: unknown) => mockCollectEvent(event),
 }))
 
 const mockToggleMainDrawer = jest.fn()

@@ -54,6 +54,7 @@ import { useNavigate } from 'react-router-dom'
 import { useActivePath } from 'shared/hooks/useRouter'
 import { useModalStore } from 'shared/store/modalStore'
 import { useSessionStore } from 'shared/store/sessionStore'
+import { collectEvent } from 'shared/util/analytics'
 import { Colors } from 'shared/util/colors'
 import { convertPlanetIdToName, getSyndicatesCurrentPage, isUnionDAO } from 'shared/util/helpers'
 import { useScreenSize } from 'shared/util/hooks'
@@ -170,13 +171,7 @@ export const SyndicatesSidebar = memo(() => {
   const isDemoUser = useSessionStore((state) => state.isDemoUser)
   const client = useApolloClient()
   const {
-    wax: {
-      getDAOInfo,
-      collectEvent,
-      tryClaimUnstake,
-      tryCancelUnstake,
-      setIsSyndicatesSidebarOpen,
-    },
+    wax: { getDAOInfo, tryClaimUnstake, tryCancelUnstake, setIsSyndicatesSidebarOpen },
   } = useActions()
   const setPrimaryModalActive = useModalStore((state) => state.setPrimaryModalActive)
   const setSecondaryModalActive = useModalStore((state) => state.setSecondaryModalActive)

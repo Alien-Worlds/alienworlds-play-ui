@@ -10,6 +10,7 @@ import { useNavigate, generatePath } from 'react-router-dom'
 import { useCurrentPath } from 'shared/hooks/useRouter'
 import { useModalStore } from 'shared/store/modalStore'
 import { useSessionStore } from 'shared/store/sessionStore'
+import { collectEvent } from 'shared/util/analytics'
 import { Colors } from 'shared/util/colors'
 import { config } from 'shared/util/config'
 import {
@@ -68,7 +69,7 @@ const PlanetSelectionSmall = ({
   const walletId = useSessionStore((state) => state.walletId)
 
   const {
-    wax: { setSelectedDacId, collectEvent },
+    wax: { setSelectedDacId },
   } = useActions()
 
   const isMainDrawerOpen = useModalStore((state) => state.isMainDrawerOpen)
