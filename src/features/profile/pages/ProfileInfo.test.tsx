@@ -1,19 +1,14 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { PagePath } from 'store/main/types'
 
 import { ProfileInfo } from './ProfileInfo'
 
 const mockSetPrimaryModalActive = jest.fn()
-const mockSetOutPostModalsActive = jest.fn()
-const mockShowProfileInfoPage = jest.fn()
+const mockUsePageVisit = jest.fn()
 
-jest.mock('store', () => ({
-  useActions: () => ({
-    main: {
-      setOutPostModalsActive: mockSetOutPostModalsActive,
-      showProfileInfoPage: mockShowProfileInfoPage,
-    },
-  }),
+jest.mock('shared/hooks/usePageVisit', () => ({
+  usePageVisit: (...args: unknown[]) => mockUsePageVisit(...args),
 }))
 
 jest.mock('shared/store/modalStore', () => ({
@@ -85,7 +80,7 @@ describe('ProfileInfo', () => {
     expect(screen.getByTestId('loading-spinner')).toBeInTheDocument()
   })
 
-  it('calls showProfileInfoPage on mount', () => {
+  it('records the profile page visit', () => {
     mockUseWalletDetails.mockReturnValue({
       walletDetails: { userpoints_details: { total_points: 10, top_level: 3 } },
       loading: false,
@@ -100,7 +95,7 @@ describe('ProfileInfo', () => {
     })
 
     render(<ProfileInfo />)
-    expect(mockShowProfileInfoPage).toHaveBeenCalledTimes(1)
+    expect(mockUsePageVisit).toHaveBeenCalledWith(PagePath.ProfileInfo)
   })
 
   it('shows the "EXP to go" button when the user has not reached the next level requirement', () => {

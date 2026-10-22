@@ -26,6 +26,11 @@ import { Colors } from 'shared/util/colors'
 import { convertPlanetIdToName, getMiningRewardsTimeInHours } from 'shared/util/helpers'
 import { useScreenSize } from 'shared/util/hooks'
 import { formatNumber } from 'shared/util/numbers'
+import {
+  claimLandownerAllowance,
+  claimLandownerCommissions,
+  claimMiningRewards,
+} from 'shared/wax/claims'
 import { useActions } from 'store'
 import { PagePath } from 'store/main/types'
 
@@ -286,9 +291,6 @@ export const SetLandBtn = ({
 }
 
 export const ClaimCommissionRewardsBtn = () => {
-  const {
-    wax: { tryClaimLandownerCommissions },
-  } = useActions()
   const walletId = useSessionStore((state) => state.walletId)
 
   const { isNotDesktop } = useScreenSize()
@@ -324,7 +326,7 @@ export const ClaimCommissionRewardsBtn = () => {
       cursor={getButtonDisabled() ? 'not-allowed' : 'pointer'}
       onClick={async () => {
         setIsClaimingCommissionRewards(true)
-        await tryClaimLandownerCommissions()
+        await claimLandownerCommissions()
         setIsClaimingCommissionRewards(false)
       }}
       leftIcon={
@@ -349,9 +351,6 @@ export const ClaimCommissionRewardsBtn = () => {
 }
 
 export const ClaimDTALRewardsBtn = () => {
-  const {
-    wax: { tryClaimLandownerAllowance },
-  } = useActions()
   const walletId = useSessionStore((state) => state.walletId)
   const { walletDetails, loading }: { walletDetails: WalletDetailsResponse; loading: boolean } =
     useWalletDetails(walletId)
@@ -387,7 +386,7 @@ export const ClaimDTALRewardsBtn = () => {
       cursor={getButtonDisabled() ? 'not-allowed' : 'pointer'}
       onClick={async () => {
         setIsClaimingDTALRewards(true)
-        await tryClaimLandownerAllowance()
+        await claimLandownerAllowance()
         setIsClaimingDTALRewards(false)
       }}
       leftIcon={
@@ -420,9 +419,6 @@ export const ClaimMineRewardsBtn = ({
   minWidth = '240px',
   showIcon = true,
 }: ClaimMiningRewardsBtnProps) => {
-  const {
-    wax: { tryClaimMiningRewards },
-  } = useActions()
   const walletId = useSessionStore((state) => state.walletId)
 
   const { isNotDesktop } = useScreenSize()
@@ -504,7 +500,7 @@ export const ClaimMineRewardsBtn = ({
         cursor={getButtonDisabled() ? 'not-allowed' : 'pointer'}
         onClick={async () => {
           setIsClaimingMiningRewards(true)
-          await tryClaimMiningRewards()
+          await claimMiningRewards()
           setTimeout(() => setIsClaimingMiningRewards(false), 3000)
         }}
         leftIcon={
