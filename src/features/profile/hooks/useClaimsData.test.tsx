@@ -3,20 +3,16 @@ import { act, renderHook, waitFor } from '@testing-library/react'
 import { useClaimsData } from './useClaimsData'
 import { useProfileStore } from '../store/profileStore'
 
-const mockTryClaimMiningRewards = jest.fn().mockResolvedValue(undefined)
-const mockTryClaimLandownerCommissions = jest.fn().mockResolvedValue(undefined)
-const mockTryClaimLandownerAllowance = jest.fn().mockResolvedValue(undefined)
-const mockTryClaimUnstake = jest.fn().mockResolvedValue(undefined)
+const mockClaimMiningRewards = jest.fn().mockResolvedValue(undefined)
+const mockClaimLandownerCommissions = jest.fn().mockResolvedValue(undefined)
+const mockClaimLandownerAllowance = jest.fn().mockResolvedValue(undefined)
+const mockClaimUnstake = jest.fn().mockResolvedValue(undefined)
 
-jest.mock('store', () => ({
-  useActions: () => ({
-    wax: {
-      tryClaimMiningRewards: mockTryClaimMiningRewards,
-      tryClaimLandownerCommissions: mockTryClaimLandownerCommissions,
-      tryClaimLandownerAllowance: mockTryClaimLandownerAllowance,
-      tryClaimUnstake: mockTryClaimUnstake,
-    },
-  }),
+jest.mock('shared/wax/claims', () => ({
+  claimMiningRewards: (...args: unknown[]) => mockClaimMiningRewards(...args),
+  claimLandownerCommissions: (...args: unknown[]) => mockClaimLandownerCommissions(...args),
+  claimLandownerAllowance: (...args: unknown[]) => mockClaimLandownerAllowance(...args),
+  claimUnstake: (...args: unknown[]) => mockClaimUnstake(...args),
 }))
 
 jest.mock('shared/store/sessionStore', () => ({
@@ -77,7 +73,7 @@ describe('useClaimsData', () => {
       await claimPromise
     })
 
-    expect(mockTryClaimMiningRewards).toHaveBeenCalledTimes(1)
+    expect(mockClaimMiningRewards).toHaveBeenCalledTimes(1)
     await waitFor(() => expect(result.current.loading).toBe(false))
   })
 
@@ -88,11 +84,11 @@ describe('useClaimsData', () => {
       await result.current.claimReward('unstake', 'eyeke')
     })
 
-    expect(mockTryClaimUnstake).toHaveBeenCalledWith('4,eyeke')
+    expect(mockClaimUnstake).toHaveBeenCalledWith('4,eyeke')
   })
 
   it('rethrows and clears the claiming state when the claim action fails', async () => {
-    mockTryClaimLandownerCommissions.mockRejectedValueOnce(new Error('boom'))
+    mockClaimLandownerCommissions.mockRejectedValueOnce(new Error('boom'))
     const { result } = renderHook(() => useClaimsData())
 
     await act(async () => {

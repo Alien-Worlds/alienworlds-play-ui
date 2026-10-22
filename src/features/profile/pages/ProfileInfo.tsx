@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useMemo, useState } from 'react'
 
 import { ExperienceIcon } from '@alien-worlds/icons'
 import {
@@ -27,11 +27,12 @@ import { LoadingSpinner } from 'features/syndicates/components/LoadingSpinner/Lo
 import { useWalletDetails } from 'graphql/hooks/useWalletDetails'
 import { WalletDetailsResponse } from 'graphql/types'
 import _ from 'lodash'
+import { usePageVisit } from 'shared/hooks/usePageVisit'
 import { useModalStore } from 'shared/store/modalStore'
 import { useSessionStore } from 'shared/store/sessionStore'
 import { Colors } from 'shared/util/colors'
 import { formatUserPointsWithDecimal } from 'shared/util/helpers'
-import { useActions } from 'store'
+import { PagePath } from 'store/main/types'
 
 export const ProfileInfo = () => {
   const walletId = useSessionStore((state) => state.walletId)
@@ -49,9 +50,6 @@ export const ProfileInfo = () => {
   const [currentPointsCapped, setCurrentPointsCapped] = useState<number>(0)
   const [showZoomModal, setShowZoomModal] = useState(false)
 
-  const {
-    main: { showProfileInfoPage },
-  } = useActions()
   const currentButtonWidth = useBreakpointValue({ base: '90%', md: '95%' })
 
   // Handle the "overflow" case when user has more points than the next level requires
@@ -68,9 +66,8 @@ export const ProfileInfo = () => {
     }
   }, [userPoints, nextLevelReward])
 
-  useEffect(() => {
-    showProfileInfoPage()
-  }, [])
+  usePageVisit(PagePath.ProfileInfo)
+
   if (loading) return <LoadingSpinner />
   return (
     <div

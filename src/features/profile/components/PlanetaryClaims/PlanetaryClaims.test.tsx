@@ -3,20 +3,16 @@ import userEvent from '@testing-library/user-event'
 
 import { PlanetaryClaims } from './PlanetaryClaims'
 
-const mockTryClaimUnstake = jest.fn().mockResolvedValue(undefined)
-const mockTryClaimMiningRewards = jest.fn().mockResolvedValue(undefined)
-const mockTryClaimLandownerAllowance = jest.fn().mockResolvedValue(undefined)
-const mockTryClaimLandownerCommissions = jest.fn().mockResolvedValue(undefined)
+const mockClaimUnstake = jest.fn().mockResolvedValue(undefined)
+const mockClaimMiningRewards = jest.fn().mockResolvedValue(undefined)
+const mockClaimLandownerAllowance = jest.fn().mockResolvedValue(undefined)
+const mockClaimLandownerCommissions = jest.fn().mockResolvedValue(undefined)
 
-jest.mock('store', () => ({
-  useActions: () => ({
-    wax: {
-      tryClaimUnstake: mockTryClaimUnstake,
-      tryClaimMiningRewards: mockTryClaimMiningRewards,
-      tryClaimLandownerAllowance: mockTryClaimLandownerAllowance,
-      tryClaimLandownerCommissions: mockTryClaimLandownerCommissions,
-    },
-  }),
+jest.mock('shared/wax/claims', () => ({
+  claimUnstake: (...args: unknown[]) => mockClaimUnstake(...args),
+  claimMiningRewards: (...args: unknown[]) => mockClaimMiningRewards(...args),
+  claimLandownerAllowance: (...args: unknown[]) => mockClaimLandownerAllowance(...args),
+  claimLandownerCommissions: (...args: unknown[]) => mockClaimLandownerCommissions(...args),
 }))
 
 jest.mock('shared/store/sessionStore', () => ({
@@ -89,7 +85,7 @@ describe('PlanetaryClaims', () => {
     const claimButtons = screen.getAllByText('Claim TLM')
     await userEvent.click(claimButtons[0])
 
-    expect(mockTryClaimMiningRewards).toHaveBeenCalledTimes(1)
+    expect(mockClaimMiningRewards).toHaveBeenCalledTimes(1)
   })
 
   it('disables the mining claim button when there are no claimable rewards', () => {
@@ -125,7 +121,7 @@ describe('PlanetaryClaims', () => {
     const claimButtons = screen.getAllByText('Claim TLM')
     await userEvent.click(claimButtons[1])
 
-    expect(mockTryClaimLandownerCommissions).toHaveBeenCalledTimes(1)
+    expect(mockClaimLandownerCommissions).toHaveBeenCalledTimes(1)
   })
 
   it('claims landowner allowance when the DTAL claim button is clicked', async () => {
@@ -144,7 +140,7 @@ describe('PlanetaryClaims', () => {
     const claimButtons = screen.getAllByText('Claim TLM')
     await userEvent.click(claimButtons[2])
 
-    expect(mockTryClaimLandownerAllowance).toHaveBeenCalledTimes(1)
+    expect(mockClaimLandownerAllowance).toHaveBeenCalledTimes(1)
   })
 
   it('renders an unstake row and claims it, refetching balances queries', async () => {
@@ -176,7 +172,7 @@ describe('PlanetaryClaims', () => {
     const claimButtons = screen.getAllByText('Claim TLM')
     await userEvent.click(claimButtons[claimButtons.length - 1])
 
-    expect(mockTryClaimUnstake).toHaveBeenCalledWith('4,EYEKE')
+    expect(mockClaimUnstake).toHaveBeenCalledWith('4,EYEKE')
     expect(mockRefetchQueries).toHaveBeenCalledWith({
       include: ['DAO_QUERY', 'USER_DAO_QUERY'],
     })

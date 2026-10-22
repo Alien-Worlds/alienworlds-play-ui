@@ -827,28 +827,6 @@ export const api = (() => {
 
       return result
     },
-    async claimUnstake(symbol: string) {
-      if (!options || !options?.getWalletId()) return
-
-      const request: WaxRequest = [
-        {
-          account: Constants.CONTRACT_TOKEN_WORLDS,
-          name: Constants.CONTRACT_TOKEN_WORLDS_ACTION_CLAIMUNSTKES,
-          authorization: [
-            {
-              actor: options.getWalletId(),
-              permission: 'active',
-            },
-          ],
-          data: {
-            account: options.getWalletId(),
-            token_symbol: symbol,
-          },
-        },
-      ]
-
-      await this.executeTransactFinal(request)
-    },
     async executeOnboarding(onboarding: OnboardingData) {
       if (!options || !options?.getWalletId()) return
       const agreeTermsRequest = {
@@ -1957,66 +1935,6 @@ export const api = (() => {
       const result = await this.executeTransactFinal(actions)
 
       return result as TransactResult
-    },
-    async claimLandownerAllowance() {
-      if (!options || !options?.getWalletId()) return
-
-      const request: WaxRequest = [
-        {
-          account: Constants.CONTRACT_LAND_RATINGS,
-          name: Constants.CONTRACT_LAND_RATINGS_ACTION_CLAIMPAY,
-          authorization: [
-            {
-              permission: 'active',
-              actor: options.getWalletId(),
-            },
-          ],
-          data: {
-            receiver: options.getWalletId(),
-          },
-        },
-      ]
-      await this.executeTransactFinal(request)
-    },
-    async claimMiningRewards() {
-      if (!options || !options?.getWalletId()) return
-
-      const request: WaxRequest = [
-        {
-          account: Constants.CONTRACT_M_FEDERATION,
-          name: Constants.CONTRACT_M_FEDERATION_ACTION_CLAIMMINES,
-          authorization: [
-            {
-              permission: 'active',
-              actor: options.getWalletId(),
-            },
-          ],
-          data: {
-            receiver: options.getWalletId(),
-          },
-        },
-      ]
-      await this.executeTransactFinal(request)
-    },
-    async claimLandownerComissions() {
-      if (!options || !options?.getWalletId()) return
-
-      const request: WaxRequest = [
-        {
-          account: Constants.CONTRACT_M_FEDERATION,
-          name: Constants.CONTRACT_M_FEDERATION_ACTION_CLAIMCOMMS,
-          authorization: [
-            {
-              permission: 'active',
-              actor: options.getWalletId(),
-            },
-          ],
-          data: {
-            receiver: options.getWalletId(),
-          },
-        },
-      ]
-      await this.executeTransactFinal(request)
     },
   }
 })()
