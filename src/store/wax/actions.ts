@@ -18,17 +18,14 @@ import {
   DaoGlobalsResponse,
   DaoWalletDetailsResponse,
 } from 'graphql/types'
-import { queryClient } from 'index'
 import { find, map, join, get, toLower } from 'lodash'
 import { DateTime } from 'luxon'
 import { catchError, pipe, wait, waitUntil } from 'overmind'
 import { generatePath } from 'react-router'
 import { matchPath } from 'react-router-dom'
 import { router } from 'routes'
-import { LOAD_USER_POINTS_QUERY_KEY } from 'shared/hooks/queries/wax/useLoadUserPoints'
 import { useAssetsStore } from 'shared/store/assetsStore'
-import { useMinerStore } from 'shared/store/minerStore'
-import { collectGAEvent } from 'shared/util/analytics'
+import { collectEvent } from 'shared/util/analytics'
 import { config } from 'shared/util/config'
 import {
   dacIdToDacTreasuryAccountList,
@@ -56,33 +53,11 @@ import {
   WaxPlayer,
   PremintOfferWithTemplate,
   WaxResponse,
-  WaxUserPoints,
   DacInfoResponse,
   WhitelistStatus,
 } from './types'
 import { Context } from '..'
 import { Constants } from '../../shared/util/constants'
-
-export const collectEvent = pipe(
-  ({ state }: Context, data: { name: string; fields?: any }) => {
-    // @TODO do we want to use queryClient.ensureQueryData instead to load data if not present?
-    const nftPoints: WaxUserPoints = queryClient.getQueryData([LOAD_USER_POINTS_QUERY_KEY])
-
-    const stateInfo = {
-      ...data.fields,
-      bag: useAssetsStore.getState().bag?.items,
-      wallet: state.wax.walletId,
-      lastMine: useMinerStore.getState().miner?.last_mine,
-      username: state.wax.player?.tag ?? 'null',
-
-      nftPoints: nftPoints?.total_points,
-    }
-    collectGAEvent(data.name, stateInfo)
-  },
-  catchError((_: Context, error) => {
-    console.error(error)
-  })
-)
 
 export const onInitializeOvermind = async ({ state, effects }: Context) => {
   effects.wax.api.initialize({
@@ -460,7 +435,7 @@ export const setOnboarding = pipe(
 )
 
 export const executeOnboarding = pipe(
-  async ({ state, effects, actions }: Context) => {
+  async ({ state, effects }: Context) => {
     if (
       state.wax.onboarding &&
       state.wax.onboarding.avatarId &&
@@ -480,7 +455,7 @@ export const executeOnboarding = pipe(
           return
         }
         state.wax.isOnboardingPending = false
-        actions.wax.collectEvent({ name: Constants.GA_FIRST_VISIT })
+        collectEvent({ name: Constants.GA_FIRST_VISIT })
       } else {
         // Pause Onboarding for temporary (not validated) accounts
         state.wax.isOnboardingPending = true
@@ -530,7 +505,7 @@ export const executeOnboarding = pipe(
       }
 
       state.wax.isOnboardingPending = false
-      actions.wax.collectEvent({ name: Constants.GA_FIRST_VISIT })
+      collectEvent({ name: Constants.GA_FIRST_VISIT })
     }
   },
   async ({ state, effects }: Context) => {

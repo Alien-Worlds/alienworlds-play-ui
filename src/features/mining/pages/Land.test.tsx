@@ -144,7 +144,10 @@ const planets = [
   { id: 'kavian', planet_details: { title: 'Kavian' }, land_maps: [{ asset_id: '3' }] },
 ]
 
-const collectEvent = jest.fn()
+const mockCollectEvent = jest.fn()
+jest.mock('shared/util/analytics', () => ({
+  collectEvent: (event: unknown) => mockCollectEvent(event),
+}))
 const setPlanetSelectedForMiningIntent = jest.fn()
 const resetLandAssetsFilter = jest.fn()
 
@@ -166,7 +169,7 @@ const setup = ({
         },
       },
       actions: {
-        wax: { setPlanetSelectedForMiningIntent, collectEvent },
+        wax: { setPlanetSelectedForMiningIntent },
         atomic: { resetLandAssetsFilter },
       },
     })
@@ -283,7 +286,7 @@ describe('Land page', () => {
     expect(mockRefetch).toHaveBeenCalledWith('kavian.world')
     expect(setPlanetSelectedForMiningIntent).toHaveBeenCalledWith('kavian')
     expect(resetLandAssetsFilter).toHaveBeenCalled()
-    expect(collectEvent).toHaveBeenCalledWith({
+    expect(mockCollectEvent).toHaveBeenCalledWith({
       name: 'page_visit',
       fields: { location: '/mining/land' },
     })

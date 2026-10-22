@@ -2,17 +2,14 @@ import { VFC, useEffect, useRef } from 'react'
 
 import { Flex, Link, Text } from '@chakra-ui/react'
 import { get } from 'lodash'
+import { collectEvent } from 'shared/util/analytics'
 import { Colors } from 'shared/util/colors'
-import { useActions } from 'store'
 
 import { Constants } from '../../../../shared/util/constants'
 
 const OnboardingNewsletterSubscription: VFC<{ onSubscribe: () => void; onClose: () => void }> = ({
   onClose,
 }) => {
-  const {
-    wax: { collectEvent },
-  } = useActions()
   const formContainerRef = useRef<HTMLDivElement>(null)
   const formLoadedRef = useRef(false)
 

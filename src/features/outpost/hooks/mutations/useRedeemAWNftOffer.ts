@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { includes } from 'lodash'
+import { LOAD_USER_POINTS_QUERY_KEY } from 'shared/hooks/queries/wax/queryKeys'
 import { LOAD_AW_NFT_OFFERS_QUERY_KEY } from 'shared/hooks/queries/wax/useLoadAWNftOffers'
-import { LOAD_USER_POINTS_QUERY_KEY } from 'shared/hooks/queries/wax/useLoadUserPoints'
 import { useActions, useEffects } from 'store'
 import { toastErrorMessage, toastMessage } from 'store/main/actions'
 import { WaxUserPoints } from 'store/wax/types'

@@ -11,7 +11,6 @@ import { config } from 'shared/util/config'
 import {
   Planet,
   WaxResources,
-  WaxPlayer,
   WaxTerms,
   WaxRefundInProgress,
   WhitelistStatus,
@@ -43,7 +42,6 @@ type WaxState = {
   isValidated: boolean
   walletId: string
   isDemoUser: boolean
-  player: WaxPlayer
   playersImageMap: { [walletId: string]: string }
   isSettingTag: boolean
   currentTag: string
@@ -109,7 +107,6 @@ export const defaultState: WaxState = {
   isDemoUser: derived((state: WaxState) => state.walletId === config.DemoUserWaxAccount),
   userStakedDAOTokens: 0,
   totalDAOsStakes: 0,
-  player: null,
   playersImageMap: {},
   isSettingTag: false,
   currentTag: null,

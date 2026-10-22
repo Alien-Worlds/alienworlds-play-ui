@@ -47,6 +47,7 @@ import {
 } from 'lodash'
 import { useModalStore } from 'shared/store/modalStore'
 import { useSessionStore } from 'shared/store/sessionStore'
+import { collectEvent } from 'shared/util/analytics'
 import { Colors } from 'shared/util/colors'
 import { validateAmount } from 'shared/util/formhelper'
 import { convertPlanetIdToName, getSyndicatesCurrentPage } from 'shared/util/helpers'
@@ -64,7 +65,7 @@ const iconStyle: any = {
 
 export const ConvertPlanetaryTokenModal = () => {
   const {
-    wax: { tryStake, tryUnstake, collectEvent },
+    wax: { tryStake, tryUnstake },
   } = useActions()
   const {
     wax: { selectedDacId },

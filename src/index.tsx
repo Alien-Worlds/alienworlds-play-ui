@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { App } from 'app'
 import GA4React from 'ga-4-react'
@@ -10,6 +10,7 @@ import ReactDOM from 'react-dom/client'
 import { HelmetProvider } from 'react-helmet-async'
 import { config as appConfig } from 'shared/util/config'
 import { checkEnvVariables, logAppVersion } from 'shared/util/helpers'
+import { queryClient } from 'shared/util/queryClient'
 import { config } from 'store'
 
 import reportWebVitals from './reportWebVitals'
@@ -20,14 +21,6 @@ import './shared/styles/tailwind/tailwind.generated.css'
 import 'focus-visible/dist/focus-visible'
 
 const ga4react = new GA4React(appConfig.GoogleAnalytics)
-
-export const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      refetchOnWindowFocus: appConfig.IsProduction,
-    },
-  },
-})
 
 const overmind = createOvermind(config, { devtools: false, logProxies: true })
 

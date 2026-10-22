@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { LOAD_USER_POINTS_QUERY_KEY } from 'shared/hooks/queries/wax/useLoadUserPoints'
+import { LOAD_USER_POINTS_QUERY_KEY } from 'shared/hooks/queries/wax/queryKeys'
 import { useActions, useEffects } from 'store'
 import { toastErrorMessage, toastMessage } from 'store/main/actions'
 

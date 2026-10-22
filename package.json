@@ -1,6 +1,6 @@
 {
   "name": "alienworlds",
-  "version": "5.3.5",
+  "version": "5.3.6",
   "private": true,
   "dependencies": {
     "@alien-worlds/icons": "0.0.50",
@@ -37,11 +37,11 @@
     "@wharfkit/web-renderer": "^1.2.3",
     "atomicassets": "^1.4.2",
     "bignumber.js": "^9.0.1",
-    "browserslist": "^4.21.10",
+    "browserslist": "^4.28.7",
     "buffer": "^6.0.3",
     "crypto": "^1.0.1",
     "csstype": "^2.6.2",
-    "dompurify": "^2.4.3",
+    "dompurify": "^3.4.16",
     "dotenv-cli": "^6.0.0",
     "eosjs": "^22.1.0",
     "ethers": "^5.6.4",

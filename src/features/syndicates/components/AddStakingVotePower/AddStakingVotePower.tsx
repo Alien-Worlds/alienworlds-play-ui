@@ -36,6 +36,7 @@ import { DaoDetailsResponse, DaoWalletDetailsResponse } from 'graphql/types'
 import { capitalize, get, isEmpty, isNull, isUndefined, replace, round, toNumber } from 'lodash'
 import { useModalStore } from 'shared/store/modalStore'
 import { useSessionStore } from 'shared/store/sessionStore'
+import { collectEvent } from 'shared/util/analytics'
 import { Colors } from 'shared/util/colors'
 import { validateAdditionalAmount } from 'shared/util/formhelper'
 import { convertPlanetIdToName, getDacSymbol, getSyndicatesCurrentPage } from 'shared/util/helpers'
@@ -82,13 +83,7 @@ const AddStakingVotePower = () => {
   const walletId = useSessionStore((state) => state.walletId)
 
   const {
-    wax: {
-      collectEvent,
-
-      tryStakeVotePower,
-
-      resetActionProgressState,
-    },
+    wax: { tryStakeVotePower, resetActionProgressState },
   } = useActions()
   const primaryModals = useModalStore((state) => state.primaryModals)
   const setPrimaryModalActive = useModalStore((state) => state.setPrimaryModalActive)

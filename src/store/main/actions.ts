@@ -13,6 +13,7 @@ import { useMinerStore } from 'shared/store/minerStore'
 import { useModalStore } from 'shared/store/modalStore'
 import { useSessionStore } from 'shared/store/sessionStore'
 import { registerSyncScheduler } from 'shared/store/syncScheduler'
+import { collectEvent } from 'shared/util/analytics'
 import { config } from 'shared/util/config'
 import { padZero, isValidDacId, getUserRankInfo, sessionKitWallets } from 'shared/util/helpers'
 import { isMissionsRelatedPage } from 'shared/util/router'
@@ -189,7 +190,7 @@ export const setCurrentSession = pipe(({ state }, payload: Session) => {
 })
 
 export const loginWombat = pipe(
-  async ({ state, actions, effects }: Context) => {
+  async ({ state, effects }: Context) => {
     state.wax.isAuthenticating = true
     useSessionStore.getState().setIsAuthenticating(state.wax.isAuthenticating)
 
@@ -203,7 +204,7 @@ export const loginWombat = pipe(
       router.navigate(PagePath.NewsletterJoin)
     }
     localStorage.setItem('aw_wallet', state.wax.walletId)
-    actions.wax.collectEvent({ name: Constants.GA_AW_LOGIN })
+    collectEvent({ name: Constants.GA_AW_LOGIN })
   },
   redirectAfterLoginOrLogout,
   catchError((_: Context, error) => {
@@ -212,7 +213,7 @@ export const loginWombat = pipe(
 )
 
 export const login = pipe(
-  async ({ state, effects, actions }: Context) => {
+  async ({ state, effects }: Context) => {
     if (!state.wax.isDemoUser) {
       state.wax.isAuthenticating = true
       useSessionStore.getState().setIsAuthenticating(state.wax.isAuthenticating)
@@ -228,7 +229,7 @@ export const login = pipe(
       router.navigate(PagePath.NewsletterJoin)
     }
     localStorage.setItem('aw_wallet', state.wax.walletId)
-    actions.wax.collectEvent({ name: Constants.GA_AW_LOGIN })
+    collectEvent({ name: Constants.GA_AW_LOGIN })
   },
   redirectAfterLoginOrLogout,
   catchError((_: Context, error) => {
@@ -237,7 +238,7 @@ export const login = pipe(
 )
 
 export const loginAnchor = pipe(
-  async ({ state, actions, effects }: Context) => {
+  async ({ state, effects }: Context) => {
     state.wax.isAuthenticating = true
     useSessionStore.getState().setIsAuthenticating(state.wax.isAuthenticating)
 
@@ -251,7 +252,7 @@ export const loginAnchor = pipe(
       router.navigate(PagePath.NewsletterJoin)
     }
     localStorage.setItem('aw_wallet', state.wax.walletId)
-    actions.wax.collectEvent({ name: Constants.GA_AW_LOGIN })
+    collectEvent({ name: Constants.GA_AW_LOGIN })
   },
   redirectAfterLoginOrLogout,
   catchError((_: Context, error) => {
@@ -260,7 +261,7 @@ export const loginAnchor = pipe(
 )
 
 export const loginWax = pipe(
-  async ({ state, effects, actions }: Context) => {
+  async ({ state, effects }: Context) => {
     if (!state.wax.isDemoUser) {
       state.wax.isAuthenticating = true
       useSessionStore.getState().setIsAuthenticating(state.wax.isAuthenticating)
@@ -285,7 +286,7 @@ export const loginWax = pipe(
       router.navigate(PagePath.NewsletterJoin)
     }
     localStorage.setItem('aw_wallet', state.wax.walletId)
-    actions.wax.collectEvent({ name: Constants.GA_AW_LOGIN })
+    collectEvent({ name: Constants.GA_AW_LOGIN })
   },
   redirectAfterLoginOrLogout,
   catchError((_: Context, error) => {
@@ -523,8 +524,8 @@ export const notifyBountyFromLastMiningTransaction = pipe(
 )
 
 export const showOnboardingPage = pipe(
-  ({ actions }: Context) => {
-    actions.wax.collectEvent({
+  (_: Context) => {
+    collectEvent({
       name: Constants.GA_PAGE_VISIT,
       fields: { location: PagePath.Onboarding },
     })
@@ -535,8 +536,8 @@ export const showOnboardingPage = pipe(
 )
 
 export const showHomePage = pipe(
-  ({ actions }: Context) => {
-    actions.wax.collectEvent({
+  (_: Context) => {
+    collectEvent({
       name: Constants.GA_PAGE_VISIT,
       fields: { location: PagePath.Home },
     })
@@ -546,9 +547,9 @@ export const showHomePage = pipe(
   })
 )
 export const showGovernancePage = pipe(
-  ({ state, actions }: Context) => {
+  ({ state }: Context) => {
     useModalStore.getState().toggleMainDrawer(false)
-    actions.wax.collectEvent({
+    collectEvent({
       name: Constants.GA_PAGE_VISIT,
       fields: {
         location: PagePath.GovernanceSelect,
@@ -574,7 +575,7 @@ export const showGovernanceDetailsPage = pipe(
       navigate(PagePath.GovernanceSelect)
       actions.main.showGovernancePage()
     }
-    actions.wax.collectEvent({
+    collectEvent({
       name: Constants.GA_PAGE_VISIT,
       fields: {
         location: PagePath.GovernanceDetails,
@@ -607,7 +608,7 @@ export const showGovernanceDaoSelect = pipe(
       navigate(PagePath.DAOSelect)
       actions.main.showGovernancePage()
     }
-    actions.wax.collectEvent({
+    collectEvent({
       name: Constants.GA_PAGE_VISIT,
       fields: {
         location: PagePath.GovernanceDetails,
@@ -641,7 +642,7 @@ export const showGovernanceCandidatesPage = pipe(
       navigate(PagePath.GovernanceSelect)
       actions.main.showGovernancePage()
     }
-    actions.wax.collectEvent({
+    collectEvent({
       name: Constants.GA_PAGE_VISIT,
       fields: {
         location: PagePath.GovernanceCandidates,
@@ -674,7 +675,7 @@ export const showGovernanceBecomeCandidatePage = pipe(({ state, actions }: Conte
     navigate(PagePath.GovernanceSelect)
     actions.main.showGovernancePage()
   }
-  actions.wax.collectEvent({
+  collectEvent({
     name: Constants.GA_PAGE_VISIT,
     fields: {
       location: PagePath.GovernanceBecomeCandidate,
@@ -696,7 +697,7 @@ export const showGovernanceManageCandidacyPage = pipe(
       navigate(PagePath.GovernanceSelect)
       actions.main.showGovernancePage()
     }
-    actions.wax.collectEvent({
+    collectEvent({
       name: Constants.GA_PAGE_VISIT,
       fields: {
         location: PagePath.GovernanceManageCandidacy,
@@ -730,7 +731,7 @@ export const showGovernanceMemberTerms = pipe(({ state, actions }: Context, id: 
     navigate(PagePath.GovernanceSelect)
     actions.main.showGovernancePage()
   }
-  actions.wax.collectEvent({
+  collectEvent({
     name: Constants.GA_PAGE_VISIT,
     fields: {
       location: PagePath.GovernanceMemberTerms,
@@ -754,7 +755,7 @@ export const showGovernanceSignCandidateVotePage = pipe(
       navigate(PagePath.GovernanceSelect)
       actions.main.showGovernancePage()
     }
-    actions.wax.collectEvent({
+    collectEvent({
       name: Constants.GA_PAGE_VISIT,
       fields: {
         location: PagePath.GovernanceSignCandidateVote,
@@ -795,7 +796,7 @@ export const showGovernanceCustodianDashboard = pipe(
       navigate(PagePath.GovernanceSelect)
       actions.main.showGovernancePage()
     }
-    actions.wax.collectEvent({
+    collectEvent({
       name: Constants.GA_PAGE_VISIT,
       fields: {
         location: PagePath.GovernanceCustodianDashboard,
@@ -831,7 +832,7 @@ export const showMissionsPage = pipe(
   ({ actions }: Context) => {
     useModalStore.getState().toggleMainDrawer(false)
     actions.missions.setSelectedMissionsTab(0)
-    actions.wax.collectEvent({
+    collectEvent({
       name: Constants.GA_PAGE_VISIT,
       fields: { location: PagePath.Missions },
     })
@@ -849,7 +850,7 @@ export const showMissionsExplorerPage = pipe(
   ({ actions }: Context) => {
     useModalStore.getState().toggleMainDrawer(false)
     actions.missions.setSelectedMissionsTab(1)
-    actions.wax.collectEvent({
+    collectEvent({
       name: Constants.GA_PAGE_VISIT,
       fields: { location: PagePath.MissionsExplorer },
     })
@@ -867,7 +868,7 @@ export const showMissionsInventoryPage = pipe(
   ({ actions }: Context) => {
     useModalStore.getState().toggleMainDrawer(false)
     actions.missions.setSelectedMissionsTab(2)
-    actions.wax.collectEvent({
+    collectEvent({
       name: Constants.GA_PAGE_VISIT,
       fields: { location: PagePath.MissionsInventory },
     })
@@ -878,10 +879,10 @@ export const showMissionsInventoryPage = pipe(
 )
 
 export const showMissionDetailsPage = pipe(
-  ({ state, actions }: Context, id: string) => {
+  ({ state }: Context, id: string) => {
     useModalStore.getState().toggleMainDrawer(false)
     state.missions.selectedMissionId = id
-    actions.wax.collectEvent({
+    collectEvent({
       name: Constants.GA_PAGE_VISIT,
       fields: { location: PagePath.MissionDetails },
     })
@@ -893,10 +894,10 @@ export const showMissionDetailsPage = pipe(
 )
 
 export const showMissionJoinPage = pipe(
-  ({ state, actions }: Context, id: string) => {
+  ({ state }: Context, id: string) => {
     useModalStore.getState().toggleMainDrawer(false)
     state.missions.selectedMissionId = id
-    actions.wax.collectEvent({
+    collectEvent({
       name: Constants.GA_PAGE_VISIT,
       fields: { location: PagePath.MissionJoin },
     })
@@ -908,9 +909,9 @@ export const showMissionJoinPage = pipe(
 )
 
 export const showErrorPage = pipe(
-  async ({ actions }: Context) => {
+  async (_: Context) => {
     useModalStore.getState().toggleMainDrawer(false)
-    actions.wax.collectEvent({
+    collectEvent({
       name: Constants.GA_PAGE_VISIT,
       fields: { location: PagePath.Error },
     })
@@ -921,9 +922,9 @@ export const showErrorPage = pipe(
 )
 
 export const showProfileInfoPage = pipe(
-  async ({ actions }: Context) => {
+  async (_: Context) => {
     useModalStore.getState().toggleMainDrawer(false)
-    actions.wax.collectEvent({
+    collectEvent({
       name: Constants.GA_PAGE_VISIT,
       fields: { location: PagePath.ProfileInfo },
     })
@@ -934,9 +935,9 @@ export const showProfileInfoPage = pipe(
 )
 
 export const showProfileBalancesPage = pipe(
-  async ({ actions }: Context) => {
+  async (_: Context) => {
     useModalStore.getState().toggleMainDrawer(false)
-    actions.wax.collectEvent({
+    collectEvent({
       name: Constants.GA_PAGE_VISIT,
       fields: { location: PagePath.ProfileBalances },
     })
@@ -947,9 +948,9 @@ export const showProfileBalancesPage = pipe(
 )
 
 export const showOutpostPage = pipe(
-  async ({ actions }: Context) => {
+  async (_: Context) => {
     useModalStore.getState().toggleMainDrawer(false)
-    actions.wax.collectEvent({
+    collectEvent({
       name: Constants.GA_PAGE_VISIT,
       fields: { location: PagePath.Outpost },
     })
@@ -1127,7 +1128,7 @@ export const claimMine = pipe(
 
       await actions.main.notifyBountyFromLastMiningTransaction()
 
-      actions.wax.collectEvent({
+      collectEvent({
         name: 'mine_claimed_success',
         fields: {
           mineReward: state.main.lastMineBounty,
@@ -1136,7 +1137,7 @@ export const claimMine = pipe(
       })
     }
   },
-  catchError(({ state, actions }: Context, error) => {
+  catchError(({ state }: Context, error) => {
     state.main.mineDelay = null
     state.main.miningRandomString = null
     state.main.isClaiming = false
@@ -1144,7 +1145,7 @@ export const claimMine = pipe(
     state.wax.lastTransactionError = null
     console.error(error)
 
-    actions.wax.collectEvent({ name: Constants.GA_MINE_CLAIMED_ERROR })
+    collectEvent({ name: Constants.GA_MINE_CLAIMED_ERROR })
   })
 )
 

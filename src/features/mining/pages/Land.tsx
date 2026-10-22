@@ -53,10 +53,10 @@ import { useAssetsStore } from 'shared/store/assetsStore'
 import { useMinerStore } from 'shared/store/minerStore'
 import { useModalStore } from 'shared/store/modalStore'
 import { useSessionStore } from 'shared/store/sessionStore'
+import { collectEvent } from 'shared/util/analytics'
 import { Colors } from 'shared/util/colors'
 import { Constants } from 'shared/util/constants'
 import { dacIdToDacTreasuryAccountList } from 'shared/util/helpers'
-import { useActions } from 'store'
 import { PagePath } from 'store/main/types'
 
 interface MiningPlanetOptionItem {
@@ -72,9 +72,6 @@ const Land: VFC = () => {
   const landAsset = useAssetsStore((state) => state.landAsset)
   const walletId = useSessionStore((state) => state.walletId)
 
-  const {
-    wax: { collectEvent },
-  } = useActions()
   const resetLandAssetsFilter = useMiningStore((state) => state.resetLandAssetsFilter)
   const setPlanetSelectedForMiningIntent = useMinerStore(
     (state) => state.setPlanetSelectedForMiningIntent

@@ -97,7 +97,10 @@ const makeAsset = (id: string, name: string, template: string, copies = 4) => ({
 const grouped = [makeAsset('1', 'Drill', 'drill'), makeAsset('9', 'Axe', 'axe', 2)]
 const drills = ['1', '2', '3', '4', '5'].map((id) => makeAsset(id, 'Drill', 'drill', 1))
 
-const collectEvent = jest.fn()
+const mockCollectEvent = jest.fn()
+jest.mock('shared/util/analytics', () => ({
+  collectEvent: (event: unknown) => mockCollectEvent(event),
+}))
 // The real preset clears the sorted list until the sync loop rebuilds it.
 const presetAssetsFilter = jest.fn()
 const setShiningUrl = jest.fn()
@@ -127,7 +130,7 @@ const setup = ({ atomic = {}, wax = {} }: { atomic?: any; wax?: any } = {}) => {
       },
     },
     actions: {
-      wax: { tryShine, collectEvent },
+      wax: { tryShine },
       main: { setShiningUrl, setOutPostModalsActive, presetAssetsFilter },
     },
   })
@@ -167,7 +170,7 @@ describe('Shining page', () => {
   it('records the page visit on mount', () => {
     setup()
 
-    expect(collectEvent).toHaveBeenCalledWith({
+    expect(mockCollectEvent).toHaveBeenCalledWith({
       name: 'page_visit',
       fields: { location: '/shining' },
     })

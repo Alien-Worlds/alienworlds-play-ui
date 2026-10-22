@@ -5,6 +5,7 @@ import { Button } from '@alien-worlds/uikit'
 import { Box, Flex, Image, Link, Text } from '@chakra-ui/react'
 import { useNavigate, useRouteError } from 'react-router-dom'
 import { useTimeoutFn } from 'react-use'
+import { collectEvent } from 'shared/util/analytics'
 import { config } from 'shared/util/config'
 import { useActions } from 'store'
 import { PagePath } from 'store/main/types'
@@ -12,10 +13,6 @@ import { PagePath } from 'store/main/types'
 import { Constants } from '../util/constants'
 
 const ErrorFallback = () => {
-  const {
-    wax: { collectEvent },
-  } = useActions()
-
   const error = useRouteError()
   const errorJSON = JSON.stringify(error, Object.getOwnPropertyNames(error))
 

@@ -27,6 +27,7 @@ describe('useSessionStore', () => {
     expect(result.current.currentWallet).toBeNull()
     expect(result.current.isAuthenticating).toBeNull()
     expect(result.current.currentSession).toBeNull()
+    expect(result.current.player).toBeNull()
   })
 
   it('setWalletId stores the wallet, marks a real wallet as not a demo user, and logs in', () => {
@@ -104,5 +105,20 @@ describe('useSessionStore', () => {
       result.current.setCurrentSession(null)
     })
     expect(result.current.currentSession).toBeNull()
+  })
+
+  it('setPlayer stores and clears the players-table row', () => {
+    const { result } = renderHook(() => useSessionStore())
+    const player = { account: 'someplayer.wam', avatar: '1099', tag: 'alien' }
+
+    act(() => {
+      result.current.setPlayer(player)
+    })
+    expect(result.current.player).toEqual(player)
+
+    act(() => {
+      result.current.setPlayer(null)
+    })
+    expect(result.current.player).toBeNull()
   })
 })

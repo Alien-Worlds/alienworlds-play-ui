@@ -25,9 +25,10 @@ import { DACUserStatusType } from 'store/wax/types'
 import { Constants } from '../../../shared/util/constants'
 export const ManageCandidacy = () => {
   const {
-    wax: { selectedDacId, player, currentTag },
+    wax: { selectedDacId, currentTag },
   } = useAppState()
   const walletId = useSessionStore((state) => state.walletId)
+  const player = useSessionStore((state) => state.player)
   const {
     daoDetails,
     loading: daoDetailsLoading,
