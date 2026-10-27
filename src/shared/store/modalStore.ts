@@ -129,6 +129,8 @@ export interface ModalStore {
   errorType: ErrorTypes | null
   isModalActive: boolean
   isMainDrawerOpen: boolean
+  /** The main sidebar is collapsed to icons. */
+  isCompactSidebar: boolean
   isLandOwnerAddSlotDrawerOpen: boolean
   landOwnerDrawerPayload: LandOwnerDrawerType | null
   planetDetailsDrawer: PlanetDetailsDrawerState
@@ -141,6 +143,7 @@ export interface ModalStore {
   setPrimaryModalActive: (input: SetPrimaryModalActiveInput) => void
   resetAllPrimaryModals: () => void
   toggleMainDrawer: (forceState?: boolean | null) => void
+  toggleCompactSidebar: (forceState?: boolean | null) => void
   setIsLandOwnerAddSlotDrawerOpen: (isOpen: boolean) => void
   setLandOwnerDrawerPayload: (payload: LandOwnerDrawerType) => void
   openPlanetDetailsDrawer: () => void
@@ -158,6 +161,7 @@ export const useModalStore = create<ModalStore>((set, get) => ({
   errorType: null,
   isModalActive: false,
   isMainDrawerOpen: false,
+  isCompactSidebar: false,
   isLandOwnerAddSlotDrawerOpen: false,
   landOwnerDrawerPayload: null,
   planetDetailsDrawer: { isOpen: false },
@@ -227,6 +231,12 @@ export const useModalStore = create<ModalStore>((set, get) => ({
   toggleMainDrawer: (forceState = null) => {
     set({
       isMainDrawerOpen: forceState !== null ? forceState : !get().isMainDrawerOpen,
+    })
+  },
+
+  toggleCompactSidebar: (forceState = null) => {
+    set({
+      isCompactSidebar: forceState !== null ? forceState : !get().isCompactSidebar,
     })
   },
 

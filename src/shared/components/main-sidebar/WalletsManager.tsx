@@ -8,20 +8,19 @@ import { WalletPluginWombat } from '@wharfkit/wallet-plugin-wombat'
 import WebRenderer from '@wharfkit/web-renderer'
 import darkRectangle from 'assets/images/darkRectangle.png'
 import { map } from 'lodash'
+import { useModalStore } from 'shared/store/modalStore'
 import { useSessionStore } from 'shared/store/sessionStore'
 import { Colors } from 'shared/util/colors'
 import { config } from 'shared/util/config'
 import { sessionKitWallets } from 'shared/util/helpers'
-import { useActions, useAppState } from 'store'
+import { useActions } from 'store'
 import { v4 } from 'uuid'
 
 export const WalletsManager = () => {
   const {
     main: { setSessionKit, setCurrentSession },
   } = useActions()
-  const {
-    main: { isCompactSidebar },
-  } = useAppState()
+  const isCompactSidebar = useModalStore((state) => state.isCompactSidebar)
   const isDemoUser = useSessionStore((state) => state.isDemoUser)
   const currentWallet = useSessionStore((state) => state.currentWallet)
 

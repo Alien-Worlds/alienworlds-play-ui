@@ -6,9 +6,9 @@ import { ComponentWithAs, Flex, IconProps, Icon } from '@chakra-ui/react'
 import { map } from 'lodash'
 import { useNavigate } from 'react-router-dom'
 import { useActivePath } from 'shared/hooks/useRouter'
+import { useModalStore } from 'shared/store/modalStore'
 import { Colors } from 'shared/util/colors'
 import { useScreenSize } from 'shared/util/hooks'
-import { useActions, useAppState } from 'store'
 import { PagePath } from 'store/main/types'
 import { v4 } from 'uuid'
 
@@ -23,13 +23,9 @@ export interface MenuItem {
 }
 
 const PageList: FC = () => {
-  const {
-    main: { isCompactSidebar },
-  } = useAppState()
+  const isCompactSidebar = useModalStore((state) => state.isCompactSidebar)
 
-  const {
-    main: { toggleCompactSidebar },
-  } = useActions()
+  const toggleCompactSidebar = useModalStore((state) => state.toggleCompactSidebar)
   const navigate = useNavigate()
 
   const { isMobile } = useScreenSize()

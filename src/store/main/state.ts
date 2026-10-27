@@ -48,7 +48,6 @@ type MainState = {
   autoExpireSigningDACTerms: number
   signingDACTermsState: SigningDACTermsState
   modalErrorState: ErrorTypes
-  isCompactSidebar: boolean
   isVotingDACCandidates: boolean
   autoExpireVoteDACCandidates: number
   lastMineBounty: string
@@ -115,7 +114,6 @@ export const defaultState: MainState = {
     if (state.isSigningDACTerms) return SigningDACTermsState.Signing
     return SigningDACTermsState.Unknown
   }),
-  isCompactSidebar: false,
   isVotingDACCandidates: false,
   autoExpireVoteDACCandidates: null,
   lastMineBounty: null,

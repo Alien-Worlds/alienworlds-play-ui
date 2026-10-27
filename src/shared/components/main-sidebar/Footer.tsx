@@ -4,9 +4,9 @@ import { DiscordIcon2, TelegramIcon2 } from '@alien-worlds/icons'
 import { Box, Flex, Text, Link } from '@chakra-ui/react'
 import SocialBackground from 'assets/images/alienworlds-bg-social.svg'
 import { map } from 'lodash'
+import { useModalStore } from 'shared/store/modalStore'
 import { Colors } from 'shared/util/colors'
 import { config } from 'shared/util/config'
-import { useAppState } from 'store'
 import { v4 } from 'uuid'
 
 const SocialLinks = [
@@ -34,9 +34,7 @@ const AdditionalLinks = [
 ]
 
 const Footer: VFC = () => {
-  const {
-    main: { isCompactSidebar },
-  } = useAppState()
+  const isCompactSidebar = useModalStore((state) => state.isCompactSidebar)
 
   const SocialWrapper = ({ children }) => {
     if (isCompactSidebar)
