@@ -29,7 +29,7 @@ import {
 } from 'features/leaderboard/utils/leaderboardQueries'
 import { MiningSelect } from 'features/mining/components/MiningSelect/MiningSelect'
 import { MiningTabPanelMotion, MiningTabs } from 'features/mining/components/MiningTabs/MiningTabs'
-import { isEmpty, map, toLower } from 'lodash'
+import { isEmpty, toLower } from 'lodash'
 import { useParams } from 'react-router'
 import { useNavigate } from 'react-router-dom'
 import { useModalStore } from 'shared/store/modalStore'
@@ -40,6 +40,19 @@ import { getNftImage } from 'shared/util/nft'
 import { getPlayer } from 'shared/wax/players'
 import { PagePath } from 'store/main/types'
 import { WaxPlayer } from 'store/wax/types'
+
+const logAndReturnNull = (error: unknown) => {
+  console.error(error)
+  return null
+}
+
+// Adds a row's player tag and avatar. A failed lookup leaves them empty for that row instead of
+// holding back the whole table.
+const withTagAndAvatar = async (item: LeaderboardItem): Promise<LeaderboardItem> => {
+  const player: WaxPlayer | null = await getPlayer(item.wallet_id).catch(logAndReturnNull)
+  const avatarAsset = await getAssetById(player?.avatar).catch(logAndReturnNull)
+  return { ...item, tag: player?.tag ?? null, avatar: getNftImage(avatarAsset) ?? null }
+}
 
 export const Leaderboard = () => {
   const isCompactSidebar = useModalStore((state) => state.isCompactSidebar)
@@ -70,36 +83,26 @@ export const Leaderboard = () => {
     order: isSortReversed ? LeaderboardSortOrder.ASC : LeaderboardSortOrder.DESC,
   })
 
-  const mapAvatarAndTag = (searchDataRes: LeaderboardResponse) => {
-    let mappedResults: LeaderboardItem[] = []
-    if (!searchDataRes?.results || searchDataRes?.results.length === 0) {
-      setGridData([])
-    } else {
-      map(searchDataRes?.results, async (r) => {
-        const data: WaxPlayer = await getPlayer(r?.wallet_id)
-        const imageAvatar: string = getNftImage(await getAssetById(data?.avatar))
-        r.tag = data?.tag ?? null
-        r.avatar = imageAvatar ?? null
-
-        mappedResults.push(r)
-
-        if (mappedResults?.length === searchDataRes?.results?.length) {
-          mappedResults = mappedResults.sort((a, b) => a.position - b.position)
-
-          setGridData(mappedResults)
-          setIsLoadingNewPage(false)
-        }
-      })
-    }
-  }
-
   useEffect(() => {
-    if (!isEmpty(searchValue)) {
-      mapAvatarAndTag(searchData)
-    } else {
-      if (listData?.results) {
-        mapAvatarAndTag(listData)
-      }
+    const isSearching = !isEmpty(searchValue)
+    const data: LeaderboardResponse = isSearching ? searchData : listData
+    // The list is still loading: keep the current rows.
+    if (!isSearching && !data?.results) return
+
+    if (!data?.results?.length) {
+      setGridData([])
+      return
+    }
+
+    // Drops lookups that finish after the results changed, e.g. after paging again.
+    let isCurrent = true
+    Promise.all(data.results.map(withTagAndAvatar)).then((items) => {
+      if (!isCurrent) return
+      setGridData(items.sort((a, b) => a.position - b.position))
+      setIsLoadingNewPage(false)
+    })
+    return () => {
+      isCurrent = false
     }
   }, [listData?.results, searchData?.results, searchValue])
 
