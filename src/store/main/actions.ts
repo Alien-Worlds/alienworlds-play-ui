@@ -1149,14 +1149,6 @@ export const claimMine = pipe(
   })
 )
 
-export const toggleCompactSidebar = pipe(
-  ({ state }: Context, forceState: boolean | null = null) => {
-    const newState = forceState !== null ? forceState : !state.main.isCompactSidebar
-
-    state.main.isCompactSidebar = newState
-  }
-)
-
 export const storeOnboardingNewsletterWasShown = pipe(
   ({ state }: Context, shown: boolean = false) => {
     localStorage.setItem('alienworlds-onboarding-newsletter', shown ? 'true' : 'false')

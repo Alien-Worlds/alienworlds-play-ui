@@ -32,26 +32,17 @@ import { MiningTabPanelMotion, MiningTabs } from 'features/mining/components/Min
 import { isEmpty, map, toLower } from 'lodash'
 import { useParams } from 'react-router'
 import { useNavigate } from 'react-router-dom'
+import { useModalStore } from 'shared/store/modalStore'
+import { getAssetById } from 'shared/util/atomicassets'
 import { Colors } from 'shared/util/colors'
 import { useScreenSize } from 'shared/util/hooks'
 import { getNftImage } from 'shared/util/nft'
-import { useAppState, useEffects } from 'store'
+import { getPlayer } from 'shared/wax/players'
 import { PagePath } from 'store/main/types'
 import { WaxPlayer } from 'store/wax/types'
 
 export const Leaderboard = () => {
-  const {
-    wax: {
-      api: { getPlayer },
-    },
-    atomic: {
-      api: { getAssetById },
-    },
-  } = useEffects()
-
-  const {
-    main: { isCompactSidebar },
-  } = useAppState()
+  const isCompactSidebar = useModalStore((state) => state.isCompactSidebar)
   const navigate = useNavigate()
   const { isMobile, isNotDesktop } = useScreenSize()
   const [gridData, setGridData] = useState([])

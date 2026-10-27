@@ -11,7 +11,8 @@ import {
   useLeaderboardListQuery,
 } from 'features/leaderboard/utils/leaderboardQueries'
 import { isEmpty } from 'lodash'
-import { useEffects } from 'store'
+import { getAssetById } from 'shared/util/atomicassets'
+import { getPlayer } from 'shared/wax/players'
 
 type Params = {
   timeframe: LeaderboardFilter | string
@@ -30,15 +31,6 @@ export const useLeaderboardData = ({
   isSortReversed,
   searchValue,
 }: Params) => {
-  const {
-    wax: {
-      api: { getPlayer },
-    },
-    atomic: {
-      api: { getAssetById },
-    },
-  } = useEffects()
-
   const [gridData, setGridData] = useState<any[]>([])
   const [isLoadingNewPage, setIsLoadingNewPage] = useState<boolean>(false)
 

@@ -11,10 +11,10 @@ import {
 import { LogoutOrWallets } from 'shared/components/main-sidebar/LogoutOrWallets'
 import { SupportButton } from 'shared/components/main-sidebar/SupportButton'
 import { WalletsManager } from 'shared/components/main-sidebar/WalletsManager'
+import { useModalStore } from 'shared/store/modalStore'
 import { useSessionStore } from 'shared/store/sessionStore'
 import { Colors } from 'shared/util/colors'
 import { useScreenSize, useMainSidebar } from 'shared/util/hooks'
-import { useActions, useAppState } from 'store'
 
 import { Footer } from './Footer'
 import { PageList } from './PageList'
@@ -22,14 +22,10 @@ import { WaxResources } from './WaxResources'
 import { Constants } from '../../util/constants'
 
 const MainSidebar = () => {
-  const {
-    main: { isCompactSidebar },
-  } = useAppState()
+  const isCompactSidebar = useModalStore((state) => state.isCompactSidebar)
   const isDemoUser = useSessionStore((state) => state.isDemoUser)
 
-  const {
-    main: { toggleCompactSidebar },
-  } = useActions()
+  const toggleCompactSidebar = useModalStore((state) => state.toggleCompactSidebar)
 
   const { isDesktop } = useScreenSize()
   const { isExpandedMobileSidebar } = useMainSidebar()
