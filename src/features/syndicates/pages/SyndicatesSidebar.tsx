@@ -60,6 +60,7 @@ import { convertPlanetIdToName, getSyndicatesCurrentPage, isUnionDAO } from 'sha
 import { useScreenSize } from 'shared/util/hooks'
 import { PlanetIcon, PlanetIconRGB } from 'shared/util/icons'
 import { formatNumber } from 'shared/util/numbers'
+import { claimUnstake } from 'shared/wax/claims'
 import { useAppState, useActions } from 'store'
 import { PagePath } from 'store/main/types'
 import { DACUserStatusType } from 'store/wax/types'
@@ -171,7 +172,7 @@ export const SyndicatesSidebar = memo(() => {
   const isDemoUser = useSessionStore((state) => state.isDemoUser)
   const client = useApolloClient()
   const {
-    wax: { getDAOInfo, tryClaimUnstake, tryCancelUnstake, setIsSyndicatesSidebarOpen },
+    wax: { getDAOInfo, tryCancelUnstake, setIsSyndicatesSidebarOpen },
   } = useActions()
   const setPrimaryModalActive = useModalStore((state) => state.setPrimaryModalActive)
   const setSecondaryModalActive = useModalStore((state) => state.setSecondaryModalActive)
@@ -1096,7 +1097,7 @@ export const SyndicatesSidebar = memo(() => {
                                           value: true,
                                         })
                                       } else {
-                                        await tryClaimUnstake(daoDetails.symbol.sym)
+                                        await claimUnstake(daoDetails.symbol.sym)
                                         await client.refetchQueries({
                                           include: [DAO_WALLET_DETAILS_QUERY, USER_DAO_BALANCES],
                                         })

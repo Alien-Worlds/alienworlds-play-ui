@@ -10,7 +10,12 @@ import { useMemo } from 'react'
 import { useUserDaoBalances } from 'graphql/hooks/useUserDaoBalances'
 import { useWalletDetails } from 'graphql/hooks/useWalletDetails'
 import { useSessionStore } from 'shared/store/sessionStore'
-import { useActions } from 'store'
+import {
+  claimLandownerAllowance,
+  claimLandownerCommissions,
+  claimMiningRewards,
+  claimUnstake,
+} from 'shared/wax/claims'
 
 import { CLAIMS_CONSTANTS } from '../constants/profile.constants'
 import { useProfileStore } from '../store/profileStore'
@@ -19,15 +24,6 @@ import { calculateTimeRemaining, isRewardClaimable, generateClaimKey } from '../
 
 export const useClaimsData = (): UseClaimsDataReturn => {
   const walletId = useSessionStore((state) => state.walletId)
-
-  const {
-    wax: {
-      tryClaimMiningRewards,
-      tryClaimLandownerAllowance,
-      tryClaimLandownerCommissions,
-      tryClaimUnstake,
-    },
-  } = useActions()
 
   const { walletDetails, loading: walletLoading } = useWalletDetails(walletId)
   const { userDaoBalances, loading: daoLoading } = useUserDaoBalances({ walletId })
@@ -101,17 +97,17 @@ export const useClaimsData = (): UseClaimsDataReturn => {
 
       switch (type) {
         case 'mining':
-          await tryClaimMiningRewards()
+          await claimMiningRewards()
           break
         case 'commission':
-          await tryClaimLandownerCommissions()
+          await claimLandownerCommissions()
           break
         case 'dtal':
-          await tryClaimLandownerAllowance()
+          await claimLandownerAllowance()
           break
         case 'unstake':
           if (planetId) {
-            await tryClaimUnstake('4,' + planetId)
+            await claimUnstake('4,' + planetId)
           }
           break
         default:
