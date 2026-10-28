@@ -208,27 +208,6 @@ export const tryStake = pipe(
   })
 )
 
-export const tryClaimUnstake = pipe(
-  async ({ state, effects }: Context, sym: string) => {
-    const symbol = sym
-    await effects.wax.api.claimUnstake(symbol)
-    if (state.wax.lastTransactionError) {
-      toastErrorMessage(state.wax.lastTransactionError)
-      state.wax.lastTransactionError = null
-      return false
-    }
-    toastMessage('TLM claimed successfully.')
-
-    executeAfter(state.main.syncAi.tlmBalance, DateTime.now().plus({ seconds: 2 }))
-    executeAfter(state.main.syncAi.planets, DateTime.now().plus({ seconds: 5 }))
-    return true
-  },
-  catchError((context: Context, error) => {
-    toastErrorMessage(error?.message ?? 'Claim TLM has failed')
-    return false
-  })
-)
-
 export const tryCancelUnstake = pipe(
   async ({ state, effects }: Context, input: { id: number; symbol: string }) => {
     await effects.wax.api.cancelUnstake(input.id, input.symbol)
@@ -1197,82 +1176,6 @@ export const setDacCustodianProposalPayload = pipe(({ state }, payload: Proposal
   state.wax.dacCustodianProposalPayload = null
   state.wax.dacCustodianProposalPayload = payload
 })
-
-export const tryClaimMiningRewards = pipe(
-  async ({ state, effects }: Context) => {
-    await effects.wax.api.claimMiningRewards()
-
-    if (state.wax.lastTransactionError) {
-      toastErrorMessage(state.wax.lastTransactionError)
-      state.wax.lastTransactionError = null
-      return false
-    }
-
-    // TODO
-    // toastMessage(`Claimed ${state.wax.claimableMiningRewards} successfully.`)
-
-    executeAfter(state.main.syncAi.tlmBalance, DateTime.now().plus({ seconds: 2 }))
-    executeAfter(state.main.syncAi.rewardsClaims, DateTime.now().plus({ seconds: 1 }))
-
-    return true
-  },
-  catchError(({ state }: Context, error) => {
-    toastErrorMessage(error?.message ?? 'Claim Mining Rewards has failed.')
-    state.wax.lastTransactionError = null
-    console.error(error)
-    return false
-  })
-)
-
-export const tryClaimLandownerAllowance = pipe(
-  async ({ state, effects }: Context) => {
-    await effects.wax.api.claimLandownerAllowance()
-
-    if (state.wax.lastTransactionError) {
-      toastErrorMessage(state.wax.lastTransactionError)
-      state.wax.lastTransactionError = null
-      return false
-    }
-    // TODO
-    // toastMessage(`Claimed ${state.wax.claimableLandownerAllowance} successfully.`)
-
-    executeAfter(state.main.syncAi.tlmBalance, DateTime.now().plus({ seconds: 2 }))
-    executeAfter(state.main.syncAi.rewardsClaims, DateTime.now().plus({ seconds: 1 }))
-
-    return true
-  },
-  catchError(({ state }: Context, error) => {
-    toastErrorMessage(error?.message ?? 'Claim Landowner Allowance has failed.')
-    state.wax.lastTransactionError = null
-    console.error(error)
-    return false
-  })
-)
-
-export const tryClaimLandownerCommissions = pipe(
-  async ({ state, effects }: Context) => {
-    await effects.wax.api.claimLandownerComissions()
-
-    if (state.wax.lastTransactionError) {
-      toastErrorMessage(state.wax.lastTransactionError)
-      state.wax.lastTransactionError = null
-      return false
-    }
-    // TODO: fix this
-    //toastMessage(`Claimed ${state.wax.claimableLandownerCommissions} successfully.`)
-
-    executeAfter(state.main.syncAi.tlmBalance, DateTime.now().plus({ seconds: 2 }))
-    executeAfter(state.main.syncAi.rewardsClaims, DateTime.now().plus({ seconds: 1 }))
-
-    return true
-  },
-  catchError(({ state }: Context, error) => {
-    toastErrorMessage(error?.message ?? 'Claim Landowner Commissions has failed.')
-    state.wax.lastTransactionError = null
-    console.error(error)
-    return false
-  })
-)
 
 /**
  * Loads the avatar image URL given a user walletId and

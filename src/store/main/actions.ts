@@ -921,19 +921,6 @@ export const showErrorPage = pipe(
   })
 )
 
-export const showProfileInfoPage = pipe(
-  async (_: Context) => {
-    useModalStore.getState().toggleMainDrawer(false)
-    collectEvent({
-      name: Constants.GA_PAGE_VISIT,
-      fields: { location: PagePath.ProfileInfo },
-    })
-  },
-  catchError((_: Context, error) => {
-    console.error(error)
-  })
-)
-
 export const showProfileBalancesPage = pipe(
   async (_: Context) => {
     useModalStore.getState().toggleMainDrawer(false)

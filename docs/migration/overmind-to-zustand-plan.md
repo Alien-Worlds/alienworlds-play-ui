@@ -150,6 +150,26 @@ logically isolated, or shared with another feature."
 - Tests mock `shared/util/analytics` instead of `useActions().wax.collectEvent`; the mining
   `mockStore` no longer defaults it.
 
+### profile — done (`feature/profile-store-zustand-migration`, release 5.3.7)
+- The four TLM claims (`wax.tryClaimMiningRewards`, `tryClaimLandownerCommissions`,
+  `tryClaimLandownerAllowance`, `tryClaimUnstake`) are plain functions in `shared/wax/claims.ts`
+  (`claimMiningRewards`, …, `claimUnstake(symbol)`), signed with `shared/wax/transact`. They're
+  shared because syndicates calls the same claims (`PlanetaryActions`, `SyndicatesSidebar`); those
+  call sites moved too. No store: callers already track their own "claiming" state
+  (`profileStore.claimingStates`, local `useState` in syndicates). Payloads are asserted
+  field-for-field in `shared/wax/claims.test.ts`.
+- `main.showProfileInfoPage` became `usePageVisit(PagePath.ProfileInfo)`.
+- Deleted from Overmind: the four `try*` actions, their `wax.api` effects
+  (`claimUnstake`, `claimMiningRewards`, `claimLandownerAllowance`, `claimLandownerComissions`) and
+  `main.showProfileInfoPage`.
+- Behaviour changes:
+  - Dropped `executeAfter(syncAi.tlmBalance | rewardsClaims | planets, …)` after the claims: no
+    loader checks those slots with `shouldExecute`, so they never triggered anything.
+  - With no wallet, a claim now resolves `false` without sending. Before, the effect returned
+    early and the action reported success.
+- Left on purpose: `PlanetaryTokens` still reads `wax.selectedDacId`. It's the syndicates planet
+  selection (~250 references across syndicates and `main`), so it moves with syndicates.
+
 ## Shared session & transactions
 
 Features are migrated one at a time; nothing requires moving all of `wax` at once. Two shared
@@ -175,16 +195,29 @@ away in the final phase below.
    inventory stores. (done)
 4. Mining transactions and mining `wax` state — onto `shared/wax/transact`, like lore. (done)
 5. Analytics: `wax.collectEvent` → `shared/util/analytics`, `wax.player` → `sessionStore`. (done)
-6. Small leftovers: leaderboard (`wax.api.getPlayer`, `atomic.api.getAssetById`,
-   `main.isCompactSidebar`), profile (claim transactions, `selectedDacId`, `showProfileInfoPage`),
-   outpost (`loadPremintOffersAction`, `resetLastTransactionError`, redeem effects).
-7. `missions` (own namespace), then `syndicates` (largest; add tests first, as for mining).
+6. Small leftovers, one branch each into `release/5.3.7`:
+   - profile: claim transactions, `showProfileInfoPage`. (done; `selectedDacId` moves with
+     syndicates)
+   - leaderboard: `wax.api.getPlayer`, `atomic.api.getAssetById`, and `main.isCompactSidebar`
+     into a shared UI store (also read by layouts, the sidebar and `shared/util/hooks`).
+   - outpost: `loadPremintOffersAction`, `resetLastTransactionError`, redeem effects.
+7. `missions` (own namespace), then `syndicates` (largest). Neither has tests yet; add
+   characterisation tests first, as for mining.
 8. **Final: session/auth** — once features no longer read session state from Overmind:
    - Move login / logout / `switchWallet` / session restore out of `main/actions.ts` into Zustand,
      writing `sessionStore` directly.
    - Point the wax API's `getCurrentSession` at `sessionStore`, or move the remaining transactions
      onto `shared/wax/transact`.
    - Delete `main.currentSession` and the Overmind → `sessionStore` mirroring.
+   - Move with it everything that runs on `main.updateWorld`, which the steps above don't cover:
+     - the mining loop (`main.mine`, `claimMine`, `mineDelay`, `miningGameState`, read by the
+       top bar's mining counter);
+     - the loaders (`atomic.initializeOrReloadAssets`, `…Bag`, `…MiningLand`, `…TagAndAvatar`,
+       `wax.initializeOrReloadResources`);
+     - the onboarding flow (`wax.onboarding`, `setOnboarding`, `executeOnboarding`; used by
+       inventory, missions and onboarding).
+   - Shared UI state still in `wax`: `selectedDrawerView`, `isSyndicatesSidebarOpen`, `resources`,
+     `setTag` / `isSettingTag`. Move each with its main consumer (syndicates sidebar, top bar).
 
 ## Branch naming
 

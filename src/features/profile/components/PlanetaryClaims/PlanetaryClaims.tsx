@@ -17,18 +17,15 @@ import { Colors } from 'shared/util/colors'
 import { convertPlanetIdToName, getMiningRewardsTimeInHours } from 'shared/util/helpers'
 import { PlanetIconRGB } from 'shared/util/icons'
 import { formatNumber } from 'shared/util/numbers'
-import { useActions } from 'store'
+import {
+  claimLandownerAllowance,
+  claimLandownerCommissions,
+  claimMiningRewards,
+  claimUnstake,
+} from 'shared/wax/claims'
 import { v4 } from 'uuid'
 
 export const PlanetaryClaims = () => {
-  const {
-    wax: {
-      tryClaimUnstake,
-      tryClaimMiningRewards,
-      tryClaimLandownerAllowance,
-      tryClaimLandownerCommissions,
-    },
-  } = useActions()
   const walletId = useSessionStore((state) => state.walletId)
   const client = useApolloClient()
   const [isClaimingTokens, setIsClaimingTokens] = useState(false)
@@ -191,7 +188,7 @@ export const PlanetaryClaims = () => {
               cursor={getButtonDisabled() ? 'not-allowed' : 'pointer'}
               onClick={async () => {
                 setIsClaimingMiningRewards(true)
-                await tryClaimMiningRewards()
+                await claimMiningRewards()
                 setTimeout(() => setIsClaimingMiningRewards(false), 3000)
               }}
               minWidth={currentButtonMinWidth}
@@ -249,7 +246,7 @@ export const PlanetaryClaims = () => {
               isLoading={isClaimingLandownerCommissions}
               onClick={async () => {
                 setIsClaimingLandownerCommissions(true)
-                await tryClaimLandownerCommissions()
+                await claimLandownerCommissions()
                 setTimeout(() => setIsClaimingLandownerCommissions(false), 3000)
               }}
               disabled={
@@ -304,7 +301,7 @@ export const PlanetaryClaims = () => {
               isLoading={isClaimingLandownerAllowance}
               onClick={async () => {
                 setIsClaimingLandownerAllowance(true)
-                await tryClaimLandownerAllowance()
+                await claimLandownerAllowance()
                 setTimeout(() => setIsClaimingLandownerAllowance(false), 3000)
               }}
               disabled={
@@ -420,7 +417,7 @@ export const PlanetaryClaims = () => {
                   loadingText="Claiming..."
                   onClick={async () => {
                     setIsClaimingTokens(true)
-                    await tryClaimUnstake('4,' + data.stake_details.dao_token_balance.split(' ')[1])
+                    await claimUnstake('4,' + data.stake_details.dao_token_balance.split(' ')[1])
                     await client.refetchQueries({
                       include: [DAO_WALLET_DETAILS_QUERY, USER_DAO_BALANCES],
                     })
