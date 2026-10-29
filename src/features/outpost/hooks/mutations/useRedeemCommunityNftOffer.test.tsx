@@ -10,11 +10,6 @@ jest.mock('features/outpost/utils/redeemOffers', () => ({
   redeemCommunityNftOffer: (offerId: number) => mockRedeemCommunityNftOffer(offerId),
 }))
 
-// useRedeemAWNftOffer (for the shared error messages) imports this; its real module imports Overmind.
-jest.mock('shared/hooks/queries/wax/useLoadAWNftOffers', () => ({
-  LOAD_AW_NFT_OFFERS_QUERY_KEY: 'aw-nft-offers',
-}))
-
 const mockToastMessage = jest.fn()
 const mockToastErrorMessage = jest.fn()
 jest.mock('shared/util/toast', () => ({

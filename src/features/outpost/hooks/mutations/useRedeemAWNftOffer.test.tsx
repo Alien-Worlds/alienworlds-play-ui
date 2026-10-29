@@ -10,11 +10,6 @@ jest.mock('features/outpost/utils/redeemOffers', () => ({
   redeemAWNftOffer: (offerId: number) => mockRedeemAWNftOffer(offerId),
 }))
 
-// The real module imports Overmind for its query; only the key is needed here.
-jest.mock('shared/hooks/queries/wax/useLoadAWNftOffers', () => ({
-  LOAD_AW_NFT_OFFERS_QUERY_KEY: 'aw-nft-offers',
-}))
-
 const mockToastMessage = jest.fn()
 const mockToastErrorMessage = jest.fn()
 jest.mock('shared/util/toast', () => ({

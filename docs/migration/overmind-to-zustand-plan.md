@@ -208,8 +208,28 @@ logically isolated, or shared with another feature."
     writes it.
   - Logged out, `loadPremintOffers` returns an empty last page; Overmind returned `null`, which
     crashed inside `useWaxPagination` and left the Community tab's spinner up.
-- Still Overmind, indirectly: outpost's AW offers, level offers and templates come through the
-  shared query hooks in `shared/hooks/queries` (see step 6b).
+- Its AW offers, level offers and templates come through the shared query hooks, moved in the
+  next step (6b), so outpost no longer reaches Overmind at all.
+
+### shared query hooks (6b) — done (`feature/shared-queries-zustand-migration`, release 5.3.8)
+- `shared/hooks/queries` no longer calls Overmind. Each hook keeps its query key and interval and
+  reads through a shared function instead of an effect:
+  - `wax/useLoadAWNftOffers` → `shared/wax/userPoints` `getPointsOffers` (all pages, via
+    `getTablePage`);
+  - `wax/useLoadLevelNftOffers` → `getLevelOffers`;
+  - `wax/useGetMemberTerms` (syndicates) → `shared/util/ipfs` `fetchIpfsText`;
+  - `atomic/useGetTemplatesByIds` → `shared/util/atomicassets` `getTemplatesByIds`.
+- The wax ones still return `null` without a wallet, as the effects did (read from
+  `sessionStore.walletId` when the query runs).
+- Deleted `wax/useLoadUserPoints`: it has no callers and never had any. Deleted from Overmind:
+  `wax.api.{getUserPoints, getLevelOffers, getPointsOffers, getPlanetMemberTermsText}` and
+  `atomic.api.getTemplatesByIds`.
+- Found while doing this, not changed (they predate the migration):
+  - Nothing ever loads the `user-points` query, so `collectEvent` always sends
+    `nftPoints: undefined`, and the outpost fuse hooks' `user-points` cache updates are no-ops.
+    Points shown in the UI come from GraphQL `walletDetails`.
+  - After a fuse, Outpost's shards balance (`walletDetails`, `cache-first`) isn't refetched, so
+    it only updates on reload.
 
 ## Shared session & transactions
 
@@ -242,10 +262,8 @@ away in the final phase below.
    - leaderboard: `wax.api.getPlayer`, `atomic.api.getAssetById`, `main.isCompactSidebar` →
      `useModalStore`. (5.3.7)
    - outpost: `loadPremintOffersAction`, `resetLastTransactionError`, redeem effects. (5.3.8)
-   - 6b. Shared read hooks in `shared/hooks/queries`, still on Overmind effects:
-     `wax.api.getPointsOffers` (AW offers), `getLevelOffers`, `getUserPoints`,
-     `getPlanetMemberTermsText` (syndicates) and `atomic.api.getTemplatesByIds`. Read-only, so
-     they move onto `shared/wax/tables` / `shared/util/atomicassets` like leaderboard's reads.
+   - 6b. Shared read hooks in `shared/hooks/queries` (AW offers, level offers, member terms,
+     templates; the unused user points hook deleted). (5.3.8)
 7. `missions` (own namespace), then `syndicates` (largest). Neither has tests yet; add
    characterisation tests first, as for mining.
 8. **Final: session/auth** — once features no longer read session state from Overmind:
@@ -275,7 +293,7 @@ now-merged `feature/<name>-testing-tailwind-store-refactor` branches from PR #67
 - `feature/inventory-store-zustand-migration`
 - `feature/analytics-zustand-migration`
 - `feature/profile-store-zustand-migration`, `feature/leaderboard-store-zustand-migration`,
-  `feature/outpost-store-zustand-migration`
+  `feature/outpost-store-zustand-migration`, `feature/shared-queries-zustand-migration`
 
 Release flow: cut `release/x.y.z` from `main` with a "Bump version" commit (`package.json` and
 the sidebar footer), open one PR per feature into it, then one `Release/x.y.z` PR into `main`.
