@@ -1,4 +1,4 @@
-import { getTableRows } from './tables'
+import { getTablePage, getTableRows } from './tables'
 
 const mockGetTableRowsRpc = jest.fn()
 jest.mock('eosjs', () => ({
@@ -23,5 +23,26 @@ describe('getTableRows', () => {
     mockGetTableRowsRpc.mockResolvedValue({})
 
     expect(await getTableRows(query)).toBeNull()
+  })
+})
+
+describe('getTablePage', () => {
+  const query = { code: 'uspts.worlds', scope: 'uspts.worlds', table: 'premintoffrs', limit: 2 }
+
+  it('returns the rows with more and next_key', async () => {
+    mockGetTableRowsRpc.mockResolvedValue({ rows: [{ offer_id: 1 }], more: true, next_key: '7' })
+
+    expect(await getTablePage(query)).toEqual({
+      rows: [{ offer_id: 1 }],
+      more: true,
+      next_key: '7',
+    })
+    expect(mockGetTableRowsRpc).toHaveBeenCalledWith(query)
+  })
+
+  it('returns an empty last page without a result', async () => {
+    mockGetTableRowsRpc.mockResolvedValue({})
+
+    expect(await getTablePage(query)).toEqual({ rows: [], more: false, next_key: '' })
   })
 })

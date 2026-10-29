@@ -170,6 +170,67 @@ logically isolated, or shared with another feature."
 - Left on purpose: `PlanetaryTokens` still reads `wax.selectedDacId`. It's the syndicates planet
   selection (~250 references across syndicates and `main`), so it moves with syndicates.
 
+### leaderboard + compact sidebar — done (`feature/leaderboard-store-zustand-migration`, release 5.3.7)
+- `Leaderboard.tsx` reads players through `shared/wax/players.ts` (`getPlayer`, on the shared
+  `getTableRows`) and avatars through `shared/util/atomicassets` `getAssetById`. Overmind's
+  `wax.api.getPlayer` / `atomic.api.getAssetById` effects stay: its own loaders still use them.
+- `main.isCompactSidebar` / `toggleCompactSidebar` moved to `useModalStore`, next to
+  `isMainDrawerOpen` / `toggleMainDrawer`, with every reader (sidebar, layouts, top bar,
+  `shared/util/hooks`).
+- Deleted `useLeaderboardData`, `useLeaderboardState` and `LeaderboardService`: unused since the
+  initial commit (the page has its own copy of that logic).
+- Leaderboard had no tests; `pages/Leaderboard.test.tsx` and `utils/leaderboardQueries.test.tsx`
+  now cover the list/search/paging flow and the API requests.
+- Behaviour changes:
+  - Logged-out and demo users now see avatars and tags: Overmind's `getPlayer` needed a wallet.
+  - Fixed (#110): one failed player/avatar lookup no longer leaves the table on "Loading...";
+    that row just has no tag/avatar. Lookups for results that changed meanwhile (paging again)
+    are dropped, so an earlier page can't replace the current one.
+
+### outpost — done (`feature/outpost-store-zustand-migration`, release 5.3.8)
+- The three redemptions are plain functions in `features/outpost/utils/redeemOffers.ts`
+  (`redeemAWNftOffer`, `redeemCommunityNftOffer`, `redeemLevelOffer`), signed with
+  `shared/wax/transact`, used as the `mutationFn` of the existing React Query hooks.
+- Community offers load through `features/outpost/utils/premintOffers.ts` (`loadPremintOffers`,
+  for `useWaxPagination`), on two new shared readers: `shared/wax/tables` `getTablePage` (keeps
+  `more` / `next_key`) and `shared/util/atomicassets` `getTemplatesByIds`.
+- Deleted from Overmind: `wax.loadPremintOffersAction`, `wax.resetLastTransactionError`, and the
+  `wax.api` effects `redeemAWNftOffer`, `redeemCommunityNftOffer`, `redeemLevelOffer`,
+  `getPremintOffers`.
+- Outpost had no tests; the redeem functions, premint loader, the three mutation hooks and
+  `CommunityNftOffers` are now covered.
+- Behaviour changes (bug fixes):
+  - Overmind's `executeTransactWharf` swallows transaction errors, so a failed or rejected fuse
+    resolved the mutation: it showed "Fuse success" and subtracted the shards. Now `onError` runs:
+    "Not enough shards" / "Fuse failed" (and the level-reward failure toast) actually show.
+  - The swallowed error also stayed in `wax.lastTransactionError`, so the next Overmind
+    transaction elsewhere (staking, voting…) reported it as its own failure. Outpost no longer
+    writes it.
+  - Logged out, `loadPremintOffers` returns an empty last page; Overmind returned `null`, which
+    crashed inside `useWaxPagination` and left the Community tab's spinner up.
+- Its AW offers, level offers and templates come through the shared query hooks, moved in the
+  next step (6b), so outpost no longer reaches Overmind at all.
+
+### shared query hooks (6b) — done (`feature/shared-queries-zustand-migration`, release 5.3.8)
+- `shared/hooks/queries` no longer calls Overmind. Each hook keeps its query key and interval and
+  reads through a shared function instead of an effect:
+  - `wax/useLoadAWNftOffers` → `shared/wax/userPoints` `getPointsOffers` (all pages, via
+    `getTablePage`);
+  - `wax/useLoadLevelNftOffers` → `getLevelOffers`;
+  - `wax/useGetMemberTerms` (syndicates) → `shared/util/ipfs` `fetchIpfsText`;
+  - `atomic/useGetTemplatesByIds` → `shared/util/atomicassets` `getTemplatesByIds`.
+- The wax ones still return `null` without a wallet, as the effects did (read from
+  `sessionStore.walletId` when the query runs).
+- Deleted `wax/useLoadUserPoints`: it has no callers and never had any. Deleted from Overmind:
+  `wax.api.{getUserPoints, getLevelOffers, getPointsOffers, getPlanetMemberTermsText}` and
+  `atomic.api.getTemplatesByIds`.
+- Found while doing this, not changed (they predate the migration):
+  - Nothing ever loads the `user-points` query, so `collectEvent` always sends
+    `nftPoints: undefined`, and the outpost fuse hooks' `user-points` cache updates are no-ops.
+    Points shown in the UI come from GraphQL `walletDetails`.
+  - After a fuse, Outpost's shards balance (`walletDetails`, `cache-first`) isn't refetched, so
+    it only updates on reload.
+
 ## Shared session & transactions
 
 Features are migrated one at a time; nothing requires moving all of `wax` at once. Two shared
@@ -195,12 +256,14 @@ away in the final phase below.
    inventory stores. (done)
 4. Mining transactions and mining `wax` state — onto `shared/wax/transact`, like lore. (done)
 5. Analytics: `wax.collectEvent` → `shared/util/analytics`, `wax.player` → `sessionStore`. (done)
-6. Small leftovers, one branch each into `release/5.3.7`:
-   - profile: claim transactions, `showProfileInfoPage`. (done; `selectedDacId` moves with
+6. Small leftovers, one branch each. (done)
+   - profile: claim transactions, `showProfileInfoPage`. (5.3.7; `selectedDacId` moves with
      syndicates)
-   - leaderboard: `wax.api.getPlayer`, `atomic.api.getAssetById`, and `main.isCompactSidebar`
-     into a shared UI store (also read by layouts, the sidebar and `shared/util/hooks`).
-   - outpost: `loadPremintOffersAction`, `resetLastTransactionError`, redeem effects.
+   - leaderboard: `wax.api.getPlayer`, `atomic.api.getAssetById`, `main.isCompactSidebar` →
+     `useModalStore`. (5.3.7)
+   - outpost: `loadPremintOffersAction`, `resetLastTransactionError`, redeem effects. (5.3.8)
+   - 6b. Shared read hooks in `shared/hooks/queries` (AW offers, level offers, member terms,
+     templates; the unused user points hook deleted). (5.3.8)
 7. `missions` (own namespace), then `syndicates` (largest). Neither has tests yet; add
    characterisation tests first, as for mining.
 8. **Final: session/auth** — once features no longer read session state from Overmind:
@@ -229,6 +292,15 @@ now-merged `feature/<name>-testing-tailwind-store-refactor` branches from PR #67
 - `feature/lore-store-zustand-migration`
 - `feature/inventory-store-zustand-migration`
 - `feature/analytics-zustand-migration`
+- `feature/profile-store-zustand-migration`, `feature/leaderboard-store-zustand-migration`,
+  `feature/outpost-store-zustand-migration`, `feature/shared-queries-zustand-migration`
+
+Release flow: cut `release/x.y.z` from `main` with a "Bump version" commit (`package.json` and
+the sidebar footer), open one PR per feature into it, then one `Release/x.y.z` PR into `main`.
+PRs are squash-merged and head branches aren't deleted on merge, so don't stack a PR on a
+feature branch: once the branch below merges, the stacked PR still targets it and its change
+never reaches the release (this happened with #109; #110 brought it in). Base follow-ups on the
+release branch instead.
 
 Note: `feature/arena-testing-tailwind-store-refactor` and `feature/profile-testing-tailwind-store-refactor`
 are stale — their content already merged into `main` via PR #67 (Release 5.2.7) under different

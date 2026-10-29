@@ -45,3 +45,9 @@ export const getTemplateById = async (id: string): Promise<ITemplate | null> => 
   if (!id) return null
   return (await getAtomicAssetsApi().getTemplate(Constants.CONTRACT_ALIEN_WORLDS, id)) ?? null
 }
+
+/** Templates by id, from any collection. */
+export const getTemplatesByIds = async (ids: string[]): Promise<ITemplate[]> => {
+  if (!ids.length) return []
+  return (await getAtomicAssetsApi().getTemplates({ ids: ids.join(',') })) ?? []
+}

@@ -19,6 +19,7 @@ import {
 } from 'features/outpost/components/NftOfferSupplyBadge/NftOfferSupplyBadge'
 import { NftZoomModal } from 'features/outpost/modals/NftZoomModal/NftZoomModal'
 import { ShowRedeemModal } from 'features/outpost/types/nftOutpostTypes'
+import { loadPremintOffers } from 'features/outpost/utils/premintOffers'
 import { LoadingSpinner } from 'features/syndicates/components/LoadingSpinner'
 import { motion } from 'framer-motion'
 import { map, toNumber } from 'lodash'
@@ -28,7 +29,6 @@ import { useModalStore } from 'shared/store/modalStore'
 import { useSessionStore } from 'shared/store/sessionStore'
 import { Colors } from 'shared/util/colors'
 import { formatUserPointsWithDecimal } from 'shared/util/helpers'
-import { useActions } from 'store'
 import { PremintOfferWithTemplate } from 'store/wax/types'
 import { v4 as uuidv4 } from 'uuid'
 
@@ -197,16 +197,12 @@ const CommunityNft: FC<CommunityNftProps> = ({ premintOffer, redeem }) => {
 }
 
 const CommunityNftOffers = ({ showRedeemModal }) => {
-  const {
-    wax: { loadPremintOffersAction },
-  } = useActions()
-
   const limit = 10
   const {
     items: communityNfts,
     fetchMore,
     isLastPage,
-  } = useWaxPagination<PremintOfferWithTemplate>(limit, loadPremintOffersAction)
+  } = useWaxPagination<PremintOfferWithTemplate>(limit, loadPremintOffers)
 
   useEffect(() => {
     fetchMore()
