@@ -33,8 +33,6 @@ import {
   WaxPlayer,
   WaxResult,
   ActionType,
-  WaxResponse,
-  PremintOffer,
   WaxResources,
   WaxUserPoints,
   WaxLevelOffer,
@@ -649,28 +647,6 @@ export const api = (() => {
 
       return allRows.length ? allRows : null
     },
-    async getPremintOffers(nextKey, limit = 20): Promise<WaxResponse<PremintOffer>> {
-      if (!options || !options?.getWalletId()) return null
-
-      const query: WaxQuery = {
-        table: Constants.CONTRACT_TABLE_PREMINTOFFERS,
-        scope: Constants.CONTRACT_USER_POINTS,
-        code: Constants.CONTRACT_USER_POINTS,
-        key_type: '',
-        limit,
-        reverse: true,
-        ...(nextKey != null && { upper_bound: String(nextKey) }),
-      }
-
-      let result: WaxResult
-
-      const rpc = new JsonRpc(config.WaxFetchApiUrl, { fetch })
-      if (rpc) result = await rpc.get_table_rows(query)
-      else if (waxClient?.api) result = await waxClient.api.rpc.get_table_rows(query)
-      else if (wharfClient) result = await wharfClient.v1.chain.get_table_rows(query)
-
-      return <WaxResponse<PremintOffer>>result ?? null
-    },
     async getDACs<T>(params) {
       const {
         codeContract,
@@ -1127,108 +1103,6 @@ export const api = (() => {
       ]
 
       await this.executeTransactFinal(request)
-    },
-    async redeemAWNftOffer(offerId: number) {
-      if (!options || !options?.getWalletId()) throw new Error('No wallet id')
-
-      const request: WaxRequest = [
-        {
-          account: Constants.CONTRACT_EOSIO,
-          name: Constants.CONTRACT_EOSIO_BUY_RAM_BYTES,
-          authorization: [
-            {
-              actor: options.getWalletId(),
-              permission: 'active',
-            },
-          ],
-          data: {
-            payer: options.getWalletId(),
-            receiver: 'mint.worlds',
-            bytes: 152,
-          },
-        },
-        {
-          account: Constants.CONTRACT_USER_POINTS,
-          name: Constants.CONTRACT_USER_POINTS_ACTION_REDEEMPNTNFT,
-          authorization: [
-            {
-              actor: options.getWalletId(),
-              permission: 'active',
-            },
-          ],
-          data: {
-            user: options.getWalletId(),
-            offer_id: offerId,
-          },
-        },
-      ]
-
-      const result = await this.executeTransactFinal(request)
-
-      return result as TransactResult
-    },
-    async redeemCommunityNftOffer(offerId: number) {
-      if (!options || !options?.getWalletId()) throw new Error('No wallet id')
-
-      const request: WaxRequest = [
-        {
-          account: Constants.CONTRACT_USER_POINTS,
-          name: Constants.CONTRACT_USER_POINTS_ACTION_REDEEMPRENFT,
-          authorization: [
-            {
-              actor: options.getWalletId(),
-              permission: 'active',
-            },
-          ],
-          data: {
-            user: options.getWalletId(),
-            offer_id: offerId,
-          },
-        },
-      ]
-
-      const result = await this.executeTransactFinal(request)
-
-      return result as TransactResult
-    },
-    async redeemLevelOffer(levelOfferId: number) {
-      if (!options || !options?.getWalletId()) throw new Error('No wallet id')
-
-      const request: WaxRequest = [
-        {
-          account: Constants.CONTRACT_EOSIO,
-          name: Constants.CONTRACT_EOSIO_BUY_RAM_BYTES,
-          authorization: [
-            {
-              actor: options.getWalletId(),
-              permission: 'active',
-            },
-          ],
-          data: {
-            payer: options.getWalletId(),
-            receiver: 'mint.worlds',
-            bytes: 152,
-          },
-        },
-        {
-          account: Constants.CONTRACT_USER_POINTS,
-          name: Constants.CONTRACT_USER_POINTS_ACTION_REDEEMLVLNFT,
-          authorization: [
-            {
-              actor: options.getWalletId(),
-              permission: 'active',
-            },
-          ],
-          data: {
-            user: options.getWalletId(),
-            id: levelOfferId,
-          },
-        },
-      ]
-
-      const result = await this.executeTransactFinal(request)
-
-      return result as TransactResult
     },
     async signPlanetMemberTerms({ dac_id }: Partial<MemberTermsSignRequest>) {
       if (!options || !options?.getWalletId()) return null
