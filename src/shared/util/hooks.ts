@@ -1,6 +1,6 @@
 import { useBreakpointValue } from '@chakra-ui/react'
 import { isChrome, isEdge, isFirefox, isOpera } from 'react-device-detect'
-import { useAppState } from 'store'
+import { useModalStore } from 'shared/store/modalStore'
 
 export const useScreenSize = () => {
   // >=1536px
@@ -30,9 +30,7 @@ export const useSupportedBrowser = () => {
  */
 export const useMainSidebar = () => {
   const { isMobile } = useScreenSize()
-  const {
-    main: { isCompactSidebar },
-  } = useAppState()
+  const isCompactSidebar = useModalStore((state) => state.isCompactSidebar)
 
   const isExpandedMobileSidebar = isMobile && !isCompactSidebar
 

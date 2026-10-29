@@ -6,15 +6,13 @@ import { useModalStore } from 'shared/store/modalStore'
 import { useSessionStore } from 'shared/store/sessionStore'
 import { Colors } from 'shared/util/colors'
 import { clearCookies } from 'shared/util/helpers'
-import { useAppState, useActions } from 'store'
+import { useActions } from 'store'
 
 const LogoutOrWallets = () => {
   const {
     main: { logout },
   } = useActions()
-  const {
-    main: { isCompactSidebar },
-  } = useAppState()
+  const isCompactSidebar = useModalStore((state) => state.isCompactSidebar)
   const isDemoUser = useSessionStore((state) => state.isDemoUser)
   const setPrimaryModalActive = useModalStore((state) => state.setPrimaryModalActive)
 

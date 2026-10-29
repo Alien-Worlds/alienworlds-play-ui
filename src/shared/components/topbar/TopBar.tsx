@@ -70,9 +70,9 @@ const MenuToggler = ({ controls, tabs }) => {
 
 const TopBar = () => {
   const {
-    main: { toggleCompactSidebar },
     wax: { setIsSyndicatesSidebarOpen, setSelectedDrawerView },
   } = useActions()
+  const toggleCompactSidebar = useModalStore((state) => state.toggleCompactSidebar)
   const {
     wax: { selectedDrawerView, isSyndicatesSidebarOpen },
   } = useAppState()

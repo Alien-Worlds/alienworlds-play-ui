@@ -921,19 +921,6 @@ export const showErrorPage = pipe(
   })
 )
 
-export const showProfileInfoPage = pipe(
-  async (_: Context) => {
-    useModalStore.getState().toggleMainDrawer(false)
-    collectEvent({
-      name: Constants.GA_PAGE_VISIT,
-      fields: { location: PagePath.ProfileInfo },
-    })
-  },
-  catchError((_: Context, error) => {
-    console.error(error)
-  })
-)
-
 export const showProfileBalancesPage = pipe(
   async (_: Context) => {
     useModalStore.getState().toggleMainDrawer(false)
@@ -1147,14 +1134,6 @@ export const claimMine = pipe(
 
     collectEvent({ name: Constants.GA_MINE_CLAIMED_ERROR })
   })
-)
-
-export const toggleCompactSidebar = pipe(
-  ({ state }: Context, forceState: boolean | null = null) => {
-    const newState = forceState !== null ? forceState : !state.main.isCompactSidebar
-
-    state.main.isCompactSidebar = newState
-  }
 )
 
 export const storeOnboardingNewsletterWasShown = pipe(

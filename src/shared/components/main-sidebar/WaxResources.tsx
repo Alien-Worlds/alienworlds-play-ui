@@ -57,9 +57,9 @@ const Battery: FC<PercentageBarProps> = ({ title, percentage, showPercentageLabe
 
 const WaxResources: FC = () => {
   const {
-    main: { isCompactSidebar },
     wax: { resources },
   } = useAppState()
+  const isCompactSidebar = useModalStore((state) => state.isCompactSidebar)
   const setSecondaryModalActive = useModalStore((state) => state.setSecondaryModalActive)
   const toggleMainDrawer = useModalStore((state) => state.toggleMainDrawer)
 

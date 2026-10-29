@@ -147,6 +147,38 @@ describe('useModalStore', () => {
     expect(result.current.isMainDrawerOpen).toBe(false)
   })
 
+  it('toggleCompactSidebar flips the sidebar when called with no argument', () => {
+    const { result } = renderHook(() => useModalStore())
+    expect(result.current.isCompactSidebar).toBe(false)
+
+    act(() => {
+      result.current.toggleCompactSidebar()
+    })
+    expect(result.current.isCompactSidebar).toBe(true)
+
+    act(() => {
+      result.current.toggleCompactSidebar()
+    })
+    expect(result.current.isCompactSidebar).toBe(false)
+  })
+
+  it('toggleCompactSidebar sets an explicit state when called with a boolean', () => {
+    const { result } = renderHook(() => useModalStore())
+
+    act(() => {
+      result.current.toggleCompactSidebar(true)
+    })
+    act(() => {
+      result.current.toggleCompactSidebar(true)
+    })
+    expect(result.current.isCompactSidebar).toBe(true)
+
+    act(() => {
+      result.current.toggleCompactSidebar(false)
+    })
+    expect(result.current.isCompactSidebar).toBe(false)
+  })
+
   it('toggleMainDrawer flips the current state when called with no argument', () => {
     const { result } = renderHook(() => useModalStore())
 

@@ -12,9 +12,9 @@ import { useActivePath } from 'shared/hooks/useRouter'
 import DrawersLayout from 'shared/layouts/DrawersLayout'
 import MainContainer from 'shared/layouts/MainContainer'
 import ModalLayout from 'shared/layouts/ModalLayout'
+import { useModalStore } from 'shared/store/modalStore'
 import { useSessionStore } from 'shared/store/sessionStore'
 import { useMainSidebar, useScreenSize } from 'shared/util/hooks'
-import { useAppState } from 'store'
 import { PagePath } from 'store/main/types'
 
 import { Constants } from '../util/constants'
@@ -29,9 +29,7 @@ export const MainSidebarWidth = {
  * Protected layout for authenticated users
  */
 const AdvancedLayout = () => {
-  const {
-    main: { isCompactSidebar },
-  } = useAppState()
+  const isCompactSidebar = useModalStore((state) => state.isCompactSidebar)
   const isLoggedIn = useSessionStore((state) => state.isLoggedIn)
   const glossaryDrawer = useGlossaryStore((state) => state.glossaryDrawer)
   const { isMobile, isNotDesktop } = useScreenSize()
