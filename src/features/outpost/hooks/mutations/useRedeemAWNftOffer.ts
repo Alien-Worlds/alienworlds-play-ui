@@ -1,9 +1,9 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { redeemAWNftOffer } from 'features/outpost/utils/redeemOffers'
 import { includes } from 'lodash'
 import { LOAD_USER_POINTS_QUERY_KEY } from 'shared/hooks/queries/wax/queryKeys'
 import { LOAD_AW_NFT_OFFERS_QUERY_KEY } from 'shared/hooks/queries/wax/useLoadAWNftOffers'
-import { useActions, useEffects } from 'store'
-import { toastErrorMessage, toastMessage } from 'store/main/actions'
+import { toastErrorMessage, toastMessage } from 'shared/util/toast'
 import { WaxUserPoints } from 'store/wax/types'
 
 export type RedeemNftOfferParams = {
@@ -22,13 +22,9 @@ export const REDEEM_AW_OFFER_FAILED_ERROR_UI = 'Fuse failed'
  */
 export const useRedeemAWNftOffer = () => {
   const queryClient = useQueryClient()
-  const effects = useEffects()
-  const {
-    wax: { resetLastTransactionError },
-  } = useActions()
 
   return useMutation({
-    mutationFn: ({ offerId }: RedeemNftOfferParams) => effects.wax.api.redeemAWNftOffer(offerId),
+    mutationFn: ({ offerId }: RedeemNftOfferParams) => redeemAWNftOffer(offerId),
     onMutate: async ({ pointsRequired }: RedeemNftOfferParams) => {
       await queryClient.cancelQueries({ queryKey: [LOAD_USER_POINTS_QUERY_KEY] })
       await queryClient.cancelQueries({ queryKey: [LOAD_AW_NFT_OFFERS_QUERY_KEY] })
@@ -58,8 +54,6 @@ export const useRedeemAWNftOffer = () => {
       }
 
       toastErrorMessage(errorMessage)
-
-      resetLastTransactionError()
     },
   })
 }
