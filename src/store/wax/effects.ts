@@ -33,12 +33,7 @@ import {
   WaxPlayer,
   WaxResult,
   ActionType,
-  WaxResponse,
-  PremintOffer,
   WaxResources,
-  WaxUserPoints,
-  WaxLevelOffer,
-  WaxPointsOffer,
   OnboardingData,
   PersistedWallet,
   WaxRefundInProgress,
@@ -577,100 +572,6 @@ export const api = (() => {
         return null
       }
     },
-    async getUserPoints() {
-      if (!options || !options?.getWalletId()) return null
-
-      const query: WaxQuery = {
-        table: Constants.CONTRACT_TABLE_USERPOINTS,
-        scope: Constants.CONTRACT_USER_POINTS,
-        code: Constants.CONTRACT_USER_POINTS,
-        upper_bound: options.getWalletId(),
-        lower_bound: options.getWalletId(),
-        limit: 10,
-      }
-
-      let result: WaxResult
-
-      const rpc = new JsonRpc(config.WaxFetchApiUrl, { fetch })
-      if (rpc) result = await rpc.get_table_rows(query)
-      else if (waxClient?.api) result = await waxClient.api.rpc.get_table_rows(query)
-      else if (wharfClient) result = await wharfClient.v1.chain.get_table_rows(query)
-
-      return <WaxUserPoints>result?.rows?.[0] ?? null
-    },
-    async getLevelOffers() {
-      if (!options || !options?.getWalletId()) return null
-
-      const query: WaxQuery = {
-        table: Constants.CONTRACT_TABLE_LEVELOFFERS,
-        scope: Constants.CONTRACT_USER_POINTS,
-        code: Constants.CONTRACT_USER_POINTS,
-        limit: 100,
-      }
-      let result: WaxResult
-
-      const rpc = new JsonRpc(config.WaxFetchApiUrl, { fetch })
-      if (rpc) result = await rpc.get_table_rows(query)
-      else if (waxClient?.api) result = await waxClient.api.rpc.get_table_rows(query)
-      else if (wharfClient) result = await wharfClient.v1.chain.get_table_rows(query)
-
-      return <WaxLevelOffer[]>result?.rows ?? null
-    },
-    async getPointsOffers() {
-      if (!options || !options?.getWalletId()) return null
-
-      const allRows: WaxPointsOffer[] = []
-      let upperBound: string | number = null
-      const limit = 500
-
-      const rpc = new JsonRpc(config.WaxFetchApiUrl, { fetch })
-
-      do {
-        const query: WaxQuery = {
-          table: Constants.CONTRACT_TABLE_POINTOFFERS,
-          scope: Constants.CONTRACT_USER_POINTS,
-          code: Constants.CONTRACT_USER_POINTS,
-          key_type: '',
-          limit,
-          reverse: true,
-          ...(upperBound != null && { upper_bound: String(upperBound) }),
-        }
-
-        let result: WaxResult
-        if (rpc) result = await rpc.get_table_rows(query)
-        else if (waxClient?.api) result = await waxClient.api.rpc.get_table_rows(query)
-        else if (wharfClient) result = await wharfClient.v1.chain.get_table_rows(query)
-        else break
-
-        if (result?.rows?.length) allRows.push(...result.rows)
-        if (!result?.more) break
-        upperBound = result.next_key
-      } while (true)
-
-      return allRows.length ? allRows : null
-    },
-    async getPremintOffers(nextKey, limit = 20): Promise<WaxResponse<PremintOffer>> {
-      if (!options || !options?.getWalletId()) return null
-
-      const query: WaxQuery = {
-        table: Constants.CONTRACT_TABLE_PREMINTOFFERS,
-        scope: Constants.CONTRACT_USER_POINTS,
-        code: Constants.CONTRACT_USER_POINTS,
-        key_type: '',
-        limit,
-        reverse: true,
-        ...(nextKey != null && { upper_bound: String(nextKey) }),
-      }
-
-      let result: WaxResult
-
-      const rpc = new JsonRpc(config.WaxFetchApiUrl, { fetch })
-      if (rpc) result = await rpc.get_table_rows(query)
-      else if (waxClient?.api) result = await waxClient.api.rpc.get_table_rows(query)
-      else if (wharfClient) result = await wharfClient.v1.chain.get_table_rows(query)
-
-      return <WaxResponse<PremintOffer>>result ?? null
-    },
     async getDACs<T>(params) {
       const {
         codeContract,
@@ -723,23 +624,6 @@ export const api = (() => {
         console.error(e)
       }
       return resultRows
-    },
-
-    async getPlanetMemberTermsText(ipfsId: string) {
-      if (!options || !options?.getWalletId()) return null
-
-      try {
-        const result = await fetch(`${config.IpfsApiUrl}/${ipfsId}`)
-
-        // @TODO consider using Axios to intercept the errors better
-        if (!result?.ok) {
-          throw new Error('Failed to load MemberTerms text')
-        } else {
-          return await result?.text()
-        }
-      } catch (e) {
-        throw new Error(e)
-      }
     },
 
     async getDAOInfo(dacId: string) {
@@ -1127,108 +1011,6 @@ export const api = (() => {
       ]
 
       await this.executeTransactFinal(request)
-    },
-    async redeemAWNftOffer(offerId: number) {
-      if (!options || !options?.getWalletId()) throw new Error('No wallet id')
-
-      const request: WaxRequest = [
-        {
-          account: Constants.CONTRACT_EOSIO,
-          name: Constants.CONTRACT_EOSIO_BUY_RAM_BYTES,
-          authorization: [
-            {
-              actor: options.getWalletId(),
-              permission: 'active',
-            },
-          ],
-          data: {
-            payer: options.getWalletId(),
-            receiver: 'mint.worlds',
-            bytes: 152,
-          },
-        },
-        {
-          account: Constants.CONTRACT_USER_POINTS,
-          name: Constants.CONTRACT_USER_POINTS_ACTION_REDEEMPNTNFT,
-          authorization: [
-            {
-              actor: options.getWalletId(),
-              permission: 'active',
-            },
-          ],
-          data: {
-            user: options.getWalletId(),
-            offer_id: offerId,
-          },
-        },
-      ]
-
-      const result = await this.executeTransactFinal(request)
-
-      return result as TransactResult
-    },
-    async redeemCommunityNftOffer(offerId: number) {
-      if (!options || !options?.getWalletId()) throw new Error('No wallet id')
-
-      const request: WaxRequest = [
-        {
-          account: Constants.CONTRACT_USER_POINTS,
-          name: Constants.CONTRACT_USER_POINTS_ACTION_REDEEMPRENFT,
-          authorization: [
-            {
-              actor: options.getWalletId(),
-              permission: 'active',
-            },
-          ],
-          data: {
-            user: options.getWalletId(),
-            offer_id: offerId,
-          },
-        },
-      ]
-
-      const result = await this.executeTransactFinal(request)
-
-      return result as TransactResult
-    },
-    async redeemLevelOffer(levelOfferId: number) {
-      if (!options || !options?.getWalletId()) throw new Error('No wallet id')
-
-      const request: WaxRequest = [
-        {
-          account: Constants.CONTRACT_EOSIO,
-          name: Constants.CONTRACT_EOSIO_BUY_RAM_BYTES,
-          authorization: [
-            {
-              actor: options.getWalletId(),
-              permission: 'active',
-            },
-          ],
-          data: {
-            payer: options.getWalletId(),
-            receiver: 'mint.worlds',
-            bytes: 152,
-          },
-        },
-        {
-          account: Constants.CONTRACT_USER_POINTS,
-          name: Constants.CONTRACT_USER_POINTS_ACTION_REDEEMLVLNFT,
-          authorization: [
-            {
-              actor: options.getWalletId(),
-              permission: 'active',
-            },
-          ],
-          data: {
-            user: options.getWalletId(),
-            id: levelOfferId,
-          },
-        },
-      ]
-
-      const result = await this.executeTransactFinal(request)
-
-      return result as TransactResult
     },
     async signPlanetMemberTerms({ dac_id }: Partial<MemberTermsSignRequest>) {
       if (!options || !options?.getWalletId()) return null

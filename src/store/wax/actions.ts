@@ -1,4 +1,4 @@
-import { IAsset, ITemplate } from 'atomicassets/build/API/Explorer/Objects'
+import { IAsset } from 'atomicassets/build/API/Explorer/Objects'
 import {
   CandidacyProposalType,
   ProposalExecutionPayload,
@@ -18,7 +18,7 @@ import {
   DaoGlobalsResponse,
   DaoWalletDetailsResponse,
 } from 'graphql/types'
-import { find, map, join, get, toLower } from 'lodash'
+import { find, map, get, toLower } from 'lodash'
 import { DateTime } from 'luxon'
 import { catchError, pipe, wait, waitUntil } from 'overmind'
 import { generatePath } from 'react-router'
@@ -51,8 +51,6 @@ import {
   PlanetCandidateType,
   PlanetCustodian,
   WaxPlayer,
-  PremintOfferWithTemplate,
-  WaxResponse,
   DacInfoResponse,
   WhitelistStatus,
 } from './types'
@@ -565,49 +563,6 @@ export const trySetInitialBag = pipe(
  * @see useLevelNftOffers
  * @see https://tanstack.com/query/v4/docs/react/guides/infinite-queries
  */
-export const loadPremintOffersAction = async (
-  { effects, state }: Context,
-  { lowerBound = null, fetchLimit = 20 }: { lowerBound: number | string; fetchLimit: number }
-): Promise<WaxResponse<PremintOfferWithTemplate>> => {
-  if (!state.wax.isLoggedIn) {
-    return null
-  }
-
-  const premintOffers = await effects.wax.api.getPremintOffers(lowerBound, fetchLimit)
-
-  let templatesFromWax: ITemplate[] = []
-  let premintOffersWithTemplates: Array<PremintOfferWithTemplate> = []
-
-  if (premintOffers?.rows.length) {
-    const preparedTemplateIds = join(map(premintOffers.rows, 'template_id'), ',')
-    templatesFromWax = await effects.atomic.api.getTemplatesByIds(preparedTemplateIds)
-
-    premintOffersWithTemplates = premintOffers.rows.reduce((acc, offerItem) => {
-      const matchedTemplate = find(templatesFromWax, (template) => {
-        return template.template_id === String(offerItem.template_id)
-      })
-
-      if (matchedTemplate) {
-        acc.push({
-          ...offerItem,
-          asset: { ...matchedTemplate, data: matchedTemplate.immutable_data },
-        })
-      } else {
-        console.error(
-          `Template ${offerItem.template_id} not found for points offer ${offerItem.offer_id}`
-        )
-      }
-      return acc
-    }, [])
-  }
-
-  return { ...premintOffers, rows: premintOffersWithTemplates }
-}
-
-export const resetLastTransactionError = ({ state }: Context) => {
-  state.wax.lastTransactionError = null
-}
-
 export const reloadSyncAiPlanetCandidatesAndCustodians = pipe(async ({ state }: Context) => {
   state.main.syncAi.selectedDacCandidatesCustodians.isInProgress = false
 })

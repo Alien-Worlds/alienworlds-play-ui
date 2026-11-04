@@ -76,10 +76,5 @@ export const api = (() => {
 
       return result ?? null
     },
-    async getTemplatesByIds(ids: string) {
-      if (!ids) return null
-      const result = await client.getTemplates({ ids })
-      return result ?? null
-    },
   }
 })()
