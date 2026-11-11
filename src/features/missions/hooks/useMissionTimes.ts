@@ -1,9 +1,9 @@
 import { useMemo } from 'react'
 
+import { Mission, MissionStatus } from 'features/missions/types/missionsTypes'
+import { getStatusAndTimes } from 'features/missions/utils/missionHelpers'
 import { humanizeMissionTime } from 'shared/util/duration-humanizer'
 import { useAppState } from 'store'
-import { getStatusAndTimes } from 'store/missions/helpers'
-import { Mission, MissionStatus } from 'store/missions/types'
 
 export type MissionTimes = {
   status: MissionStatus

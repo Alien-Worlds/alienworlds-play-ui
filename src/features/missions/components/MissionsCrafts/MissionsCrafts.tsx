@@ -2,15 +2,14 @@ import { useEffect, useState, VFC } from 'react'
 
 import { MissionCraftIcon } from '@alien-worlds/icons'
 import { Box, Flex, Text } from '@chakra-ui/react'
+import { useMissionsStore } from 'features/missions/store/missionsStore'
+import { MissionStatus } from 'features/missions/types/missionsTypes'
 import { filter } from 'lodash'
 import { Colors } from 'shared/util/colors'
-import { useAppState } from 'store'
-import { MissionStatus } from 'store/missions/types'
 
 export const MissionsCrafts: VFC = () => {
-  const {
-    missions: { explorer, availableMissions },
-  } = useAppState()
+  const explorer = useMissionsStore((state) => state.explorer)
+  const availableMissions = useMissionsStore((state) => state.availableMissions)
 
   const [totalCurrentMissions, setTotalCurrentMissions] = useState<number>(0)
 

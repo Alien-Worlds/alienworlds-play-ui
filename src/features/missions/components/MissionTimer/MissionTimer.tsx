@@ -1,6 +1,6 @@
 import { chakra, Text } from '@chakra-ui/react'
 import { useMissionTimes } from 'features/missions/hooks/useMissionTimes'
-import { Mission } from 'store/missions/types'
+import { Mission } from 'features/missions/types/missionsTypes'
 
 const MissionTimer = ({ mission }: { mission: Mission }) => {
   const missionTimes = useMissionTimes(mission)

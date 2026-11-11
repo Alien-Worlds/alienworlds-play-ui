@@ -1,16 +1,11 @@
 import { VFC } from 'react'
 
 import { Button, Center, Text, VStack } from '@chakra-ui/react'
-import { useActions, useAppState } from 'store'
+import { useOverlayMessagesStore } from 'shared/store/overlayMessagesStore'
 
 const ErrorOverlay: VFC = () => {
-  const {
-    missions: { errorMessage },
-  } = useAppState()
-
-  const {
-    missions: { clearErrorMessage },
-  } = useActions()
+  const errorMessage = useOverlayMessagesStore((state) => state.errorMessage)
+  const clearErrorMessage = useOverlayMessagesStore((state) => state.clearErrorMessage)
 
   return (
     <Center

@@ -17,26 +17,28 @@ import { GlossaryInfoIcon } from 'features/glossary/components/GlossaryInfoIcon/
 import { TooltipLocations } from 'features/glossary/utils/glossaryConst'
 import { MissionMainTimer } from 'features/missions/components/MissionMainTimer'
 import { NewsletterSubscribe } from 'features/missions/components/NewsletterSubscribe/NewsletterSubscribe'
+import { useBscWalletStore } from 'features/missions/store/bscWalletStore'
+import { useMissionsStore } from 'features/missions/store/missionsStore'
+import { MissionType } from 'features/missions/types/missionsTypes'
+import { getMaxShipsToLease } from 'features/missions/utils/missionHelpers'
 import { motion } from 'framer-motion'
 import { useNavigate, useParams } from 'react-router-dom'
+import { usePageVisit } from 'shared/hooks/usePageVisit'
 import { AppModal } from 'shared/layouts'
 import { useModalStore } from 'shared/store/modalStore'
 import { Colors } from 'shared/util/colors'
 import { formatNumber } from 'shared/util/numbers'
-import { useActions, useAppState } from 'store'
 import { PagePath } from 'store/main/types'
-import { getMaxShipsToLease } from 'store/missions/helpers'
-import { MissionType } from 'store/missions/types'
 
 const MissionJoin: VFC = () => {
-  const {
-    main: { showMissionJoinPage },
-    missions: { joinMission, storeNewsletterWasShown, setMissionShipsCount },
-  } = useActions()
-  const {
-    web3: { bscTlmBalance },
-    missions: { selectedMission, newsletterWasShown, subscribedEmail },
-  } = useAppState()
+  const selectMission = useMissionsStore((state) => state.selectMission)
+  const joinMission = useMissionsStore((state) => state.joinMission)
+  const storeNewsletterWasShown = useMissionsStore((state) => state.storeNewsletterWasShown)
+  const setMissionShipsCount = useMissionsStore((state) => state.setMissionShipsCount)
+  const bscTlmBalance = useBscWalletStore((state) => state.bscTlmBalance)
+  const selectedMission = useMissionsStore((state) => state.selectedMission)
+  const newsletterWasShown = useMissionsStore((state) => state.newsletterWasShown)
+  const subscribedEmail = useMissionsStore((state) => state.subscribedEmail)
   const setPrimaryModalActive = useModalStore((state) => state.setPrimaryModalActive)
 
   const { id } = useParams()
@@ -74,8 +76,10 @@ const MissionJoin: VFC = () => {
     }
   }
 
+  usePageVisit(PagePath.MissionJoin)
+
   useEffect(() => {
-    showMissionJoinPage(id)
+    selectMission(id)
   }, [id])
 
   useEffect(() => {

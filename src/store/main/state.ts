@@ -20,10 +20,6 @@ export type SyncAI = {
   resources: SyncInfo
   terms: SyncInfo
   refunds: SyncInfo
-  recentMissions: SyncInfo
-  explorer: SyncInfo
-  missionNfts: SyncInfo
-  bscBalance: SyncInfo
   selectedDacCandidatesCustodians: SyncInfo
   rewardsClaims: SyncInfo
   accountStatus: SyncInfo

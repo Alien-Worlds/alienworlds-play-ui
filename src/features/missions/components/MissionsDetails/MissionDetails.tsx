@@ -7,13 +7,15 @@ import { GlossaryInfoIcon } from 'features/glossary/components/GlossaryInfoIcon/
 import { TooltipLocations } from 'features/glossary/utils/glossaryConst'
 import { MissionMainTimer } from 'features/missions/components/MissionMainTimer/MissionMainTimer'
 import { DetailsOnHover } from 'features/missions/pages/MissionsInventory'
+import { useBscWalletStore } from 'features/missions/store/bscWalletStore'
+import { useMissionsStore } from 'features/missions/store/missionsStore'
+import { MissionStatus, MissionType } from 'features/missions/types/missionsTypes'
+import { getMissionRarityIcon, getMissionSpacecrafts } from 'features/missions/utils/missionHelpers'
 import { motion } from 'framer-motion'
 import { useNavigate, useParams } from 'react-router-dom'
+import { usePageVisit } from 'shared/hooks/usePageVisit'
 import { Colors } from 'shared/util/colors'
-import { useActions, useAppState } from 'store'
 import { PagePath } from 'store/main/types'
-import { getMissionRarityIcon, getMissionSpacecrafts } from 'store/missions/helpers'
-import { MissionStatus, MissionType } from 'store/missions/types'
 
 const MotionImage = motion(Image)
 const imageAnimation = {
@@ -28,19 +30,17 @@ const imageAnimation = {
 }
 
 const MissionDetails = () => {
-  const {
-    main: { showMissionDetailsPage },
-  } = useActions()
-  const {
-    web3: { userWallet },
-    missions: { selectedMission },
-  } = useAppState()
+  const selectMission = useMissionsStore((state) => state.selectMission)
+  const userWallet = useBscWalletStore((state) => state.userWallet)
+  const selectedMission = useMissionsStore((state) => state.selectedMission)
 
   const { id } = useParams()
   const navigate = useNavigate()
 
+  usePageVisit(PagePath.MissionDetails)
+
   useEffect(() => {
-    showMissionDetailsPage(id)
+    selectMission(id)
   }, [id])
 
   if (!selectedMission?.view) return <></>

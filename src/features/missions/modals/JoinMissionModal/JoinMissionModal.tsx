@@ -13,24 +13,22 @@ import {
   Spinner,
   Text,
 } from '@chakra-ui/react'
+import { useMissionsStore } from 'features/missions/store/missionsStore'
+import { MissionType } from 'features/missions/types/missionsTypes'
+import { MissionTypeIcon } from 'features/missions/utils/missionHelpers'
 import { motion } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
 import { useModalStore } from 'shared/store/modalStore'
 import { Colors } from 'shared/util/colors'
-import { useActions, useAppState } from 'store'
 import { PagePath } from 'store/main/types'
-import { MissionTypeIcon } from 'store/missions/helpers'
-import { MissionType } from 'store/missions/types'
 
 const AnimatedBox = motion(Box)
 
 export const JoinMissionModal = () => {
-  const {
-    missions: { setJoinMissionStep },
-  } = useActions()
-  const {
-    missions: { joinMissionStep, selectedMission, missionShipsCount },
-  } = useAppState()
+  const setJoinMissionStep = useMissionsStore((state) => state.setJoinMissionStep)
+  const joinMissionStep = useMissionsStore((state) => state.joinMissionStep)
+  const selectedMission = useMissionsStore((state) => state.selectedMission)
+  const missionShipsCount = useMissionsStore((state) => state.missionShipsCount)
   const setPrimaryModalActive = useModalStore((state) => state.setPrimaryModalActive)
   const primaryModals = useModalStore((state) => state.primaryModals)
 

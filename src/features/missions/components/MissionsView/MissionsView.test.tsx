@@ -2,7 +2,7 @@ import { fireEvent, screen } from '@testing-library/react'
 import { buildExplorer, buildMission } from 'features/missions/testUtils/fixtures'
 import { mockStore, renderMissions } from 'features/missions/testUtils/mockStore'
 import { mockOnboard, onboardWallet } from 'features/missions/testUtils/onboardMock'
-import { MissionStatus } from 'store/missions/types'
+import { MissionStatus } from 'features/missions/types/missionsTypes'
 
 import { MissionsView } from './MissionsView'
 

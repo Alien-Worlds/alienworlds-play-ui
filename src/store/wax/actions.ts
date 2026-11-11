@@ -25,6 +25,7 @@ import { generatePath } from 'react-router'
 import { matchPath } from 'react-router-dom'
 import { router } from 'routes'
 import { useAssetsStore } from 'shared/store/assetsStore'
+import { useOverlayMessagesStore } from 'shared/store/overlayMessagesStore'
 import { collectEvent } from 'shared/util/analytics'
 import { config } from 'shared/util/config'
 import {
@@ -421,7 +422,7 @@ export const executeOnboarding = pipe(
     ) {
       // Execute Onboarding for pre-validated accounts
       if (state.wax.isValidated) {
-        state.missions.loadingMessage = 'Onboarding in progress!'
+        useOverlayMessagesStore.getState().setLoadingMessage('Onboarding in progress!')
 
         await effects.wax.api.executeOnboarding(state.wax.onboarding)
 
@@ -436,8 +437,9 @@ export const executeOnboarding = pipe(
       } else {
         // Pause Onboarding for temporary (not validated) accounts
         state.wax.isOnboardingPending = true
-        state.missions.loadingMessage =
-          'Please validate your WAX account to complete the Onboarding process!'
+        useOverlayMessagesStore
+          .getState()
+          .setLoadingMessage('Please validate your WAX account to complete the Onboarding process!')
       }
     }
   },
@@ -446,7 +448,9 @@ export const executeOnboarding = pipe(
   async ({ state, effects, actions }: Context) => {
     // Restart Onboarding when account has been validated
     if (state.wax.isOnboardingPending) {
-      state.missions.loadingMessage = 'Account has been validated, please login to your account!'
+      useOverlayMessagesStore
+        .getState()
+        .setLoadingMessage('Account has been validated, please login to your account!')
 
       // timeout needed for the user to read the action to execute (login)
       await new Promise((resolve) => setTimeout(resolve, 10000))
@@ -463,7 +467,9 @@ export const executeOnboarding = pipe(
       // timeout needed for the new account information to be available on wax instance after activation
       await new Promise((resolve) => setTimeout(resolve, 10000))
 
-      state.missions.loadingMessage = 'Account validated, executing Onboarding...'
+      useOverlayMessagesStore
+        .getState()
+        .setLoadingMessage('Account validated, executing Onboarding...')
 
       // timeout needed for the user to read the action to execute (onboarding)
       await new Promise((resolve) => setTimeout(resolve, 10000))
@@ -487,8 +493,9 @@ export const executeOnboarding = pipe(
   },
   async ({ state, effects }: Context) => {
     if (state.wax.isOnboardingPending) {
-      state.missions.loadingMessage =
-        'Onboarding has failed, please validate your WAX account and try again!'
+      useOverlayMessagesStore
+        .getState()
+        .setLoadingMessage('Onboarding has failed, please validate your WAX account and try again!')
       await effects.wax.api.logout()
       return
     }
@@ -496,7 +503,7 @@ export const executeOnboarding = pipe(
     state.wax.showOnboardingRetry = false
 
     // Onboarding successful
-    state.missions.loadingMessage = 'Onboarding completed!'
+    useOverlayMessagesStore.getState().setLoadingMessage('Onboarding completed!')
 
     await new Promise((resolve) => setTimeout(resolve, 5000))
   },
@@ -507,7 +514,7 @@ export const executeOnboarding = pipe(
   async ({ state }: Context) => {
     // Navigate to Mining page if Onboarding was completed successfully
     state.wax.onboarding = null
-    state.missions.loadingMessage = null
+    useOverlayMessagesStore.getState().setLoadingMessage(null)
     state.wax.isOnboardingPending = false
     router.navigate(PagePath.Tools)
     useAssetsStore.getState().setTriggerFilterAndSortAssets(true)
@@ -516,7 +523,7 @@ export const executeOnboarding = pipe(
   catchError(({ state, effects }: Context, error) => {
     // Return to Home page if Onboarding failed for activated or temporary accounts
     state.wax.onboarding = null
-    state.missions.loadingMessage = null
+    useOverlayMessagesStore.getState().setLoadingMessage(null)
     state.wax.isOnboardingPending = false
     state.wax.showOnboardingRetry = false
     effects.wax.api.logout()

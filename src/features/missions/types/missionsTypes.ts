@@ -129,3 +129,14 @@ export enum SortBy {
   Time,
   Status,
 }
+
+export type MissionsFilter = {
+  sortBy: SortBy
+  reversed: boolean
+}
+
+/** What claiming a mission's rewards would pay out (from the missions contract). */
+export type MissionRewards = {
+  tlm: string
+  nft: string
+}

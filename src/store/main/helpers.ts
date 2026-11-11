@@ -171,22 +171,6 @@ export const getDefaultSyncAi = () =>
       isInProgress: false,
       executeAfter: DateTime.now(),
     },
-    recentMissions: {
-      isInProgress: false,
-      executeAfter: DateTime.now(),
-    },
-    explorer: {
-      isInProgress: false,
-      executeAfter: DateTime.now(),
-    },
-    missionNfts: {
-      isInProgress: false,
-      executeAfter: DateTime.now(),
-    },
-    bscBalance: {
-      isInProgress: false,
-      executeAfter: DateTime.now(),
-    },
     selectedDacCandidatesCustodians: {
       isInProgress: false,
       executeAfter: DateTime.now(),

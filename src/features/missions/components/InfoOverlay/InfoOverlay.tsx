@@ -2,16 +2,11 @@ import { VFC } from 'react'
 
 import { Button, Center, Text, VStack } from '@chakra-ui/react'
 import { css, Global } from '@emotion/react'
-import { useActions, useAppState } from 'store'
+import { useOverlayMessagesStore } from 'shared/store/overlayMessagesStore'
 
 const InfoOverlay: VFC = () => {
-  const {
-    missions: { infoMessage },
-  } = useAppState()
-
-  const {
-    missions: { clearInfoMessage },
-  } = useActions()
+  const infoMessage = useOverlayMessagesStore((state) => state.infoMessage)
+  const clearInfoMessage = useOverlayMessagesStore((state) => state.clearInfoMessage)
 
   return (
     <Center

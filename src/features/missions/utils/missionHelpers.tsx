@@ -14,11 +14,6 @@ import {
 import { Box } from '@chakra-ui/react'
 import { BigNumber } from 'ethers'
 import { commify, formatUnits } from 'ethers/lib/utils'
-import { find, isNil } from 'lodash'
-import { Colors } from 'shared/util/colors'
-import { humanizeMissionDuration } from 'shared/util/duration-humanizer'
-import { formatNumber } from 'shared/util/numbers'
-
 import {
   Mission,
   MissionAttributes,
@@ -28,7 +23,11 @@ import {
   MissionView,
   PinataNft,
   TraitType,
-} from './types'
+} from 'features/missions/types/missionsTypes'
+import { find, isNil } from 'lodash'
+import { Colors } from 'shared/util/colors'
+import { humanizeMissionDuration } from 'shared/util/duration-humanizer'
+import { formatNumber } from 'shared/util/numbers'
 
 const findNftTraitByType = (nft: PinataNft, type: TraitType) => {
   if (nft === null || nft === undefined) return null
@@ -227,13 +226,14 @@ export const getStatusAndTimes = (
   }
 }
 
-export const bindMissionView = (mission: Mission) => {
+/** The mission as shown right now: its status and time left, and its NFT's traits and colours. */
+export const getMissionView = (mission: Mission): MissionView => {
   const times = getStatusAndTimes(mission.attributes)
   const rarity = getRarity(mission.pinataNft)
   const progressInPercentage =
     times.status === MissionStatus.Departed ? getProgressInPercentage(mission) : null
 
-  const missionView: MissionView = {
+  return {
     rarity,
     status: times.status,
     progressInPercentage,
@@ -253,18 +253,14 @@ export const bindMissionView = (mission: Mission) => {
     stakedTlm: getStakedTlm(mission),
     stakedShips: getStakedShips(mission),
   }
-
-  mission.view = missionView
-
-  return mission
 }
 
-export const bindMissionViews = (missions: Mission[]) => {
-  if (!missions) return
-  missions.forEach((mission) => {
-    bindMissionView(mission)
-  })
-}
+/** A copy of the mission with its view up to date. Views depend on the time, so the missions
+ * store refreshes them every second on the missions pages. */
+export const withMissionView = (mission: Mission): Mission => ({
+  ...mission,
+  view: getMissionView(mission),
+})
 
 export const getMaxShipsToLease = (tlmBalance: BigNumber, mission: Mission) => {
   const maxShips = Number(tlmBalance.toNumber() / mission.attributes.spaceshipCost)

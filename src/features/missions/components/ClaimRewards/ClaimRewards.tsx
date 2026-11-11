@@ -2,19 +2,17 @@ import { useEffect, VFC } from 'react'
 
 import { BSCIcon } from '@alien-worlds/icons'
 import { Box, Button, Center, chakra, Flex, Image, Spinner, Text } from '@chakra-ui/react'
+import { useMissionsStore } from 'features/missions/store/missionsStore'
+import { Mission, MissionType } from 'features/missions/types/missionsTypes'
+import { getMissionRarityIcon, MissionTypeIcon } from 'features/missions/utils/missionHelpers'
 import { Colors } from 'shared/util/colors'
-import { useActions, useAppState } from 'store'
-import { getMissionRarityIcon, MissionTypeIcon } from 'store/missions/helpers'
-import { Mission, MissionType } from 'store/missions/types'
 
 const ClaimRewards: VFC<{ onClose: () => void; mission: Mission }> = ({ onClose, mission }) => {
-  const {
-    missions: { missionRewards, missionRewardsLoading },
-  } = useAppState()
+  const missionRewards = useMissionsStore((state) => state.missionRewards)
+  const missionRewardsLoading = useMissionsStore((state) => state.missionRewardsLoading)
 
-  const {
-    missions: { loadMissionRewards, claimMissionRewards },
-  } = useActions()
+  const loadMissionRewards = useMissionsStore((state) => state.loadMissionRewards)
+  const claimMissionRewards = useMissionsStore((state) => state.claimMissionRewards)
 
   const claimRewards = async () => {
     const isSuccess = await claimMissionRewards(mission.id)

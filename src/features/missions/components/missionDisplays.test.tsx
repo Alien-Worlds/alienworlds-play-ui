@@ -2,7 +2,7 @@ import { fireEvent, render, renderHook, screen } from '@testing-library/react'
 import { useMissionTimes } from 'features/missions/hooks/useMissionTimes'
 import { buildExplorer, buildMission } from 'features/missions/testUtils/fixtures'
 import { mockStore, renderMissions } from 'features/missions/testUtils/mockStore'
-import { MissionStatus } from 'store/missions/types'
+import { MissionStatus } from 'features/missions/types/missionsTypes'
 
 import { MissionInfo } from './MissionInfo'
 import { MissionMainTimer } from './MissionMainTimer/MissionMainTimer'
@@ -220,7 +220,7 @@ describe('MissionToClaimSound', () => {
   })
 
   it('stays quiet with nothing to claim, or off the missions pages', () => {
-    play(0)
+    play(0).unmount()
     play(2, '/mining')
 
     expect(mockPlay).not.toHaveBeenCalled()

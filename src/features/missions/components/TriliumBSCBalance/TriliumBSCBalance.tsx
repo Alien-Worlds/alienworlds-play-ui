@@ -2,13 +2,11 @@ import { VFC } from 'react'
 
 import { BSCIcon } from '@alien-worlds/icons'
 import { Box, Flex, VStack, Text } from '@chakra-ui/react'
+import { useBscWalletStore } from 'features/missions/store/bscWalletStore'
 import { Colors } from 'shared/util/colors'
-import { useAppState } from 'store'
 
 export const TriliumBSCBalance: VFC = () => {
-  const {
-    web3: { bscTlmBalanceFormatted },
-  } = useAppState()
+  const bscTlmBalanceFormatted = useBscWalletStore((state) => state.bscTlmBalanceFormatted)
 
   return (
     <Flex
