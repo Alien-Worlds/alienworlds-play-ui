@@ -2,10 +2,11 @@ import { FC, memo, useEffect } from 'react'
 
 import { Flex, Tabs, TabList, Tab, useBreakpointValue } from '@chakra-ui/react'
 import { useConnectWallet } from '@web3-onboard/react'
+import { useBscWalletStore } from 'features/missions/store/bscWalletStore'
+import { useMissionsStore } from 'features/missions/store/missionsStore'
 import { motion, useAnimation } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
 import { Colors } from 'shared/util/colors'
-import { useActions, useAppState } from 'store'
 import { PagePath } from 'store/main/types'
 
 const MotionFlex = motion(Flex)
@@ -55,14 +56,12 @@ const MISSION_TABS = [
 ]
 
 const MissionsTabs: FC = () => {
-  const {
-    missions: { reloadMissions },
-    missions: { setSelectedMissionsTab },
-  } = useActions()
-  const {
-    web3: { userWallet, isAutoConnect },
-    missions: { missionsToClaimCount, selectedMissionsTab },
-  } = useAppState()
+  const reloadMissions = useMissionsStore((state) => state.reloadMissions)
+  const setSelectedMissionsTab = useMissionsStore((state) => state.setSelectedMissionsTab)
+  const userWallet = useBscWalletStore((state) => state.userWallet)
+  const isAutoConnect = useBscWalletStore((state) => state.isAutoConnect)
+  const missionsToClaimCount = useMissionsStore((state) => state.missionsToClaimCount)
+  const selectedMissionsTab = useMissionsStore((state) => state.selectedMissionsTab)
 
   const navigate = useNavigate()
   const headerControls = useAnimation()

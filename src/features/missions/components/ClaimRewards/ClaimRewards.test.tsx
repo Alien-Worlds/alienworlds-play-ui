@@ -1,7 +1,7 @@
 import { fireEvent, screen, waitFor } from '@testing-library/react'
 import { buildMission, buildPinata } from 'features/missions/testUtils/fixtures'
 import { mockStore, renderMissions } from 'features/missions/testUtils/mockStore'
-import { MissionRarity, MissionStatus, MissionType } from 'store/missions/types'
+import { MissionRarity, MissionStatus, MissionType } from 'features/missions/types/missionsTypes'
 
 import { ClaimRewards } from './ClaimRewards'
 

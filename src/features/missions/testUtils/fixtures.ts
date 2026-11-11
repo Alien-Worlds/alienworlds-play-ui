@@ -1,4 +1,3 @@
-import { bindMissionView } from 'store/missions/helpers'
 import {
   Explorer,
   InvestInfo,
@@ -9,7 +8,8 @@ import {
   MissionType,
   PinataNft,
   TraitType,
-} from 'store/missions/types'
+} from 'features/missions/types/missionsTypes'
+import { withMissionView } from 'features/missions/utils/missionHelpers'
 
 // Mission fixtures for the missions tests. Times are relative to now, so a mission built with a
 // status keeps it for the length of a test (each window is at least an hour).
@@ -105,7 +105,7 @@ export const buildMission = ({
     },
     ...(pinataNft ? { pinataNft } : {}),
   }
-  return raw ? mission : bindMissionView(mission)
+  return raw ? mission : withMissionView(mission)
 }
 
 export const buildExplorer = (missions: Mission[], id = 'explorer-1'): Explorer => ({

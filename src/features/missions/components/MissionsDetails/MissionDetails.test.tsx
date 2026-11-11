@@ -1,8 +1,9 @@
 import { fireEvent, screen } from '@testing-library/react'
 import { buildInvestInfo, buildMission, buildPinata } from 'features/missions/testUtils/fixtures'
 import { mockStore, renderMissions } from 'features/missions/testUtils/mockStore'
+import { MissionRarity, MissionStatus, MissionType } from 'features/missions/types/missionsTypes'
+import { useModalStore } from 'shared/store/modalStore'
 import { PagePath } from 'store/main/types'
-import { MissionRarity, MissionStatus, MissionType } from 'store/missions/types'
 
 import { MissionDetails } from './MissionDetails'
 
@@ -22,7 +23,7 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockNavigate,
 }))
 
-const showMissionDetailsPage = jest.fn()
+const selectMission = jest.fn()
 
 const setup = ({
   status = MissionStatus.Boarding,
@@ -44,7 +45,7 @@ const setup = ({
 }: Record<string, any> = {}) => {
   mockStore({
     state: { web3: { userWallet }, missions: { selectedMission }, main: { runtimeInSeconds: 0 } },
-    actions: { main: { showMissionDetailsPage } },
+    actions: { missions: { selectMission } },
   })
   window.scrollTo = jest.fn()
   return renderMissions(<MissionDetails />, { at: '/missions/7', path: PagePath.MissionDetails })
@@ -57,10 +58,12 @@ beforeEach(() => {
 })
 
 describe('MissionDetails', () => {
-  it('selects the mission from the route', () => {
+  it('selects the mission from the route and closes the main drawer', () => {
+    useModalStore.setState({ isMainDrawerOpen: true })
     setup()
 
-    expect(showMissionDetailsPage).toHaveBeenCalledWith('7')
+    expect(selectMission).toHaveBeenCalledWith('7')
+    expect(useModalStore.getState().isMainDrawerOpen).toBe(false)
   })
 
   it('renders nothing until the mission is selected', () => {

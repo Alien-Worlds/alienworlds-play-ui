@@ -1,12 +1,12 @@
 import { screen } from '@testing-library/react'
+import { useMissionsStore } from 'features/missions/store/missionsStore'
 import { buildPinata, buildUserWallet } from 'features/missions/testUtils/fixtures'
 import { mockStore, renderMissions } from 'features/missions/testUtils/mockStore'
+import { useModalStore } from 'shared/store/modalStore'
 
 import { MissionsInventory } from './MissionsInventory'
 
 jest.mock('store', () => jest.requireActual('features/missions/testUtils/mockStore').storeMock)
-
-const showMissionsInventoryPage = jest.fn()
 
 const setup = ({ userWallet = null, nfts = null, templatePinatas = null } = {}) => {
   mockStore({
@@ -19,7 +19,6 @@ const setup = ({ userWallet = null, nfts = null, templatePinatas = null } = {}) 
       },
       missions: { nfts, templatePinatas },
     },
-    actions: { main: { showMissionsInventoryPage } },
   })
   return renderMissions(<MissionsInventory />, { at: '/missions/inventory' })
 }
@@ -29,10 +28,12 @@ beforeEach(() => {
 })
 
 describe('MissionsInventory', () => {
-  it('opens the inventory page', () => {
+  it('opens the inventory on its tab, closing the drawer', () => {
+    useModalStore.setState({ isMainDrawerOpen: true })
     setup()
 
-    expect(showMissionsInventoryPage).toHaveBeenCalled()
+    expect(useMissionsStore.getState().selectedMissionsTab).toBe(2)
+    expect(useModalStore.getState().isMainDrawerOpen).toBe(false)
   })
 
   it("groups the wallet's mission NFTs by name", () => {

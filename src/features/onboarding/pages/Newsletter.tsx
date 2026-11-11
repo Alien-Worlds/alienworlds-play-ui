@@ -1,19 +1,18 @@
 import { VFC, useEffect } from 'react'
 
 import { Flex, Image } from '@chakra-ui/react'
+import { useMissionsStore } from 'features/missions/store/missionsStore'
 import { OnboardingNewsletterSubscription } from 'features/onboarding/components/OnboardingNewsletterSubscription'
 import { useNavigate } from 'react-router-dom'
 import { Colors } from 'shared/util/colors'
-import { useActions, useAppState } from 'store'
+import { useActions } from 'store'
 import { PagePath } from 'store/main/types'
 
 const Newsletter: VFC = () => {
   const {
     main: { showOnboardingPage, storeOnboardingNewsletterWasShown },
   } = useActions()
-  const {
-    missions: { newsletterWasShown },
-  } = useAppState()
+  const newsletterWasShown = useMissionsStore((state) => state.newsletterWasShown)
 
   const navigate = useNavigate()
 

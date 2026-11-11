@@ -4,16 +4,12 @@ import { createActionsHook, createEffectsHook, createStateHook } from 'overmind-
 
 import * as atomic from './atomic'
 import * as main from './main'
-import * as missions from './missions'
 import * as wax from './wax'
-import * as web3 from './web3'
 
 export const config = namespaced({
   main,
   atomic,
-  missions,
   wax,
-  web3,
 })
 
 export type Context = IContext<typeof config>

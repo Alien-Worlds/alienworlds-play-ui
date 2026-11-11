@@ -13,19 +13,17 @@ import { MissionsCrafts } from 'features/missions/components/MissionsCrafts'
 import { StakedTriliumBalance } from 'features/missions/components/StakedTriliumBalance/StakedTriliumBalance'
 import { TriliumBSCBalance } from 'features/missions/components/TriliumBSCBalance/TriliumBSCBalance'
 import { WrongChain } from 'features/missions/components/WrongChain/WrongChain'
+import { useMissionsStore } from 'features/missions/store/missionsStore'
 import { useSessionStore } from 'shared/store/sessionStore'
 import { Colors } from 'shared/util/colors'
 import { config } from 'shared/util/config'
 import { useScreenSize } from 'shared/util/hooks'
-import { useAppState } from 'store'
 
 export const MissionsView: VFC = () => {
   const wallet = useWalletConnect()
   const { isMediumScreen, isNotDesktop } = useScreenSize()
   const isDemoUser = useSessionStore((state) => state.isDemoUser)
-  const {
-    missions: { currentMissions },
-  } = useAppState()
+  const currentMissions = useMissionsStore((state) => state.currentMissions)
 
   const ActionButtons = (): JSX.Element => {
     return (

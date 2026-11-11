@@ -1,9 +1,9 @@
 import { Box, Button, Text } from '@chakra-ui/react'
 import { useMissionTimes } from 'features/missions/hooks/useMissionTimes'
+import { Mission, MissionStatus } from 'features/missions/types/missionsTypes'
 import { motion } from 'framer-motion'
 import { useMatch } from 'react-router-dom'
 import { PagePath } from 'store/main/types'
-import { Mission, MissionStatus } from 'store/missions/types'
 
 const MotionButton = motion(Button)
 

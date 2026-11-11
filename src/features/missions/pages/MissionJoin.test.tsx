@@ -2,9 +2,9 @@ import { fireEvent, screen } from '@testing-library/react'
 import { BigNumber } from 'ethers'
 import { buildInvestInfo, buildMission } from 'features/missions/testUtils/fixtures'
 import { mockStore, renderMissions } from 'features/missions/testUtils/mockStore'
+import { MissionType } from 'features/missions/types/missionsTypes'
 import { useModalStore } from 'shared/store/modalStore'
 import { PagePath } from 'store/main/types'
-import { MissionType } from 'store/missions/types'
 
 import { MissionJoin } from './MissionJoin'
 
@@ -30,7 +30,7 @@ jest.mock('react-router-dom', () => ({
 
 const initialModals = useModalStore.getState().primaryModals
 
-const showMissionJoinPage = jest.fn()
+const selectMission = jest.fn()
 const joinMission = jest.fn(async () => true)
 const storeNewsletterWasShown = jest.fn()
 const setMissionShipsCount = jest.fn()
@@ -59,8 +59,7 @@ const setup = ({
       missions: { selectedMission, newsletterWasShown, subscribedEmail },
     },
     actions: {
-      main: { showMissionJoinPage },
-      missions: { joinMission, storeNewsletterWasShown, setMissionShipsCount },
+      missions: { selectMission, joinMission, storeNewsletterWasShown, setMissionShipsCount },
     },
   })
   return renderMissions(<MissionJoin />, { at: '/missions/7/join', path: PagePath.MissionJoin })
@@ -78,10 +77,12 @@ beforeEach(() => {
 })
 
 describe('MissionJoin', () => {
-  it('selects the mission from the route', () => {
+  it('selects the mission from the route and closes the main drawer', () => {
+    useModalStore.setState({ isMainDrawerOpen: true })
     setup()
 
-    expect(showMissionJoinPage).toHaveBeenCalledWith('7')
+    expect(selectMission).toHaveBeenCalledWith('7')
+    expect(useModalStore.getState().isMainDrawerOpen).toBe(false)
   })
 
   it('renders nothing until the mission is selected', () => {

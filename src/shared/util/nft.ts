@@ -2,8 +2,8 @@ import mappingImages from 'assets/data/cardImgMappings.json'
 import mappingPortraits from 'assets/data/cardPortraitImgMappings.json'
 import templateMappings from 'assets/data/templateImageMappings.json'
 import { IAsset } from 'atomicassets/build/API/Explorer/Objects'
+import { PinataNft } from 'features/missions/types/missionsTypes'
 import { find } from 'lodash'
-import { PinataNft } from 'store/missions/types'
 
 import { config } from './config'
 

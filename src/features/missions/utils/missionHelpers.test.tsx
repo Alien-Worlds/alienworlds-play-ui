@@ -6,17 +6,16 @@ import {
   buildPinata,
   epochNow,
 } from 'features/missions/testUtils/fixtures'
+import { MissionRarity, MissionStatus, MissionType } from 'features/missions/types/missionsTypes'
 import {
-  bindMissionView,
-  bindMissionViews,
   getMaxShipsToLease,
   getMissionReward,
   getMissionSpacecrafts,
   getStatusAndTimes,
   isEmpty,
   MissionTypeIcon,
-} from 'store/missions/helpers'
-import { MissionRarity, MissionStatus, MissionType } from 'store/missions/types'
+  withMissionView,
+} from 'features/missions/utils/missionHelpers'
 
 describe('getStatusAndTimes', () => {
   const now = epochNow()
@@ -82,7 +81,7 @@ describe('getMissionReward and getMissionSpacecrafts', () => {
   })
 })
 
-describe('bindMissionView', () => {
+describe('withMissionView', () => {
   it('builds the view from the attributes and the mission NFT', () => {
     const mission = buildMission({
       raw: true,
@@ -91,7 +90,7 @@ describe('bindMissionView', () => {
       pinataNft: buildPinata({ rarity: MissionRarity.Epic, series: 2, cardNumber: 5 }),
     })
 
-    const { view } = bindMissionView(mission)
+    const { view } = withMissionView(mission)
 
     expect(view).toMatchObject({
       status: MissionStatus.Boarding,
@@ -150,11 +149,14 @@ describe('bindMissionView', () => {
     )
   })
 
-  it('binds every mission in a list, and ignores a missing list', () => {
-    const missions = [buildMission({ raw: true, id: '1' }), buildMission({ raw: true, id: '2' })]
-    bindMissionViews(missions)
-    expect(missions.every((m) => m.view?.status === MissionStatus.Boarding)).toBe(true)
-    expect(() => bindMissionViews(null)).not.toThrow()
+  it('returns a copy, leaving the mission as it was', () => {
+    const mission = buildMission({ raw: true, id: '1' })
+
+    const bound = withMissionView(mission)
+
+    expect(bound).not.toBe(mission)
+    expect(bound.attributes).toBe(mission.attributes)
+    expect(mission.view).toBeUndefined()
   })
 })
 

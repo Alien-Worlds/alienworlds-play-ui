@@ -1,8 +1,9 @@
-import { fireEvent, screen, within } from '@testing-library/react'
+import { act, fireEvent, screen, within } from '@testing-library/react'
+import { useMissionsStore } from 'features/missions/store/missionsStore'
 import { buildInvestInfo, buildMission } from 'features/missions/testUtils/fixtures'
 import { mockStore, renderMissions } from 'features/missions/testUtils/mockStore'
-import { mockOnboard, onboardWallet } from 'features/missions/testUtils/onboardMock'
-import { MissionStatus, SortBy } from 'store/missions/types'
+import { mockOnboard } from 'features/missions/testUtils/onboardMock'
+import { MissionStatus, SortBy } from 'features/missions/types/missionsTypes'
 
 import { MissionsTable } from './MissionsTable'
 
@@ -25,13 +26,13 @@ jest.mock('react-router-dom', () => ({
 const setMissionsFilter = jest.fn()
 const loadMissionRewards = jest.fn()
 const claimMissionRewards = jest.fn()
-const defaultFilter = { account: null, sortBy: SortBy.Id, reversed: true }
+const defaultFilter = { sortBy: SortBy.Id, reversed: true }
 
 const setup = (missions: any[], missionsFilter = defaultFilter, at = '/missions') => {
   mockStore({
     state: {
       missions: {
-        filterredAndSortedMissions: missions,
+        filteredAndSortedMissions: missions,
         missionsFilter,
         missionRewards: null,
         missionRewardsLoading: false,
@@ -44,9 +45,11 @@ const setup = (missions: any[], missionsFilter = defaultFilter, at = '/missions'
 
 const rows = () => screen.getAllByRole('row').slice(1)
 
+const manyMissions = () => Array.from({ length: 45 }, (_, i) => buildMission({ id: `${i + 1}` }))
+
 beforeEach(() => {
   jest.clearAllMocks()
-  mockOnboard({ wallet: onboardWallet('0xsorter') })
+  mockOnboard()
 })
 
 describe('MissionsTable', () => {
@@ -102,8 +105,34 @@ describe('MissionsTable', () => {
     expect(within(row).getByText('Completed')).toBeInTheDocument()
   })
 
-  it('shows the first 30 missions', () => {
-    setup(Array.from({ length: 45 }, (_, i) => buildMission({ id: `${i + 1}` })))
+  it('shows the first 30 missions, and the rest on scrolling', () => {
+    setup(manyMissions())
+
+    expect(rows()).toHaveLength(30)
+
+    fireEvent.scroll(window)
+    expect(rows()).toHaveLength(45)
+  })
+
+  // The store refreshes the missions' views every second, giving a new list each time.
+  it('keeps the missions shown when their timers refresh', () => {
+    setup(manyMissions())
+    fireEvent.scroll(window)
+
+    act(() => {
+      useMissionsStore.setState({ filteredAndSortedMissions: manyMissions() })
+    })
+
+    expect(rows()).toHaveLength(45)
+  })
+
+  it('goes back to the first 30 for a different list', () => {
+    setup(manyMissions())
+    fireEvent.scroll(window)
+
+    act(() => {
+      useMissionsStore.setState({ filteredAndSortedMissions: manyMissions().reverse() })
+    })
 
     expect(rows()).toHaveLength(30)
   })
@@ -113,11 +142,7 @@ describe('MissionsTable', () => {
 
     fireEvent.click(screen.getByRole('columnheader', { name: 'Id' }))
 
-    expect(setMissionsFilter).toHaveBeenCalledWith({
-      sortBy: SortBy.Id,
-      reversed: false,
-      account: '0xsorter',
-    })
+    expect(setMissionsFilter).toHaveBeenCalledWith({ sortBy: SortBy.Id, reversed: false })
   })
 
   it('sorts by another column, keeping the order', () => {
@@ -125,11 +150,7 @@ describe('MissionsTable', () => {
 
     fireEvent.click(screen.getByRole('columnheader', { name: 'Rewards' }))
 
-    expect(setMissionsFilter).toHaveBeenCalledWith({
-      sortBy: SortBy.Rewards,
-      reversed: true,
-      account: '0xsorter',
-    })
+    expect(setMissionsFilter).toHaveBeenCalledWith({ sortBy: SortBy.Rewards, reversed: true })
   })
 
   it('opens the mission when a row is clicked', () => {

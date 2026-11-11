@@ -1,8 +1,8 @@
 import { act, fireEvent, screen } from '@testing-library/react'
 import { buildMission } from 'features/missions/testUtils/fixtures'
 import { mockStore, renderMissions } from 'features/missions/testUtils/mockStore'
+import { MissionType } from 'features/missions/types/missionsTypes'
 import { useModalStore } from 'shared/store/modalStore'
-import { MissionType } from 'store/missions/types'
 
 import { JoinMissionModal } from './JoinMissionModal'
 

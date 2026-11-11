@@ -2,14 +2,13 @@ import { BSCIcon, BSCLockIcon } from '@alien-worlds/icons'
 import { Flex, Text, Box, VStack } from '@chakra-ui/react'
 import { GlossaryInfoIcon } from 'features/glossary/components/GlossaryInfoIcon/GlossaryInfoIcon'
 import { TooltipLocations } from 'features/glossary/utils/glossaryConst'
+import { useBscWalletStore } from 'features/missions/store/bscWalletStore'
+import { useMissionsStore } from 'features/missions/store/missionsStore'
 import { Colors } from 'shared/util/colors'
 import { formatNumber } from 'shared/util/numbers'
-import { useAppState } from 'store'
 
 export const AvailableTriliumBalance = () => {
-  const {
-    web3: { bscTlmBalanceFormatted },
-  } = useAppState()
+  const bscTlmBalanceFormatted = useBscWalletStore((state) => state.bscTlmBalanceFormatted)
 
   return (
     <Flex align="center" color={Colors.DI_SERRIA} fill={Colors.DI_SERRIA} fontSize="md" gap={2}>
@@ -25,9 +24,9 @@ export const AvailableTriliumBalance = () => {
 }
 
 export const StakedTriliumBalance = () => {
-  const {
-    web3: { bscStakedTlmBalanceFormatted },
-  } = useAppState()
+  const bscStakedTlmBalanceFormatted = useBscWalletStore(
+    (state) => state.bscStakedTlmBalanceFormatted
+  )
 
   return (
     <Flex
@@ -65,9 +64,7 @@ export const StakedTriliumBalance = () => {
 }
 
 export const MissionRewardsBalance = () => {
-  const {
-    missions: { totalMissionsRewards },
-  } = useAppState()
+  const totalMissionsRewards = useMissionsStore((state) => state.totalMissionsRewards)
 
   return (
     <Flex

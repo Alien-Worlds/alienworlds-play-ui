@@ -4,6 +4,8 @@ import { BlockNativeIcon } from '@alien-worlds/icons'
 import { Button } from '@alien-worlds/uikit'
 import { Box, Text } from '@chakra-ui/react'
 import { useConnectWallet, useSetChain, useWallets } from '@web3-onboard/react'
+import { useBscWalletStore } from 'features/missions/store/bscWalletStore'
+import { useMissionsStore } from 'features/missions/store/missionsStore'
 import { useNavigate } from 'react-router-dom'
 import { useModalStore } from 'shared/store/modalStore'
 import { useSessionStore } from 'shared/store/sessionStore'
@@ -11,16 +13,13 @@ import { collectEvent } from 'shared/util/analytics'
 import { Colors } from 'shared/util/colors'
 import { config } from 'shared/util/config'
 import { useScreenSize } from 'shared/util/hooks'
-import { useActions, useAppState } from 'store'
 import { PagePath } from 'store/main/types'
 import { DACUserStatusType } from 'store/wax/types'
 
 import { Constants } from '../../../../shared/util/constants'
 
 export const MyMissionsBtn = () => {
-  const {
-    missions: { missionsToClaimCount },
-  } = useAppState()
+  const missionsToClaimCount = useMissionsStore((state) => state.missionsToClaimCount)
   const { isNotDesktop } = useScreenSize()
 
   const navigate = useNavigate()
@@ -70,9 +69,7 @@ export const MyMissionsBtn = () => {
 }
 
 export const MissionsCentreBtn = () => {
-  const {
-    missions: { availableMissions },
-  } = useAppState()
+  const availableMissions = useMissionsStore((state) => state.availableMissions)
   const { isNotDesktop } = useScreenSize()
 
   const navigate = useNavigate()
@@ -165,12 +162,10 @@ export const useWalletConnect = () => {
   const [, connect] = useConnectWallet()
   const [{ wallet, connecting }] = useConnectWallet()
   const [{ connectedChain }, setChain] = useSetChain()
-  const {
-    web3: { setWallet, setIsAutoConnect, setIsSync },
-  } = useActions()
-  const {
-    web3: { userWallet },
-  } = useAppState()
+  const setWallet = useBscWalletStore((state) => state.setWallet)
+  const setIsAutoConnect = useBscWalletStore((state) => state.setIsAutoConnect)
+  const setIsSync = useBscWalletStore((state) => state.setIsSync)
+  const userWallet = useBscWalletStore((state) => state.userWallet)
   const walletId = useSessionStore((state) => state.walletId)
 
   const isWalletPresent = (name: string) => {

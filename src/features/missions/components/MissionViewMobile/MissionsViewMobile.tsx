@@ -5,21 +5,26 @@ import { ConnectWalletBtn } from 'features/missions/components/MissionsActions'
 import { useWalletConnect } from 'features/missions/components/MissionsActions/MissionsActions'
 import { WrongChain } from 'features/missions/components/WrongChain'
 import { useMissionTimes } from 'features/missions/hooks/useMissionTimes'
+import { useBscWalletStore } from 'features/missions/store/bscWalletStore'
+import { useMissionsStore } from 'features/missions/store/missionsStore'
+import { MissionStatus } from 'features/missions/types/missionsTypes'
 import { filter, get } from 'lodash'
 import { useNavigate } from 'react-router-dom'
 import { Colors } from 'shared/util/colors'
 import { config } from 'shared/util/config'
 import { formatNumber } from 'shared/util/numbers'
-import { useAppState } from 'store'
 import { PagePath } from 'store/main/types'
-import { MissionStatus } from 'store/missions/types'
 
 export const MissionsViewMobile = () => {
   const wallet = useWalletConnect()
-  const {
-    web3: { bscTlmBalanceFormatted, bscStakedTlmBalanceFormatted },
-    missions: { explorer, availableMissions, totalMissionsRewards, currentMissions },
-  } = useAppState()
+  const bscTlmBalanceFormatted = useBscWalletStore((state) => state.bscTlmBalanceFormatted)
+  const bscStakedTlmBalanceFormatted = useBscWalletStore(
+    (state) => state.bscStakedTlmBalanceFormatted
+  )
+  const explorer = useMissionsStore((state) => state.explorer)
+  const availableMissions = useMissionsStore((state) => state.availableMissions)
+  const totalMissionsRewards = useMissionsStore((state) => state.totalMissionsRewards)
+  const currentMissions = useMissionsStore((state) => state.currentMissions)
   // The soonest to finish, as on the desktop drawer. Views aren't rebound off the missions pages,
   // so check it is still in flight.
   const nextToFinish = useMissionTimes(currentMissions?.[0])

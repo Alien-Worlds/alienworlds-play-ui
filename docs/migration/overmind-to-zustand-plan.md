@@ -231,6 +231,69 @@ logically isolated, or shared with another feature."
   - After a fuse, Outpost's shards balance (`walletDetails`, `cache-first`) isn't refetched, so
     it only updates on reload.
 
+### missions + web3 — done (`feature/missions-store-zustand-migration`, release 5.3.9)
+- Characterisation tests came first (`feature/missions-testing`). Four bugs they found were fixed
+  on `fix/missions-bugs` before the move: the `useWalletConnect` wallet lookup that could loop
+  forever, the My Missions badge stuck at its mount count, the explorer loader stuck after a
+  failed request, and the mobile drawer's hardcoded countdown.
+- Overmind's `missions` and `web3` namespaces are deleted. In their place:
+  - `features/missions/store/missionsStore.ts` (`useMissionsStore`): recent missions, the
+    explorer, NFTs, the sorted list and filter, the selection, joining / claiming, the newsletter
+    flags. `explorerMissions`, `currentMissions`, `availableMissions`, `totalMissionsRewards`,
+    `missionsToClaimCount` and `selectedMission` are fields recomputed when the missions or the
+    selection change. The loaders and their schedules (formerly `main.syncAi.recentMissions`,
+    `explorer`, `missionNfts`, `bscBalance`) live here too.
+  - `features/missions/store/bscWalletStore.ts` (`useBscWalletStore`): the web3-onboard wallet,
+    `isAutoConnect` / `isSync`, the BSC TLM and staked balances (formatted on change), NFT load
+    progress.
+  - `shared/store/overlayMessagesStore.ts` (`useOverlayMessagesStore`): the loading / info / error
+    overlays the layouts show. Shared because Overmind's onboarding flow writes the loading message.
+  - Plain functions: `features/missions/utils/missionsApi.ts` (missions API and IPFS templates) and
+    `utils/bscContracts.ts` (the BSC contract calls). Types and helpers moved to
+    `features/missions/types/missionsTypes.ts` and `utils/missionHelpers.tsx`;
+    `withMissionView` returns a copy instead of mutating the mission.
+- `features/missions/components/MissionsSync` (rendered once by `MainLayout`) calls
+  `useMissionsStore.sync(pathname)` every second, and straight away when the page or main drawer
+  changes. It replaces the missions part of `main.updateWorld`. Views are refreshed as new objects
+  each second on the missions pages.
+- The `main.show*Page` missions actions became `usePageVisit` plus the store
+  (`setSelectedMissionsTab`, `resortMissions`, `selectMission`). `usePageVisit` now also fires when
+  its location changes, since Missions Centre and My Missions are one mounted component.
+- Tests: `features/missions/testUtils/mockStore` seeds the three stores from `state.missions` /
+  `state.web3` and their actions, so the component tests kept their setup. The Overmind action tests
+  became `missionsStore.test.ts`; each changed behaviour has a test saying what it used to do.
+- Behaviour changes:
+  - The loaders run only while something shows their data: the missions pages, the main drawer and,
+    for the explorer and BSC balance, Profile → Balances. Before, the explorer loader skipped
+    Profile → Balances (an inverted check), so staked BSC TLM there only showed if the explorer had
+    loaded elsewhere first; it polled every other page instead. The BSC balance was read every
+    second on every page; it now follows its 1-minute schedule, TLM transfers and account switches.
+    The demo explorer (no BSC wallet) no longer rebuilds and re-sorts every second.
+  - Recent missions refresh on their 5-minute schedule in the main drawer too (before, only until
+    anything had synced).
+  - Template NFTs: the loaders wait for all of them, and share one request. Before, missions were
+    matched against whatever had loaded so far (often nothing), so rarity, series and images could be
+    missing until the next reload. Images move to the AW IPFS gateway as they load.
+  - A failed recent missions request retries in 10s, as the explorer now does (it retried every
+    second). A wallet with no mission NFTs is checked again after 2h; before, the NFT loader stayed
+    in progress until `reloadMissions`. Loads no longer overlap before the first sync.
+  - The sorted list is a copy: the recent missions aren't sorted in place or given the explorer's
+    invest info any more. Sorting isn't delayed (300ms / 200ms debounces). The missions table keeps
+    the rows it has loaded when the timers refresh, and goes back to 30 for a new list or filter.
+  - `missionsToClaimCount` updates whenever the explorer does, not only on the missions pages.
+  - Opening My Missions no longer also reports a Missions Centre page visit.
+  - A claim error without a message shows "Error has occured!" rather than a TypeError's text.
+- Dead code removed: the web3 connection callbacks (`onConnectionSuccess`, `onAccountChanged`,
+  `onChainChanged`, `onDisconnect`, `getSelectedMission`; none was ever called), `web3.account`,
+  `disconnectProvider`, `missions.account`, `missionsFilter.account`,
+  `newsletterOnboardingWasShown`, `MissionsTitleBar`, `NewsletterUnsubscribe`, `BalanceTlmBsc`.
+- Still Overmind in missions: `useMissionTimes` reads the 1s clock `main.runtimeInSeconds`, and
+  `LoadingTransactionOverlay` offers the onboarding retry (`wax.showOnboardingRetry`,
+  `executeOnboarding`). Both go with the final phase.
+- Found, not changed: the BSC balance contract keeps listening for transfers on the first account
+  it read; a load in flight when `reloadMissions` runs can still land after it (e.g. mid wallet
+  switch); `GA_CHAIN_CHANGED` was only sent from the dead `onChainChanged`, so it is never sent.
+
 ## Shared session & transactions
 
 Features are migrated one at a time; nothing requires moving all of `wax` at once. Two shared
@@ -264,8 +327,9 @@ away in the final phase below.
    - outpost: `loadPremintOffersAction`, `resetLastTransactionError`, redeem effects. (5.3.8)
    - 6b. Shared read hooks in `shared/hooks/queries` (AW offers, level offers, member terms,
      templates; the unused user points hook deleted). (5.3.8)
-7. `missions` (own namespace), then `syndicates` (largest). Neither has tests yet; add
-   characterisation tests first, as for mining.
+7. `missions` (own namespace, with `web3`). (done, 5.3.9)
+   Then `syndicates` (largest). It has no tests yet; add characterisation tests first, as for
+   mining and missions.
 8. **Final: session/auth** — once features no longer read session state from Overmind:
    - Move login / logout / `switchWallet` / session restore out of `main/actions.ts` into Zustand,
      writing `sessionStore` directly.
@@ -278,7 +342,8 @@ away in the final phase below.
      - the loaders (`atomic.initializeOrReloadAssets`, `…Bag`, `…MiningLand`, `…TagAndAvatar`,
        `wax.initializeOrReloadResources`);
      - the onboarding flow (`wax.onboarding`, `setOnboarding`, `executeOnboarding`; used by
-       inventory, missions and onboarding).
+       inventory, missions and onboarding);
+     - the 1s clock `main.runtimeInSeconds` (read by missions' `useMissionTimes`).
    - Shared UI state still in `wax`: `selectedDrawerView`, `isSyndicatesSidebarOpen`, `resources`,
      `setTag` / `isSettingTag`. Move each with its main consumer (syndicates sidebar, top bar).
 
@@ -294,9 +359,11 @@ now-merged `feature/<name>-testing-tailwind-store-refactor` branches from PR #67
 - `feature/analytics-zustand-migration`
 - `feature/profile-store-zustand-migration`, `feature/leaderboard-store-zustand-migration`,
   `feature/outpost-store-zustand-migration`, `feature/shared-queries-zustand-migration`
+- `feature/missions-testing`, `fix/missions-bugs`, `feature/missions-store-zustand-migration`
 
 Release flow: cut `release/x.y.z` from `main` with a "Bump version" commit (`package.json` and
-the sidebar footer), open one PR per feature into it, then one `Release/x.y.z` PR into `main`.
+the sidebar footer), merge each finished branch into it (since 5.3.9, straight into the release
+branch with `--no-ff` rather than one PR per feature), then one `Release/x.y.z` PR into `main`.
 PRs are squash-merged and head branches aren't deleted on merge, so don't stack a PR on a
 feature branch: once the branch below merges, the stacked PR still targets it and its change
 never reaches the release (this happened with #109; #110 brought it in). Base follow-ups on the

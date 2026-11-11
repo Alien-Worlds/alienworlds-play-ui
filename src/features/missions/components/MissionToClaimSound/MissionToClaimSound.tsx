@@ -1,14 +1,12 @@
 import { useEffect, useRef, useState, VFC } from 'react'
 
+import { useMissionsStore } from 'features/missions/store/missionsStore'
 import { useAudio } from 'react-use'
 import { useActivePath } from 'shared/hooks/useRouter'
-import { useAppState } from 'store'
 import { PagePath } from 'store/main/types'
 
 const MissionToClaimSound: VFC = () => {
-  const {
-    missions: { missionsToClaimCount },
-  } = useAppState()
+  const missionsToClaimCount = useMissionsStore((state) => state.missionsToClaimCount)
 
   const [audio, , controls] = useAudio({
     src: '/sounds/aw-missions-claim-sfx-01.mp3',
