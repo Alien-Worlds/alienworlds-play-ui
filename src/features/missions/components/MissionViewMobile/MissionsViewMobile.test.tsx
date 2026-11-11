@@ -2,7 +2,7 @@ import { fireEvent, screen } from '@testing-library/react'
 import { buildExplorer, buildMission } from 'features/missions/testUtils/fixtures'
 import { mockStore, renderMissions } from 'features/missions/testUtils/mockStore'
 import { mockOnboard, onboardWallet } from 'features/missions/testUtils/onboardMock'
-import { MissionStatus } from 'store/missions/types'
+import { Mission, MissionStatus } from 'store/missions/types'
 
 import { MissionsViewMobile } from './MissionsViewMobile'
 
@@ -27,19 +27,23 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockNavigate,
 }))
 
-const setup = () => {
+const onMissions = [
+  buildMission({ id: '1', status: MissionStatus.Departed }),
+  buildMission({ id: '2', status: MissionStatus.Departed }),
+]
+
+const setup = (currentMissions: Mission[] = onMissions) => {
   mockStore({
     state: {
+      main: { runtimeInSeconds: 0 },
       web3: {
         userWallet: null,
         bscTlmBalanceFormatted: '1,234.5',
         bscStakedTlmBalanceFormatted: null,
       },
       missions: {
-        explorer: buildExplorer([
-          buildMission({ id: '1', status: MissionStatus.Departed }),
-          buildMission({ id: '2', status: MissionStatus.Departed }),
-        ]),
+        explorer: buildExplorer(onMissions),
+        currentMissions,
         availableMissions: [buildMission({ id: '3' })],
         totalMissionsRewards: 3,
       },
@@ -79,5 +83,37 @@ describe('MissionsViewMobile', () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'Open Mission Center' }))
     expect(mockNavigate).toHaveBeenCalledWith('/missions')
+  })
+
+  // It used to show a hardcoded "6d 21h 32m 37s".
+  describe('with a BSC wallet connected', () => {
+    beforeEach(() => {
+      mockOnboard({
+        wallets: [onboardWallet()],
+        wallet: onboardWallet(),
+        connectedChain: { id: '0x38' },
+      })
+    })
+
+    it('counts down to the soonest mission finishing', () => {
+      setup()
+
+      expect(screen.getByText('Finishing in')).toBeInTheDocument()
+      // The departed fixtures end an hour from now.
+      expect(screen.getByText(/^(59m \d+s|1h)$/)).toBeInTheDocument()
+      expect(screen.queryByText('6d 21h 32m 37s')).not.toBeInTheDocument()
+    })
+
+    it('shows no countdown with nothing on a mission', () => {
+      setup([])
+
+      expect(screen.queryByText('Finishing in')).not.toBeInTheDocument()
+    })
+
+    it("shows no countdown once the soonest mission's time is up", () => {
+      setup([buildMission({ id: '1', status: MissionStatus.Completed })])
+
+      expect(screen.queryByText('Finishing in')).not.toBeInTheDocument()
+    })
   })
 })

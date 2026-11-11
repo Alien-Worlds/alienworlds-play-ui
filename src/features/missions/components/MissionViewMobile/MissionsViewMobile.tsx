@@ -4,6 +4,7 @@ import { Box, Flex, HStack, Text, chakra, Hide } from '@chakra-ui/react'
 import { ConnectWalletBtn } from 'features/missions/components/MissionsActions'
 import { useWalletConnect } from 'features/missions/components/MissionsActions/MissionsActions'
 import { WrongChain } from 'features/missions/components/WrongChain'
+import { useMissionTimes } from 'features/missions/hooks/useMissionTimes'
 import { filter, get } from 'lodash'
 import { useNavigate } from 'react-router-dom'
 import { Colors } from 'shared/util/colors'
@@ -17,8 +18,11 @@ export const MissionsViewMobile = () => {
   const wallet = useWalletConnect()
   const {
     web3: { bscTlmBalanceFormatted, bscStakedTlmBalanceFormatted },
-    missions: { explorer, availableMissions, totalMissionsRewards },
+    missions: { explorer, availableMissions, totalMissionsRewards, currentMissions },
   } = useAppState()
+  // The soonest to finish, as on the desktop drawer. Views aren't rebound off the missions pages,
+  // so check it is still in flight.
+  const nextToFinish = useMissionTimes(currentMissions?.[0])
   const navigate = useNavigate()
   if (wallet.connectedChain && parseInt(wallet.connectedChain.id, 16) !== config.BscChainId)
     return <WrongChain />
@@ -72,12 +76,16 @@ export const MissionsViewMobile = () => {
       direction="column"
       gap={2}
     >
-      <Text fontFamily="orb" fontSize="14px" fontWeight={400} color={Colors.SILVER}>
-        Finishing in
-      </Text>
-      <Text color={Colors.WEB_ORANGE} fontFamily="orb" fontSize="20px" fontWeight={600}>
-        6d 21h 32m 37s
-      </Text>
+      {nextToFinish?.status === MissionStatus.Departed && (
+        <>
+          <Text fontFamily="orb" fontSize="14px" fontWeight={400} color={Colors.SILVER}>
+            Finishing in
+          </Text>
+          <Text color={Colors.WEB_ORANGE} fontFamily="orb" fontSize="20px" fontWeight={600}>
+            {nextToFinish.humanizedTime}
+          </Text>
+        </>
+      )}
       <Flex
         direction="column"
         borderRadius="12px"

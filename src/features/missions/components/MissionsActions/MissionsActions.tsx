@@ -174,12 +174,8 @@ export const useWalletConnect = () => {
   const walletId = useSessionStore((state) => state.walletId)
 
   const isWalletPresent = (name: string) => {
-    for (let i = 0; i < connectedWallets.length; i = +1) {
-      if (connectedWallets[i].label === name) {
-        return { isFound: true, index: i }
-      }
-    }
-    return { isFound: false, index: -1 }
+    const index = connectedWallets.findIndex(({ label }) => label === name)
+    return { isFound: index !== -1, index }
   }
 
   useEffect(() => {
