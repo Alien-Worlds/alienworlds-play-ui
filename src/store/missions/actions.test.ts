@@ -485,7 +485,7 @@ describe('missions.initializeOrReloadExplorerMissions', () => {
 
   it('retries every tick when the explorer API fails, until anything has synced', async () => {
     const getExplorer = jest.fn(async () => null)
-    const { actions, state, syncAi } = setup({
+    const { actions, state } = setup({
       web3State: { userWallet: buildUserWallet(), isSync: false },
       missionsApi: { getExplorer },
     })
@@ -495,12 +495,15 @@ describe('missions.initializeOrReloadExplorerMissions', () => {
 
     expect(state.explorer).toBeUndefined()
     expect(getExplorer).toHaveBeenCalledTimes(2)
-    expect(syncAi.explorer.isInProgress).toBe(true)
   })
 
-  it('stays stuck in progress after a failure once synced (until reloadMissions)', async () => {
+  // It used to return still in progress, so once synced it never loaded again until
+  // reloadMissions.
+  it('keeps the loaded explorer and retries in 10 seconds after a failure once synced', async () => {
+    const current = buildExplorer([buildMission({ id: '1' })])
     const getExplorer = jest.fn(async () => null)
-    const { actions, syncAi } = setup({
+    const { actions, state, syncAi } = setup({
+      missionsState: { explorer: current },
       web3State: { userWallet: buildUserWallet(), isSync: true },
       missionsApi: { getExplorer },
     })
@@ -509,7 +512,32 @@ describe('missions.initializeOrReloadExplorerMissions', () => {
     await actions.initializeOrReloadExplorerMissions()
 
     expect(getExplorer).toHaveBeenCalledTimes(1)
-    expect(syncAi.explorer.isInProgress).toBe(true)
+    expect(ids(state.explorerMissions)).toEqual(['1'])
+    expect(syncAi.explorer.isInProgress).toBe(false)
+    expect(syncAi.explorer.executeAfter > DateTime.now().plus({ seconds: 5 })).toBe(true)
+    expect(syncAi.explorer.executeAfter < DateTime.now().plus({ seconds: 15 })).toBe(true)
+  })
+
+  it('loads again once the retry is due', async () => {
+    const getExplorer = jest
+      .fn()
+      .mockResolvedValueOnce(null)
+      .mockResolvedValueOnce(buildExplorer([buildMission({ raw: true, id: '2' })]))
+    jest.useFakeTimers()
+    const { actions, state } = setup({
+      web3State: { userWallet: buildUserWallet(), isSync: true },
+      missionsApi: { getExplorer },
+    })
+
+    await actions.initializeOrReloadExplorerMissions()
+    await actions.initializeOrReloadExplorerMissions()
+    expect(getExplorer).toHaveBeenCalledTimes(1)
+
+    jest.setSystemTime(Date.now() + 11_000)
+    await actions.initializeOrReloadExplorerMissions()
+
+    expect(getExplorer).toHaveBeenCalledTimes(2)
+    expect(ids(state.explorerMissions)).toEqual(['2'])
   })
 })
 

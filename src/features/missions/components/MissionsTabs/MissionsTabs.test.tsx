@@ -81,7 +81,8 @@ describe('MissionsTabs', () => {
     expect(screen.getByRole('tab', { name: /My Missions/ })).toHaveTextContent('My Missions10+')
   })
 
-  it('keeps the badge count from when the tabs mounted', () => {
+  // The count usually arrives after the tabs mount; the badge used to stay at the mount count.
+  it('updates the badge when the count changes', () => {
     const { rerender } = setup({ missionsToClaimCount: 0 })
 
     mockStore({
@@ -90,7 +91,7 @@ describe('MissionsTabs', () => {
     })
     rerender(<MissionsTabs />)
 
-    expect(screen.getByRole('tab', { name: /My Missions/ })).toHaveTextContent(/^My Missions$/)
+    expect(screen.getByRole('tab', { name: /My Missions/ })).toHaveTextContent('My Missions4')
   })
 
   it('shows no badge with nothing to claim', () => {

@@ -1,9 +1,8 @@
-import { FC, memo, useEffect, useState } from 'react'
+import { FC, memo, useEffect } from 'react'
 
 import { Flex, Tabs, TabList, Tab, useBreakpointValue } from '@chakra-ui/react'
 import { useConnectWallet } from '@web3-onboard/react'
 import { motion, useAnimation } from 'framer-motion'
-import { isNil, map } from 'lodash'
 import { useNavigate } from 'react-router-dom'
 import { Colors } from 'shared/util/colors'
 import { useActions, useAppState } from 'store'
@@ -33,6 +32,28 @@ const MissionBadge: FC<{ count: number; isSelected: boolean }> = memo(({ count, 
   return <></>
 })
 
+const MISSION_TABS = [
+  {
+    label: 'Centre',
+    pagePath: PagePath.Missions,
+    activeColor: Colors.AZURE_RADIANCE,
+    selectedColor: Colors.SNOW_WHITE,
+  },
+  {
+    label: 'My Missions',
+    pagePath: PagePath.MissionsExplorer,
+    activeColor: Colors.EXQUISITE_TURQUOIS,
+    selectedColor: Colors.SNOW_WHITE,
+    showsMissionsToClaim: true,
+  },
+  {
+    label: 'NFT Inventory',
+    pagePath: PagePath.MissionsInventory,
+    activeColor: Colors.BUTTERCUP,
+    selectedColor: Colors.BLACK_SOLID_100,
+  },
+]
+
 const MissionsTabs: FC = () => {
   const {
     missions: { reloadMissions },
@@ -45,37 +66,11 @@ const MissionsTabs: FC = () => {
 
   const navigate = useNavigate()
   const headerControls = useAnimation()
-  const [tabs, setTabs] = useState(null)
   const [, connect] = useConnectWallet()
 
   const refreshMissions = async () => {
     await reloadMissions()
   }
-
-  useEffect(() => {
-    const missionTabsList = [
-      {
-        label: 'Centre',
-        pagePath: PagePath.Missions,
-        activeColor: Colors.AZURE_RADIANCE,
-        selectedColor: Colors.SNOW_WHITE,
-      },
-      {
-        label: 'My Missions',
-        pagePath: PagePath.MissionsExplorer,
-        activeColor: Colors.EXQUISITE_TURQUOIS,
-        badgeCount: missionsToClaimCount,
-        selectedColor: Colors.SNOW_WHITE,
-      },
-      {
-        label: 'NFT Inventory',
-        pagePath: PagePath.MissionsInventory,
-        activeColor: Colors.BUTTERCUP,
-        selectedColor: Colors.BLACK_SOLID_100,
-      },
-    ]
-    setTabs(missionTabsList)
-  }, [])
 
   async function setWalletFromLocalStorage(previouslyConnectedWallets) {
     if (isAutoConnect) {
@@ -105,7 +100,7 @@ const MissionsTabs: FC = () => {
 
   const handleMissionTabClick = (index: number) => {
     setSelectedMissionsTab(index)
-    const path = tabs[index].pagePath
+    const path = MISSION_TABS[index].pagePath
     navigate(path)
   }
 
@@ -142,7 +137,7 @@ const MissionsTabs: FC = () => {
           orientation={currentButtonSize}
         >
           <TabList w={{ base: '100%', xl: '' }}>
-            {map(tabs, (item, index: number) => (
+            {MISSION_TABS.map((item, index) => (
               <Tab
                 width={{ base: '100%', xl: 'fit-content' }}
                 key={index}
@@ -154,9 +149,9 @@ const MissionsTabs: FC = () => {
                 px={{ base: 2 }}
               >
                 {item.label}
-                {!isNil(item.badgeCount) && item.badgeCount > 0 && (
+                {item.showsMissionsToClaim && missionsToClaimCount > 0 && (
                   <MissionBadge
-                    count={item.badgeCount}
+                    count={missionsToClaimCount}
                     isSelected={index === selectedMissionsTab}
                   />
                 )}

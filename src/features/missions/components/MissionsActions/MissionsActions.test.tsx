@@ -144,6 +144,32 @@ describe('useWalletConnect', () => {
     })
   })
 
+  it('finds the MetaMask wallet anywhere in the connected list', () => {
+    const wallet = onboardWallet('0xtrust', 'Trust Wallet')
+    mockOnboard({
+      wallets: [wallet, onboardWallet('0xledger', 'Ledger'), onboardWallet('0xmeta', 'MetaMask')],
+      wallet,
+    })
+
+    run()
+
+    expect(collectEvent).toHaveBeenCalledWith({
+      name: Constants.GA_AW_LOGIN,
+      fields: { wallet_metamask: '0xmeta' },
+    })
+  })
+
+  // The lookup used to step `i = +1`, so it never got past the second wallet and froze the tab.
+  it('reports nothing when neither tracked wallet is connected, with several connected', () => {
+    const wallet = onboardWallet('0xtrust', 'Trust Wallet')
+    mockOnboard({ wallets: [wallet, onboardWallet('0xledger', 'Ledger')], wallet })
+
+    run()
+
+    expect(collectEvent).not.toHaveBeenCalled()
+    expect(setWallet).toHaveBeenCalledWith(wallet)
+  })
+
   it('asks for a resync when the wallet changes', () => {
     const wallet = onboardWallet('0xcb', 'Coinbase Wallet')
     mockOnboard({ wallets: [wallet], wallet })

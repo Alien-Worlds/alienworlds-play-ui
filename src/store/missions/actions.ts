@@ -183,7 +183,11 @@ export const initializeOrReloadExplorerMissions = pipe(
         state.web3.userWallet.accounts[0].address
       )
 
-      if (!explorer) return
+      // The API gives null when the request fails: keep what's loaded and try again shortly.
+      if (!explorer) {
+        executeAfter(state.main.syncAi.explorer, DateTime.now().plus({ seconds: 10 }))
+        return
+      }
 
       explorer.attributes.missions = await effects.missions.api.mapPinatasToMissions(
         explorer.attributes.missions,
@@ -203,10 +207,8 @@ export const initializeOrReloadExplorerMissions = pipe(
       actions.missions.setSelectedMission()
 
       state.web3.bscStakedTlmBalance = calculateBscStakedTlmBalance(state.missions.explorer)
-      if (explorer) {
-        state.web3.isSync = true
-        executeAfter(state.main.syncAi.explorer, DateTime.now().plus({ minutes: 1 }))
-      }
+      state.web3.isSync = true
+      executeAfter(state.main.syncAi.explorer, DateTime.now().plus({ minutes: 1 }))
     }
   },
   catchError(({ state }: Context, error) => {
