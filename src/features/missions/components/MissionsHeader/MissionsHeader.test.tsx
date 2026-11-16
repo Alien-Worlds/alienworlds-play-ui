@@ -22,6 +22,10 @@ jest.mock(
   'features/glossary/components/GlossaryInfoIcon/GlossaryInfoIcon',
   () => jest.requireActual('features/missions/testUtils/mocks').glossaryIconMock
 )
+// The BSC wallet hook reads the chain id from env, which CI doesn't have.
+jest.mock('shared/util/config', () => ({
+  config: { ...jest.requireActual('shared/util/config').config, BscChainId: 56 },
+}))
 jest.mock('features/missions/components/MissionsTabs/MissionsTabs', () => ({
   MissionsTabs: () => <div data-testid="missions-tabs" />,
 }))
