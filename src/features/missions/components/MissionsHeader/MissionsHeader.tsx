@@ -13,11 +13,11 @@ import {
 } from 'features/missions/components/MissionsBalances'
 import { MissionsNewsletter } from 'features/missions/components/MissionsNewsletter/MissionsNewsletter'
 import { MissionsTabs } from 'features/missions/components/MissionsTabs/MissionsTabs'
+import { useBscWalletStore } from 'features/missions/store/bscWalletStore'
 import { get } from 'lodash'
 import { useMatch } from 'react-router-dom'
 import { useCopyToClipboard } from 'react-use'
 import { Colors } from 'shared/util/colors'
-import { useAppState } from 'store'
 import { PagePath } from 'store/main/types'
 
 const MissionsHeading = ({ title, subtitle, description, color }) => {
@@ -107,9 +107,7 @@ const MissionsHeadingView = () => {
 const MissionsTitleBar = () => {
   const wallet = useWalletConnect()
   const connectedWallet = useWallets()
-  const {
-    web3: { userWallet },
-  } = useAppState()
+  const userWallet = useBscWalletStore((state) => state.userWallet)
 
   const [, copyToClipboard] = useCopyToClipboard()
 
@@ -198,9 +196,7 @@ const MissionsTitleBar = () => {
 }
 
 const MissionsHeader: FC = () => {
-  const {
-    web3: { userWallet },
-  } = useAppState()
+  const userWallet = useBscWalletStore((state) => state.userWallet)
   return (
     <Flex gap={{ base: 0, md: 7 }} flexDirection="column" pb={{ base: 0, md: !userWallet ? 6 : 2 }}>
       <MissionsTitleBar />

@@ -27,21 +27,11 @@ import {
   initializeOrReloadTagAndAvatar,
 } from 'store/atomic/actions'
 import {
-  setSelectedMission,
-  filterAndSortMissions,
-  initializeOrReloadNfts,
-  updateMissionsOnSecondTick,
-  initializeOrReloadRecentMissions,
-  initializeOrReloadTemplatePinatas,
-  initializeOrReloadExplorerMissions,
-} from 'store/missions/actions'
-import {
   filterAndSortProposals,
   initializeOrReloadTerms,
   initializeOrReloadResources,
   initializeOrReloadRefundsInProgress,
 } from 'store/wax/actions'
-import { initializeOrReloadBscBalance } from 'store/web3/actions'
 
 import {
   executeAfter,
@@ -828,86 +818,6 @@ export const showGovernanceCustodianDashboard = pipe(
   })
 )
 
-export const showMissionsPage = pipe(
-  ({ actions }: Context) => {
-    useModalStore.getState().toggleMainDrawer(false)
-    actions.missions.setSelectedMissionsTab(0)
-    collectEvent({
-      name: Constants.GA_PAGE_VISIT,
-      fields: { location: PagePath.Missions },
-    })
-  },
-  ({ state, actions }: Context) => {
-    const newFilter = { ...state.missions.missionsFilter }
-    actions.missions.setMissionsFilter(newFilter)
-  },
-  catchError((_: Context, error) => {
-    console.error(error)
-  })
-)
-
-export const showMissionsExplorerPage = pipe(
-  ({ actions }: Context) => {
-    useModalStore.getState().toggleMainDrawer(false)
-    actions.missions.setSelectedMissionsTab(1)
-    collectEvent({
-      name: Constants.GA_PAGE_VISIT,
-      fields: { location: PagePath.MissionsExplorer },
-    })
-  },
-  ({ state, actions }: Context) => {
-    const newFilter = { ...state.missions.missionsFilter }
-    actions.missions.setMissionsFilter(newFilter)
-  },
-  catchError((_: Context, error) => {
-    console.error(error)
-  })
-)
-
-export const showMissionsInventoryPage = pipe(
-  ({ actions }: Context) => {
-    useModalStore.getState().toggleMainDrawer(false)
-    actions.missions.setSelectedMissionsTab(2)
-    collectEvent({
-      name: Constants.GA_PAGE_VISIT,
-      fields: { location: PagePath.MissionsInventory },
-    })
-  },
-  catchError((_: Context, error) => {
-    console.error(error)
-  })
-)
-
-export const showMissionDetailsPage = pipe(
-  ({ state }: Context, id: string) => {
-    useModalStore.getState().toggleMainDrawer(false)
-    state.missions.selectedMissionId = id
-    collectEvent({
-      name: Constants.GA_PAGE_VISIT,
-      fields: { location: PagePath.MissionDetails },
-    })
-  },
-  setSelectedMission,
-  catchError((_: Context, error) => {
-    console.error(error)
-  })
-)
-
-export const showMissionJoinPage = pipe(
-  ({ state }: Context, id: string) => {
-    useModalStore.getState().toggleMainDrawer(false)
-    state.missions.selectedMissionId = id
-    collectEvent({
-      name: Constants.GA_PAGE_VISIT,
-      fields: { location: PagePath.MissionJoin },
-    })
-  },
-  setSelectedMission,
-  catchError((_: Context, error) => {
-    console.error(error)
-  })
-)
-
 export const showErrorPage = pipe(
   async (_: Context) => {
     useModalStore.getState().toggleMainDrawer(false)
@@ -961,15 +871,7 @@ export const updateWorld = parallel(
     initializeOrReloadTerms,
     initializeOrReloadRefundsInProgress
   ),
-  parallel(
-    initializeOrReloadTemplatePinatas,
-    initializeOrReloadRecentMissions,
-    initializeOrReloadExplorerMissions,
-    initializeOrReloadNfts,
-    filterAndSortMissions,
-    updateMissionsOnSecondTick
-  ),
-  parallel(initializeOrReloadBscBalance, initializeOrReloadResources, filterAndSortProposals)
+  parallel(initializeOrReloadResources, filterAndSortProposals)
 )
 
 export const onInitializeOvermind = async ({ effects, actions, state }: Context) => {
@@ -1136,9 +1038,6 @@ export const claimMine = pipe(
   })
 )
 
-export const storeOnboardingNewsletterWasShown = pipe(
-  ({ state }: Context, shown: boolean = false) => {
-    localStorage.setItem('alienworlds-onboarding-newsletter', shown ? 'true' : 'false')
-    state.missions.newsletterOnboardingWasShown = shown
-  }
-)
+export const storeOnboardingNewsletterWasShown = (_: Context, shown: boolean = false) => {
+  localStorage.setItem('alienworlds-onboarding-newsletter', shown ? 'true' : 'false')
+}

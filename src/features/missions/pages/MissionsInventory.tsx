@@ -14,12 +14,15 @@ import {
   Tooltip,
   VStack,
 } from '@chakra-ui/react'
+import { useBscWalletStore } from 'features/missions/store/bscWalletStore'
+import { useMissionsStore } from 'features/missions/store/missionsStore'
+import { PinataNft } from 'features/missions/types/missionsTypes'
 import { motion } from 'framer-motion'
 import { map } from 'lodash'
 import _groupBy from 'lodash/groupBy'
+import { usePageVisit } from 'shared/hooks/usePageVisit'
 import { Colors } from 'shared/util/colors'
-import { useActions, useAppState } from 'store'
-import { PinataNft } from 'store/missions/types'
+import { PagePath } from 'store/main/types'
 
 const containerAnimation = {
   hidden: {},
@@ -154,19 +157,23 @@ export const DetailsOnHover: VFC<{ asset: PinataNft }> = ({ asset }) => {
 }
 
 const MissionsInventory: VFC = () => {
-  const {
-    main: { showMissionsInventoryPage },
-  } = useActions()
-  const {
-    web3: { userWallet, totalMissionsNfts, loadedMissionsNfts, loadingProgressMissionsNfts },
-    missions: { nfts, templatePinatas },
-  } = useAppState()
+  const setSelectedMissionsTab = useMissionsStore((state) => state.setSelectedMissionsTab)
+  const userWallet = useBscWalletStore((state) => state.userWallet)
+  const totalMissionsNfts = useBscWalletStore((state) => state.totalMissionsNfts)
+  const loadedMissionsNfts = useBscWalletStore((state) => state.loadedMissionsNfts)
+  const loadingProgressMissionsNfts = useBscWalletStore(
+    (state) => state.loadingProgressMissionsNfts
+  )
+  const nfts = useMissionsStore((state) => state.nfts)
+  const templatePinatas = useMissionsStore((state) => state.templatePinatas)
 
   const [grouped, setGrouped] = useState<any>([])
   const [loadingMessage, setLoadingMessage] = useState<string>(null)
 
+  usePageVisit(PagePath.MissionsInventory)
+
   useEffect(() => {
-    showMissionsInventoryPage()
+    setSelectedMissionsTab(2)
   }, [])
 
   useEffect(() => {

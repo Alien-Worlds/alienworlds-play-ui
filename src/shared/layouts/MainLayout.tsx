@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 
+import { MissionsSync } from 'features/missions/components/MissionsSync'
 import { LoadingSpinner } from 'features/syndicates/components/LoadingSpinner/LoadingSpinner'
 import { Outlet, useLocation } from 'react-router-dom'
 import { useActivePath } from 'shared/hooks/useRouter'
@@ -52,6 +53,8 @@ export const MainLayout = () => {
       {/* this way is used to allow protected pages gets the auth states before render */}
       {(isAuthenticating === false || isLoginRelatedPages || isMissionsPage) && <Outlet />}
       {isAuthenticating && !isLoginRelatedPages && !isMissionsPage && <LoadingSpinner />}
+      {/* After the page, so its effects (e.g. MissionsTabs reloading the missions) run first */}
+      <MissionsSync />
     </>
   )
 }

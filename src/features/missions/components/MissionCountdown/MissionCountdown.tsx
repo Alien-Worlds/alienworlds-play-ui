@@ -1,7 +1,7 @@
 import { Flex } from '@chakra-ui/react'
 import { MissionTimer } from 'features/missions/components/MissionTimer/MissionTimer'
+import { Mission } from 'features/missions/types/missionsTypes'
 import { Colors } from 'shared/util/colors'
-import { Mission } from 'store/missions/types'
 
 type MissionCountdownProps = {
   mission: Mission | null

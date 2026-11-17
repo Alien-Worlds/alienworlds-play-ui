@@ -1,13 +1,11 @@
 import { Flex, Text } from '@chakra-ui/react'
 import { useMissionTimes } from 'features/missions/hooks/useMissionTimes'
-import { useAppState } from 'store'
-import { MissionTypeIcon } from 'store/missions/helpers'
-import { MissionStatus } from 'store/missions/types'
+import { useMissionsStore } from 'features/missions/store/missionsStore'
+import { MissionStatus } from 'features/missions/types/missionsTypes'
+import { MissionTypeIcon } from 'features/missions/utils/missionHelpers'
 
 export const MissionMainTimer = () => {
-  const {
-    missions: { selectedMission },
-  } = useAppState()
+  const selectedMission = useMissionsStore((state) => state.selectedMission)
 
   const missionTimes = useMissionTimes(selectedMission)
 

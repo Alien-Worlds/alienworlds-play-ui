@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import { BSCIcon, MissionCraftIcon, DropDownIcon } from '@alien-worlds/icons'
 import {
@@ -17,10 +17,17 @@ import {
   useDisclosure,
   useMediaQuery,
 } from '@chakra-ui/react'
-import { useConnectWallet } from '@web3-onboard/react'
 import { ClaimRewards } from 'features/missions/components/ClaimRewards/ClaimRewards'
 import { MissionInfo } from 'features/missions/components/MissionInfo'
 import { MissionTimer } from 'features/missions/components/MissionTimer/MissionTimer'
+import { useMissionsStore } from 'features/missions/store/missionsStore'
+import { Mission, MissionStatus, SortBy } from 'features/missions/types/missionsTypes'
+import {
+  MissionTypeIcon,
+  getMissionReward,
+  getMissionRarityIcon,
+  getMissionSpacecrafts,
+} from 'features/missions/utils/missionHelpers'
 import { motion } from 'framer-motion'
 import { map } from 'lodash'
 import InfiniteScroll from 'react-infinite-scroll-component'
@@ -28,44 +35,22 @@ import { useNavigate } from 'react-router-dom'
 import { AppModal } from 'shared/layouts'
 import { Colors } from 'shared/util/colors'
 import { formatNumber } from 'shared/util/numbers'
-import { useActions, useAppState } from 'store'
 import { PagePath } from 'store/main/types'
-import {
-  MissionTypeIcon,
-  getMissionReward,
-  getMissionRarityIcon,
-  getMissionSpacecrafts,
-} from 'store/missions/helpers'
-import { Mission, MissionStatus, SortBy } from 'store/missions/types'
 
 const MotionTr = motion(Tr)
 const MotionTbody = motion(Tbody)
 
 const SortByTh = ({ sortBy, width }) => {
-  const {
-    missions: { setMissionsFilter },
-  } = useActions()
-  const {
-    missions: { missionsFilter },
-  } = useAppState()
-
-  const [{ wallet }] = useConnectWallet()
+  const setMissionsFilter = useMissionsStore((state) => state.setMissionsFilter)
+  const missionsFilter = useMissionsStore((state) => state.missionsFilter)
 
   const onSelectSortBy = (value: SortBy) => {
     if (value === missionsFilter.sortBy) {
-      setMissionsFilter({
-        ...missionsFilter,
-        account: wallet?.accounts?.[0]?.address,
-        reversed: !missionsFilter?.reversed,
-      })
+      setMissionsFilter({ ...missionsFilter, reversed: !missionsFilter?.reversed })
       return
     }
 
-    setMissionsFilter({
-      ...missionsFilter,
-      account: wallet?.accounts?.[0]?.address,
-      sortBy: value,
-    })
+    setMissionsFilter({ ...missionsFilter, sortBy: value })
   }
 
   if (!missionsFilter) return <></>
@@ -119,36 +104,27 @@ const SortByTh = ({ sortBy, width }) => {
   )
 }
 
+const PAGE_SIZE = 30
+
 const MissionsTable = () => {
-  const {
-    missions: { filterredAndSortedMissions, missionsFilter },
-  } = useAppState()
+  const filteredAndSortedMissions = useMissionsStore((state) => state.filteredAndSortedMissions)
+  const missionsFilter = useMissionsStore((state) => state.missionsFilter)
 
   const navigate = useNavigate()
   const claimDisclosure = useDisclosure()
-  const [hasMore, setHasMore] = useState<boolean>(false)
   const [isLargerThanMobile] = useMediaQuery('(min-width: 640px)')
   const [isLargerThanTablet] = useMediaQuery('(min-width: 1280px)')
-  const [visibleMissions, setVisibleMissions] = useState<Mission[]>([])
+  const [visibleCount, setVisibleCount] = useState<number>(PAGE_SIZE)
   const [missionToClaimRewards, setMissionToClaimRewards] = useState<Mission>(null)
 
-  const showMissions = (reset: Boolean) => {
-    if (!filterredAndSortedMissions) {
-      setVisibleMissions([])
-      setHasMore(false)
-      return
-    }
-
-    let newVisibleCount = reset ? 30 : visibleMissions.length + 30
-    let newHasMore = true
-
-    if (newVisibleCount >= filterredAndSortedMissions.length) {
-      newVisibleCount = filterredAndSortedMissions.length
-      newHasMore = false
-    }
-    setVisibleMissions(filterredAndSortedMissions.slice(0, newVisibleCount))
-    setHasMore(newHasMore)
-  }
+  // The missions' timers refresh every second, so only a different list (new missions or a new
+  // order) or filter goes back to the first page.
+  const listKey = useMemo(
+    () => filteredAndSortedMissions?.map((mission) => mission.id).join(',') ?? null,
+    [filteredAndSortedMissions]
+  )
+  const visibleMissions = filteredAndSortedMissions?.slice(0, visibleCount) ?? []
+  const hasMore = visibleMissions.length < (filteredAndSortedMissions?.length ?? 0)
 
   const onClaimRewards = (mission: Mission) => {
     setMissionToClaimRewards(mission)
@@ -156,12 +132,12 @@ const MissionsTable = () => {
   }
 
   const renderMore = () => {
-    showMissions(false)
+    setVisibleCount((count) => count + PAGE_SIZE)
   }
 
   useEffect(() => {
-    showMissions(true)
-  }, [filterredAndSortedMissions, missionsFilter])
+    setVisibleCount(PAGE_SIZE)
+  }, [listKey, missionsFilter])
 
   return (
     <>

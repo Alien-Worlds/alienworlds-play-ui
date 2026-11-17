@@ -6,7 +6,7 @@ import { Outlet } from 'react-router-dom'
 import { TopBar } from 'shared/components/topbar/TopBar'
 import MainContainer from 'shared/layouts/MainContainer'
 import { useMinerStore } from 'shared/store/minerStore'
-import { useAppState } from 'store'
+import { useOverlayMessagesStore } from 'shared/store/overlayMessagesStore'
 
 import { Constants } from '../util/constants'
 
@@ -21,9 +21,7 @@ const WithMainContainer: FC = () => (
 )
 
 const SimpleLayout: FC<SimpleLayoutProps> = ({ withTopBar = false }) => {
-  const {
-    missions: { loadingMessage },
-  } = useAppState()
+  const loadingMessage = useOverlayMessagesStore((state) => state.loadingMessage)
   const isOnboarded = useMinerStore((state) => state.isOnboarded)
 
   return (

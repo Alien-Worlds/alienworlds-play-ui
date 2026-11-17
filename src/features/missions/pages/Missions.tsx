@@ -3,31 +3,26 @@ import { VFC, useEffect } from 'react'
 import { Text, Center, Flex } from '@chakra-ui/react'
 import { useWallets } from '@web3-onboard/react'
 import { MissionsTable } from 'features/missions/components/MissionsTable'
+import { useMissionsStore } from 'features/missions/store/missionsStore'
 import { motion } from 'framer-motion'
-import { useLocation, useMatch } from 'react-router-dom'
+import { useMatch } from 'react-router-dom'
+import { usePageVisit } from 'shared/hooks/usePageVisit'
 import { Colors } from 'shared/util/colors'
-import { useActions } from 'store'
 import { PagePath } from 'store/main/types'
+
+// The Missions Centre and My Missions (the explorer's missions): one page, two routes.
 const Missions: VFC = () => {
-  const {
-    main: { showMissionsPage, showMissionsExplorerPage },
-  } = useActions()
   const connectedWallet = useWallets()
-  const { pathname } = useLocation()
-  const isMissionsPage = useMatch(PagePath.Missions)
-  const isMissionsExplorerPage = useMatch(PagePath.MissionsExplorer)
+  const isMyMissions = !!useMatch(PagePath.MissionsExplorer)
+  const location = isMyMissions ? PagePath.MissionsExplorer : PagePath.Missions
+
+  usePageVisit(location)
 
   useEffect(() => {
-    showMissionsPage()
-  }, [])
-
-  useEffect(() => {
-    if (isMissionsPage) {
-      showMissionsPage()
-    } else if (isMissionsExplorerPage) {
-      showMissionsExplorerPage()
-    }
-  }, [pathname])
+    const { setSelectedMissionsTab, resortMissions } = useMissionsStore.getState()
+    setSelectedMissionsTab(isMyMissions ? 1 : 0)
+    resortMissions()
+  }, [location])
 
   return (
     <motion.div

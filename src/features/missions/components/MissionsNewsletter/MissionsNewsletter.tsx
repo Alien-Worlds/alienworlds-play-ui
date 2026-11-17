@@ -1,15 +1,14 @@
 import { CheckmarkIcon } from '@alien-worlds/icons'
 import { Button, Flex, useDisclosure } from '@chakra-ui/react'
 import { NewsletterSubscribe } from 'features/missions/components/NewsletterSubscribe/NewsletterSubscribe'
+import { useBscWalletStore } from 'features/missions/store/bscWalletStore'
+import { useMissionsStore } from 'features/missions/store/missionsStore'
 import { AppModal } from 'shared/layouts'
 import { Colors } from 'shared/util/colors'
-import { useAppState } from 'store'
 
 const MissionsNewsletter = () => {
-  const {
-    web3: { userWallet },
-    missions: { subscribedEmail },
-  } = useAppState()
+  const userWallet = useBscWalletStore((state) => state.userWallet)
+  const subscribedEmail = useMissionsStore((state) => state.subscribedEmail)
 
   const newsletterSubscribeDisclosure = useDisclosure()
 

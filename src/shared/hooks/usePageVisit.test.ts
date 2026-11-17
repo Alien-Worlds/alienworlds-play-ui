@@ -32,6 +32,19 @@ describe('usePageVisit', () => {
     expect(presetAssetsFilter).not.toHaveBeenCalled()
   })
 
+  it('records the visit again when the location changes', () => {
+    const { rerender } = renderHook(({ location }) => usePageVisit(location), {
+      initialProps: { location: PagePath.Missions },
+    })
+    rerender({ location: PagePath.MissionsExplorer })
+
+    expect(mockCollectEvent).toHaveBeenCalledTimes(2)
+    expect(mockCollectEvent).toHaveBeenLastCalledWith({
+      name: 'page_visit',
+      fields: { location: '/missions/my' },
+    })
+  })
+
   it("presets the page's asset filter when asked", () => {
     renderHook(() => usePageVisit(PagePath.Inventory, { presetAssetsFilter: true }))
 

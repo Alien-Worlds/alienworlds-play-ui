@@ -4,13 +4,14 @@ import { UpdateProfileIcon } from '@alien-worlds/icons'
 import { Button } from '@alien-worlds/uikit'
 import { Center, Spinner, Text, VStack } from '@chakra-ui/react'
 import { css, Global } from '@emotion/react'
+import { useOverlayMessagesStore } from 'shared/store/overlayMessagesStore'
 import { useActions, useAppState } from 'store'
 
 const LoadingTransactionOverlay: VFC = () => {
   const {
     wax: { showOnboardingRetry },
-    missions: { loadingMessage },
   } = useAppState()
+  const loadingMessage = useOverlayMessagesStore((state) => state.loadingMessage)
   const {
     wax: { executeOnboarding },
   } = useActions()

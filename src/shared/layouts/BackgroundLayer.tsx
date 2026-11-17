@@ -4,6 +4,8 @@ import { Box } from '@chakra-ui/react'
 import { css } from '@emotion/react'
 import { AgnosticRouteObject } from '@remix-run/router'
 import { useAccountCenter, useConnectWallet, useSetChain, useWallets } from '@web3-onboard/react'
+import { useMissionsStore } from 'features/missions/store/missionsStore'
+import { MissionType } from 'features/missions/types/missionsTypes'
 import { LoadingSpinner } from 'features/syndicates/components/LoadingSpinner'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useDaoDetails } from 'graphql/hooks/useDaoDetails'
@@ -18,7 +20,6 @@ import { dacList } from 'shared/util/helpers'
 import { isMissionsRelatedPage } from 'shared/util/router'
 import { useAppState } from 'store'
 import { PagePath } from 'store/main/types'
-import { MissionType } from 'store/missions/types'
 
 const MotionBox = motion(Box)
 
@@ -100,8 +101,11 @@ const BackgroundImage: VFC = () => {
   const [{ wallet }, connect] = useConnectWallet()
   const {
     wax: { selectedDacId },
-    missions: { selectedMission },
   } = useAppState()
+  // Only the type: the selected mission is refreshed every second on its pages.
+  const selectedMissionType = useMissionsStore(
+    (state) => state.selectedMission?.attributes.missionType
+  )
   const whereToMine = useMinerStore((state) => state.whereToMine)
   const whereToMineIntent = useMinerStore((state) => state.whereToMineIntent)
   const planetSelectedForMining = useMinerStore((state) => state.planetSelectedForMining)
@@ -184,30 +188,26 @@ const BackgroundImage: VFC = () => {
           return 'alienworlds-ui-missions-bg-centre.jpg'
         }
 
-        if (selectedMission) {
-          switch (selectedMission.attributes.missionType) {
-            case MissionType.Artifact:
-              return 'alienworlds-ui-missions-bg-artifacts.jpg'
-            case MissionType.Battle:
-              return 'alienworlds-ui-missions-bg-battle.jpg'
-            case MissionType.Courier:
-              return 'alienworlds-ui-missions-bg-courier.jpg'
-            case MissionType.Explore:
-              return 'alienworlds-ui-missions-bg-explore.jpg'
-            case MissionType.Liberation:
-              return 'alienworlds-ui-missions-bg-liberation.jpg'
-            case MissionType.Recovery:
-              return 'alienworlds-ui-missions-bg-recovery.jpg'
-            case MissionType.Scouting:
-              return 'alienworlds-ui-missions-bg-scouting.jpg'
-            case MissionType.Supply:
-              return 'alienworlds-ui-missions-bg-supply.jpg'
-            default:
-              return 'alienworlds-ui-missions-bg-centre.jpg'
-          }
+        switch (selectedMissionType) {
+          case MissionType.Artifact:
+            return 'alienworlds-ui-missions-bg-artifacts.jpg'
+          case MissionType.Battle:
+            return 'alienworlds-ui-missions-bg-battle.jpg'
+          case MissionType.Courier:
+            return 'alienworlds-ui-missions-bg-courier.jpg'
+          case MissionType.Explore:
+            return 'alienworlds-ui-missions-bg-explore.jpg'
+          case MissionType.Liberation:
+            return 'alienworlds-ui-missions-bg-liberation.jpg'
+          case MissionType.Recovery:
+            return 'alienworlds-ui-missions-bg-recovery.jpg'
+          case MissionType.Scouting:
+            return 'alienworlds-ui-missions-bg-scouting.jpg'
+          case MissionType.Supply:
+            return 'alienworlds-ui-missions-bg-supply.jpg'
+          default:
+            return 'alienworlds-ui-missions-bg-centre.jpg'
         }
-
-        return 'alienworlds-ui-missions-bg-centre.jpg'
       case PagePath.NewsletterJoin:
         return 'bg-newsletter.jpg'
       case PagePath.SignUp:
@@ -237,7 +237,7 @@ const BackgroundImage: VFC = () => {
         setOpacityOverride(1)
         break
     }
-  }, [pathPattern, selectedMission, daoDetails, isLoggedIn, whereToMineIntent])
+  }, [pathPattern, selectedMissionType, daoDetails, isLoggedIn, whereToMineIntent])
 
   if (loading) return <LoadingSpinner />
   return (

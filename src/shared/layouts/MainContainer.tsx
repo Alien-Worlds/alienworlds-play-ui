@@ -6,16 +6,16 @@ import { InfoOverlay } from 'features/missions/components/InfoOverlay/InfoOverla
 import { LoadingTransactionOverlay } from 'features/missions/components/LoadingTransactionOverlay/LoadingTransactionOverlay'
 import { MissionsHeader } from 'features/missions/components/MissionsHeader'
 import { useLocation } from 'react-router-dom'
+import { useOverlayMessagesStore } from 'shared/store/overlayMessagesStore'
 import { useSessionStore } from 'shared/store/sessionStore'
 import { isMissionsRelatedPage } from 'shared/util/router'
-import { useAppState } from 'store'
 
 import { Constants } from '../util/constants'
 
 const MainContainer = ({ children }) => {
-  const {
-    missions: { loadingMessage, infoMessage, errorMessage },
-  } = useAppState()
+  const loadingMessage = useOverlayMessagesStore((state) => state.loadingMessage)
+  const infoMessage = useOverlayMessagesStore((state) => state.infoMessage)
+  const errorMessage = useOverlayMessagesStore((state) => state.errorMessage)
   const isDemoUser = useSessionStore((state) => state.isDemoUser)
 
   const { pathname } = useLocation()
