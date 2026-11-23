@@ -121,7 +121,7 @@ const Footer: VFC = () => {
 
       <Box textAlign="center">
         <Text fontSize="md" fontWeight={700} color={Colors.DI_SERRIA}>
-          ver 5.3.9
+          ver 5.4.0
         </Text>
       </Box>
     </Flex>

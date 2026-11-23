@@ -294,6 +294,99 @@ logically isolated, or shared with another feature."
   it read; a load in flight when `reloadMissions` runs can still land after it (e.g. mid wallet
   switch); `GA_CHAIN_CHANGED` was only sent from the dead `onChainChanged`, so it is never sent.
 
+### syndicates — characterisation tests done (`feature/syndicates-testing`)
+- Syndicates had no tests. These pin how it behaves on Overmind today, so the move can be checked
+  against them:
+  - `store/wax/governanceActions.test.ts`: the governance `wax` actions (what each sends, toasts,
+    returns, writes to `actionProgressState`, which sync slots it reschedules, where it navigates),
+    `getDAOInfo`, the union verification, and the UI setters.
+  - `store/wax/governanceEffects.test.ts`: the exact actions each transaction sends, through the
+    real `executeTransactWharf` to a stub session, and the DAO API / whitelist reads. The move to
+    `shared/wax/transact` has to send the same payloads (the msig proposals serialise their inner
+    action with a WaxJS client on the demo account).
+  - `store/main/governancePages.test.ts`: the `main.showGovernance*` page actions and the 1s tick
+    that expires `isSigningDACTerms` and `actionProgressState`. The tick mutates state from an
+    effect callback, which `createOvermindMock` rejects, so those tests use a real
+    `createOvermind`.
+  - Component tests for every syndicates page, modal and component that reads or calls Overmind,
+    plus `GovernanceLayout`, `BackgroundLayer`, and the top bar / main drawer
+    (`shared/components/main-drawer/drawerView.test.tsx`).
+- Helpers in `features/syndicates/testUtils`: a reactive stand-in for the Overmind `store` module
+  (`setMockState` re-renders readers, so an action mock can play out what the real action writes),
+  GraphQL hook stand-ins (`mockGraphql`, `graphqlHooks`), response fixtures, and module stand-ins
+  (uikit `Button` / `FormField` / `PlaceRing`, react-select, react-markdown, the 3D carousel,
+  Apollo's client, `ResizeObserver`). For the migration, seed the new stores from `mockStore` as
+  missions did, so the component tests keep their setup.
+- What syndicates reads from Overmind, i.e. what moves:
+  - `wax.selectedDacId` / `setSelectedDacId`: about 30 syndicates files, plus
+    `profile/PlanetaryTokens`, `BackgroundLayer` and `GovernanceLayout`.
+  - Transactions: `tryStake`, `tryUnstake`, `tryCancelUnstake`, `tryStakeVotePower`,
+    `tryUnstakeVotePower`, `tryVotingCandidates`, `signPlanetMemberTerms`, `registerNewCandidate`,
+    `activateNewCandidate`, `withdrawCandidate`, `updateCandidate`, `tryCreateNewProposal`,
+    `tryChangeDaoConfigs`, `tryChangeElectionDuration`, `trySetDtapConfigs`, `tryClaimBudget`,
+    `tryCancelProposal`, `tryApproveProposal`, `tryExecuteProposal`.
+  - Reads: `getDAOInfo` (writes `selectedDacInfo`, `currentDAOInfo`), `checkWhitelist` /
+    `switchWhitelistToCustodian` (write `userWhitelistStatus`).
+  - UI state: `actionProgressState` + `resetActionProgressState` (and the 10s
+    `main.autoExpireVoteDACCandidates` that resets it after a vote), `votedCandidatesList`,
+    `dacCandidacyProposalPayload`, `generatedCandidancyProposal`, `dacCustodianProposalPayload`,
+    `selectedDacCandidateWalletId`, `isSyndicatesSidebarOpen`, `selectedDrawerView` (top bar and
+    main drawer), `main.signingDACTermsState` (from `isSigningDACTerms`).
+  - Page visits: the `main.showGovernance*` actions become `usePageVisit`, but they also select the
+    planet from the URL (`isValidDacId`) and send an unknown one back to `/syndicates`.
+  - Session state left for the final phase: `wax.currentTag` (the candidate's name),
+    `wax.termsAccepted` (loaded at login, checked before voting).
+- Dead code to delete rather than port:
+  - Only ever reset, never filled: `selectedDacCandidates`, `selectedDacCustodians`,
+    `dacCustodianProposals`. So `filterredAndSortedProposals`, the proposals filter
+    (`proposalsFilter`, `setProposalsFilter`, `triggerFilterAndSortProposals`, and
+    `filterAndSortProposals`, which `updateWorld` runs every second), `resetDacCustodianProposals`
+    and `GovernanceLayout`'s `reset*List` calls do nothing. `SortByTh` /
+    `proposalsTableHeaderRenderer` are unused (`ProposalsTableVirtualised` sorts locally).
+    `PlanetaryVotePowerReceived` always shows 0, and `WithDrawCandidancyModal` never finds the
+    candidate's avatar.
+  - Never written: `userStakedDAOTokens` (so the page visits report `stakedTokens: 0`),
+    `totalDAOsStakes`, `selectedPlanet`, `isStakesOnRelease`, `stakeReleaseTime` /
+    `stakeReleaseTimeInDays`, `maxStakeTime`, `isStaking`, `loreVoterInfo`, `loreGlobals`.
+  - Never read: `isUserWhiteListed`, `selectedUnionDacInfo`, `refundsInProgress` (its loader,
+    `initializeOrReloadRefundsInProgress`, still polls every 2 min on `/syndicates`).
+  - Unused UI: `VoterHistory` and with it `LazyAvatarRing`, `cachePlayerProfileImageURL`,
+    `playersImageMap`, `getCandidateVotersHistory`, `cleanupVotersHistory`,
+    `custodianVotersResponse`, `wax.api.getVotingHistory`; `VoteDecay`; `mapAvatarsToExplorers`,
+    `reloadSyncAiPlanetCandidatesAndCustodians`, `tryCleanProposal` (+ `cleanCustodianProposal`),
+    `main.showGovernanceCandidatesPage`; and five modals nothing opens: `ResigningCandidancyModal`,
+    `NotEnoughTokensGenericModal`, `ProposalErrorModal`, `SignMemberTermsModal`,
+    `UnstakeCandidancyModal`.
+- Bugs the tests pin down (not fixed; each test says what happens today):
+  - `tryUnstakeVotePower` never reports success: no toast, and `actionProgressState` stays
+    `InProgress`, which keeps `SignVoteModal`'s buttons disabled. A thrown error toasts
+    "Unstaking Vote Power successfully. …". `tryStakeVotePower` and `tryVotingCandidates` also
+    leave it `InProgress` after a transaction error (votes are reset by the 10s auto-expiry,
+    staking isn't).
+  - `SyndicatesSidebar` forces its open state to "is desktop": it can't be closed on desktop (it
+    reopens at once) or opened below 992px, so `PlanetSelect` / `PlanetDetails` / the top bar
+    toggle are overridden.
+  - "Add Vote Power" in the sidebar opens its modal and sends `stake_vote_power` twice.
+  - `PlanetaryCustodianBudget` reloads the DAO info (two requests) every time it changes, because
+    its effect depends on the `selectedDacInfo` that `getDAOInfo` writes.
+  - `CustodianDashboard`: on a union it asks for the proposals of `unionDAOFinder(union)`, i.e.
+    `undefined`; the DTAP slider shows 5% but proposes 50% until moved; a claimed budget is never
+    detected (executed claims are filtered out before being counted).
+  - `ManageCandidacy`: the message can't be edited, every change is put back to the profile's
+    description.
+  - `UnstakingVotePower`: for a candidate it opens `ErrorModal`, then closes itself, which clears
+    the error type, so the modal has no message (Overmind's modal actions did the same).
+  - `NotEnoughTokensToBecomeCandidateModal` decides against a fixed 5,000 TLM but shows the DAO's
+    lockup; `PlanetaryCandidacy` throws when the wallet isn't among the loaded candidates.
+  - `main.showGovernanceDaoSelect` navigates to the unfilled `/dao/:planetId` for an unknown planet
+    and reports the visit as the details page. `main.showGovernanceManageCandidacyPage` and
+    `showGovernanceCustodianDashboard` wait forever for the lists nothing fills.
+  - Top bar / main drawer indexes don't line up: the tabs are Mining 0, Missions 1, Landowner 2,
+    the icons Mining, Governance, Missions, Land, and the drawer shows Mining, Syndicates,
+    Landowner, Missions. So the second tab opens the syndicates view, and the missions view (3)
+    can't be reached from the tabs.
+  - `ConvertPlanetaryTokenModal` reports `availableTokens: undefined` (it indexes a number).
+
 ## Shared session & transactions
 
 Features are migrated one at a time; nothing requires moving all of `wax` at once. Two shared
@@ -328,8 +421,8 @@ away in the final phase below.
    - 6b. Shared read hooks in `shared/hooks/queries` (AW offers, level offers, member terms,
      templates; the unused user points hook deleted). (5.3.8)
 7. `missions` (own namespace, with `web3`). (done, 5.3.9)
-   Then `syndicates` (largest). It has no tests yet; add characterisation tests first, as for
-   mining and missions.
+   Then `syndicates` (largest). Characterisation tests first, as for mining and missions (done,
+   `feature/syndicates-testing`); then decide which of the bugs above to fix before the move.
 8. **Final: session/auth** — once features no longer read session state from Overmind:
    - Move login / logout / `switchWallet` / session restore out of `main/actions.ts` into Zustand,
      writing `sessionStore` directly.
@@ -360,6 +453,7 @@ now-merged `feature/<name>-testing-tailwind-store-refactor` branches from PR #67
 - `feature/profile-store-zustand-migration`, `feature/leaderboard-store-zustand-migration`,
   `feature/outpost-store-zustand-migration`, `feature/shared-queries-zustand-migration`
 - `feature/missions-testing`, `fix/missions-bugs`, `feature/missions-store-zustand-migration`
+- `feature/syndicates-testing`
 
 Release flow: cut `release/x.y.z` from `main` with a "Bump version" commit (`package.json` and
 the sidebar footer), merge each finished branch into it (since 5.3.9, straight into the release
